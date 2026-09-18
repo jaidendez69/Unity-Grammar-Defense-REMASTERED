@@ -160,62 +160,27 @@
         line-height: 1.5;
     }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    input[type="email"] {
+    .download-btn {
+        display: inline-block;
         width: 100%;
-        padding: 14px 16px;
-        border-radius: 12px;
-        border: 2px solid rgba(100, 255, 100, 0.4);
-        background: rgba(255, 255, 255, 0.06);
-        color: white;
-        font-size: 15px;
-        font-family: 'Inter', sans-serif;
-        outline: none;
-        transition: border-color 0.2s;
-    }
-
-    input[type="email"]::placeholder { color: rgba(245, 255, 242, 0.5); }
-    input[type="email"]:focus { border-color: var(--gold); }
-
-    button[type="submit"] {
-        padding: 15px;
-        border: none;
+        padding: 17px;
         border-radius: 12px;
         background: linear-gradient(135deg, var(--pink), var(--pink-light));
         color: white;
         font-family: 'Fredoka', sans-serif;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 17px;
+        text-decoration: none;
         cursor: pointer;
         transition: transform 0.15s, box-shadow 0.15s;
         border: 2px solid var(--gold);
+        box-sizing: border-box;
     }
 
-    button[type="submit"]:hover {
+    .download-btn:hover {
         transform: scale(1.03);
         box-shadow: 0 0 24px rgba(255, 20, 147, 0.6);
     }
-
-    button[type="submit"]:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .status {
-        min-height: 20px;
-        font-size: 13px;
-        margin-top: 10px;
-        font-weight: 500;
-    }
-
-    .status.success { color: var(--green-light); }
-    .status.error { color: #FF6B6B; }
 
     .fine-print {
         margin-top: 22px;
@@ -332,62 +297,14 @@
         <img src="icon-512.png" alt="Unity Grammar Defense" class="icon">
         <h1>Unity Grammar Defense</h1>
         <div class="subtitle">REMASTERED</div>
-        <p class="tagline">Enter your email and we'll send you the download link for the Windows desktop app.</p>
+        <p class="tagline">Teachers vs. kebabs. One school, endless waves.</p>
 
-        <form id="downloadForm">
-            <input type="email" id="emailInput" placeholder="you@example.com" required>
-            <button type="submit" id="submitBtn">📥 Send Me the Download</button>
-            <div class="status" id="statusMsg"></div>
-        </form>
+        <a id="downloadBtn" class="download-btn" href="https://raw.githubusercontent.com/jaidendez69/Unity-Grammar-Defense-REMASTERED/main/releases/UnityGrammarDefense-Setup-latest.exe" download>⬇ Download for Windows</a>
 
         <div class="fine-print">
             Windows only, v1.0.5 · ~75MB · Free<br>
             Windows may show a SmartScreen warning since this isn't code-signed yet — click "More info" → "Run anyway" to continue.
         </div>
     </div>
-
-    <!-- EmailJS -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>
-        const EMAILJS_PUBLIC_KEY = 'kdRCGPik4q6r1wlqt';
-        const EMAILJS_SERVICE_ID = 'service_9alli4s';
-        const EMAILJS_TEMPLATE_ID = 'template_juq11gi';
-        // The direct download link that gets sent in the email
-        const DOWNLOAD_LINK = 'https://raw.githubusercontent.com/jaidendez69/Unity-Grammar-Defense-REMASTERED/main/releases/UnityGrammarDefense-Setup-latest.exe';
-
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-
-        const form = document.getElementById('downloadForm');
-        const statusMsg = document.getElementById('statusMsg');
-        const submitBtn = document.getElementById('submitBtn');
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const email = document.getElementById('emailInput').value.trim();
-            if (!email) return;
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            statusMsg.textContent = '';
-            statusMsg.className = 'status';
-
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email: email,
-                download_link: DOWNLOAD_LINK
-            }).then(function () {
-                statusMsg.textContent = '✅ Check your inbox! Your download link is on its way.';
-                statusMsg.className = 'status success';
-                submitBtn.textContent = '📥 Send Me the Download';
-                submitBtn.disabled = false;
-                form.reset();
-            }).catch(function (err) {
-                statusMsg.textContent = '❌ Something went wrong - please try again.';
-                statusMsg.className = 'status error';
-                submitBtn.textContent = '📥 Send Me the Download';
-                submitBtn.disabled = false;
-                console.error(err);
-            });
-        });
-    </script>
 </body>
 </html>

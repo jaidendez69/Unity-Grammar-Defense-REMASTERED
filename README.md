@@ -1,6 +1,6 @@
-# Unity Grammar Defense REMASTERED
+# Unity Defense Remastered
 
-This repo hosts the auto-update files for the Unity Grammar Defense desktop app.
+This repo hosts the auto-update files for the Unity Defense Remastered desktop app.
 The `releases/` folder always contains the latest Windows build - the game
 checks `releases/latest.yml` on startup to see if a newer version is available.
 

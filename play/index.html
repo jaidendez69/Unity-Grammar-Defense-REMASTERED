@@ -2110,6 +2110,16 @@
         .daily-day.big .dr { font-size: 22px; }
         #dailyClaimBtn:disabled { opacity: .55; cursor: default; filter: grayscale(.4); }
         .daily-streak { font-size: 15px; font-weight: 800; color: #FFD700; margin-bottom: 14px; }
+        /* ===== FLOATING BACK BUTTON (menu screens) ===== */
+        .float-back { position: fixed; top: calc(26px + env(safe-area-inset-top, 0px)); left: calc(14px + env(safe-area-inset-left, 0px)); z-index: 8500; display: none; cursor: pointer;
+            padding: 9px 20px 9px 16px; font-family: inherit; font-size: 15px; font-weight: 900; letter-spacing: 1px; color: #fff; border: 3px solid #FFD700; border-radius: 16px;
+            background: linear-gradient(135deg, #FF1493, #FF69B4); box-shadow: 0 5px 0 rgba(0,0,0,.5); transition: translate .15s, filter .15s; }
+        .float-back.show { display: block; }
+        .float-back:hover { translate: 0 -2px; filter: brightness(1.12); }
+        .float-back:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+        .acct-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 14px; }
+        .acct-nav-btn { cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 800; color: #fff; padding: 8px 14px; border: 2px solid #FFD700; border-radius: 14px; background: rgba(0,0,0,.45); transition: translate .15s, background .15s, color .15s; }
+        .acct-nav-btn:hover { translate: 0 -2px; background: #FFD700; color: #111; }
         .disc-modal { z-index: 9500; }
         .disc-modal .confirm-content { max-width: 600px; width: calc(100% - 28px); max-height: 92vh; overflow-y: auto; padding: 26px 28px; text-align: left; }
         .disc-modal .confirm-content h2 { text-align: center; font-size: 26px; margin-bottom: 8px; }
@@ -2750,7 +2760,6 @@
         #accountScreen { --scr-a: #123a3a; --scr-b: #231046; }
         #inboxScreen { --scr-a: #3a1030; --scr-b: #101a46; }
         #chatScreen { --scr-a: #0f2f4a; --scr-b: #2a1040; }
-        #tipsScreen { --scr-a: #3a3210; --scr-b: #103a2a; }
         #settingsScreen { --scr-a: #1c2a3a; --scr-b: #2a2a2a; }
         .theme-halloween .updates-screen, .theme-halloween .credits-screen, .theme-halloween .account-screen { --scr-a: #4a1a0a; --scr-b: #2a0f3d; --scr-line: rgba(255,138,31,.08); }
         .theme-night .updates-screen, .theme-night .credits-screen, .theme-night .account-screen { --scr-a: #10204a; --scr-b: #050818; --scr-line: rgba(140,170,255,.06); }
@@ -2778,7 +2787,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.23 Alpha</div>
+    <div id="versionTag">v1.0.23</div>
 
     <!-- PWA UPDATE BANNER -->
     <div class="update-banner" id="updateBanner">
@@ -2801,12 +2810,8 @@
         <canvas id="menuBg"></canvas>
         <div class="mm-top">
             <button class="side-corner-btn account-corner-btn" id="accountCornerBtn" onclick="openAccountScreen()">👤 Sign Up</button>
-            <button class="side-corner-btn inbox-corner-btn hidden" id="inboxCornerBtn" onclick="gateSignIn('Inbox', openInboxScreen)">📥 Inbox<span class="corner-badge hidden" id="inboxBadge">0</span></button>
             <button class="side-corner-btn daily-corner-btn hidden" id="dailyCornerBtn" onclick="gateSignIn('Daily Rewards', openDailyReward)">🎁 Daily<span class="corner-badge hidden" id="dailyBadge">!</span></button>
             <button class="side-corner-btn shop-corner-btn hidden" id="shopCornerBtn" onclick="gateSignIn('the Shop', openPlayerShop)">🛍️ Shop</button>
-            <button class="side-corner-btn chat-corner-btn hidden" id="chatCornerBtn" onclick="gateSignIn('Chat', openChatScreen)">💬 Chat<span class="corner-badge hidden" id="chatBadge">0</span></button>
-            <button class="side-corner-btn" onclick="openSettings()">⚙️ Settings</button>
-            <button class="side-corner-btn" onclick="openTipsScreen()">💡 Tips</button>
         </div>
         <div class="mm-main">
             <div class="mm-kicker">🎓 GRAMMAR TOWER DEFENSE</div>
@@ -2875,8 +2880,13 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
-                    <div class="update-date">October 22, 2026</div>
+                    <div class="update-date">October 23, 2026</div>
                     <ul>
+                        <li>Developer Mode is <b>back as its own mode</b>: flip the <b>🛠 Developer Mode</b> switch in Test Mode, confirm, and the game restarts into a <b>normal game with no cheats</b> but with the time controls (speed, pause, step, rewind). It saves on this device again with Continue Battle / New Battle</li>
+                        <li><b>Tips are gone.</b> The Tips button and screen were removed from the game</li>
+                        <li>NEW: <b>Settings, Inbox and Chat moved into the account menu.</b> They are buttons along the top of your account screen now, and Back returns you there. The main menu is cleaner</li>
+                        <li>NEW: <b>18 more achievements</b>, from easy ones to some unique ones (check the 🏆 Achievements tab in your account). They are listed in All You Need to Know</li>
+                        <li>NEW: a <b>← BACK</b> button now stays in the top-left corner of the Profile/Login, Inbox, Chat, Updates, Credits and Settings screens, so you no longer have to scroll to the bottom to leave. The Back button at the bottom still works</li>
                         <li>NEW: <b>Teacher Buffs!</b> One permanent buff for each teacher, bought once in the main menu <b>Shop → Upgrades → Teachers</b> for <b>1000 💚 Positives</b> each (they cost a lot). They are saved on your account and work in every battle while you are signed in</li>
                         <li><b>📜 Long Shebab</b> (Wise Sheikh): his throws are Arabic <b>sentences</b> instead of one letter, and each one keeps damaging the kebab for 3 more seconds after it hits</li>
                         <li><b>🔥 Long BOYS!</b> (Angry Teacher): her BOYS! ultimate lasts <b>1.5x longer</b> (3 seconds instead of 2)</li>
@@ -3303,13 +3313,6 @@
         </div>
     </div>
 
-    <!-- TIPS SCREEN -->
-    <div class="account-screen hidden" id="tipsScreen">
-        <div class="account-content tips-content" id="tipsContent">
-            <!-- filled dynamically by renderTipsScreen() -->
-        </div>
-    </div>
-
     <!-- TEST MODE BANNER -->
     <div class="test-mode-banner" id="testModeBanner" style="display: none;">🧪 TEST MODE — Infinite Coins</div>
 
@@ -3326,7 +3329,7 @@
         <div class="test-panel-group">
             <div class="test-panel-group-label">DEVELOPER MODE</div>
             <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;font-size:13px;font-weight:700;">
-                <span>🛠 Time controls (speed, pause, step, rewind)</span>
+                <span>🛠 Switch to Developer Mode (a normal game with time controls)</span>
                 <span class="switch"><input type="checkbox" id="devSwitch" onchange="setDevControls(this.checked)"><span class="slider"></span></span>
             </label>
         </div>
@@ -3685,6 +3688,7 @@
             </div>
         </div>
     </div>
+    <button class="float-back" id="floatBackBtn" onclick="floatBackClick()">← BACK</button>
     <div class="lvl-toast" id="lvlToast"></div>
 
     <div class="confirm-modal" id="continueChoiceModal">
@@ -4022,11 +4026,11 @@
             }, 500);
         }
 
-        // ===== TIPS SCREEN =====
+        // ===== LAST UPDATED DATE =====
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-10-22';
+        const LAST_UPDATE_DATE = '2026-10-23';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4039,226 +4043,7 @@
             el.classList.toggle('today', todayStr === LAST_UPDATE_DATE);
         }
 
-        const GAME_TIPS = [
-            { text: "Wise Sheikh's ultimate charges by landing killing blows \u2014 keep him fighting to fill it up faster!", img: 'sheikh' },
-            { text: "Angry Teacher doesn't attack \u2014 every 5 seconds her Negative marks 1 kebab for 2x damage from all your teachers, and her ultimate does the rest!", img: 'badui' },
-            { text: "Left-click a hurt teacher to heal them 5% per click (only works between waves), or trigger their ultimate if it's ready. Right-click a teacher to remove them.", img: 'track' },
-            { text: "Teachers standing right on the track take damage from passing kebabs \u2014 place them just off to the side to keep them safe.", img: 'track' },
-            { text: "The shop opens every 15 waves. Save up your coins beforehand so you can afford the best upgrades!", img: 'shop' },
-            { text: "After wave 10, kebabs can split across two paths \u2014 make sure both sides of the map are covered.", img: 'splitpath' },
-            { text: "Click a kebab directly to deal a little bonus damage \u2014 handy when you're in a pinch!", img: 'kebab' },
-            { text: "Wise Sheikh's cost caps at 250 coins, so he never becomes too expensive to place.", img: 'sheikh' },
-            { text: "Sign in from the main menu to save your best wave and continue a battle later.", img: 'account' },
-            { text: "You can place up to 7 of each teacher (13 with both More Teachers upgrades) \u2014 go wide and cover every angle!", img: 'sheikh' },
-            { text: "Use the arrows on the edges of the map to check what's happening on the other side.", img: 'map' }
-        ];
-
-        let currentTipIndex = 0;
-        let lastOpenedTipIndex = -1;
-
-        function openTipsScreen() {
-            clearContinueModal();
-            if (GAME_TIPS.length > 1) {
-                let newIndex;
-                do {
-                    newIndex = Math.floor(Math.random() * GAME_TIPS.length);
-                } while (newIndex === lastOpenedTipIndex);
-                currentTipIndex = newIndex;
-            } else {
-                currentTipIndex = 0;
-            }
-            lastOpenedTipIndex = currentTipIndex;
-
-            const menuScreen = document.getElementById('menuScreen');
-            menuScreen.classList.add('fade-out');
-            setTimeout(() => {
-                menuScreen.classList.add('hidden');
-                menuScreen.classList.remove('fade-out');
-                renderTipsScreen();
-                document.getElementById('tipsScreen').classList.remove('hidden');
-            }, 500);
-        }
-
-        function renderTipsScreen() {
-            const content = document.getElementById('tipsContent');
-            content.innerHTML = `
-                <h2>💡 Tips</h2>
-                <canvas id="tipImageCanvas" class="tip-image-canvas" width="220" height="150"></canvas>
-                <div class="tip-nav-row">
-                    <button class="tip-arrow-btn" onclick="prevTip()">◀</button>
-                    <div class="tip-text" id="tipText"></div>
-                    <button class="tip-arrow-btn" onclick="nextTip()">▶</button>
-                </div>
-                <button class="back-btn" onclick="backToMenu('tips')">Back</button>
-            `;
-            const tip = GAME_TIPS[currentTipIndex];
-            document.getElementById('tipText').textContent = tip.text;
-            renderTipImage(tip.img);
-        }
-
-        function nextTip() {
-            currentTipIndex = (currentTipIndex + 1) % GAME_TIPS.length;
-            renderTipsScreen();
-        }
-
-        function prevTip() {
-            currentTipIndex = (currentTipIndex - 1 + GAME_TIPS.length) % GAME_TIPS.length;
-            renderTipsScreen();
-        }
-
-        // Draws a small illustration for the current tip. The Wise Sheikh,
-        // Angry Teacher, and kebab drawings reuse the exact same shapes/colors
-        // as their real in-game sprites so these genuinely look like the game.
-        function renderTipImage(type) {
-            const canvas = document.getElementById('tipImageCanvas');
-            if (!canvas) return;
-            const tctx = canvas.getContext('2d');
-            tctx.fillStyle = '#222222';
-            tctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2 + 15;
-
-            if (type === 'sheikh') {
-                tctx.save();
-                tctx.translate(cx, cy);
-                tctx.scale(1.6, 1.6);
-                tctx.fillStyle = '#1A3A52';
-                tctx.beginPath();
-                tctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#FFFFFF';
-                tctx.beginPath();
-                tctx.ellipse(0, -28, 18, 12, 0, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#888888';
-                tctx.beginPath();
-                tctx.arc(-6, -18, 4, 0, Math.PI * 2);
-                tctx.arc(6, -18, 4, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#000000';
-                tctx.beginPath();
-                tctx.arc(-8, -8, 6, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.beginPath();
-                tctx.arc(0, -5, 7, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.beginPath();
-                tctx.arc(8, -8, 6, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.restore();
-            } else if (type === 'badui') {
-                tctx.save();
-                tctx.translate(cx, cy);
-                tctx.scale(1.6, 1.6);
-                tctx.fillStyle = '#8B4513';
-                tctx.beginPath();
-                tctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#3D2410';
-                tctx.beginPath();
-                tctx.arc(0, -8, 2.2, 0, Math.PI * 2);
-                tctx.arc(0, 2, 2.2, 0, Math.PI * 2);
-                tctx.arc(0, 12, 2.2, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#FF1493';
-                tctx.beginPath();
-                tctx.arc(0, -26, 19, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#E0923E';
-                tctx.beginPath();
-                tctx.arc(0, -26, 13, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#000000';
-                tctx.beginPath();
-                tctx.arc(-4.5, -27, 2.2, 0, Math.PI * 2);
-                tctx.arc(4.5, -27, 2.2, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.restore();
-            } else if (type === 'kebab') {
-                tctx.save();
-                tctx.translate(cx, cy);
-                tctx.scale(1.6, 1.6);
-                tctx.lineCap = 'round';
-                tctx.strokeStyle = '#000000';
-                tctx.lineWidth = 7;
-                tctx.beginPath();
-                tctx.moveTo(-5, -20);
-                tctx.lineTo(-5, 20);
-                tctx.stroke();
-                tctx.strokeStyle = '#8B4513';
-                tctx.lineWidth = 3;
-                tctx.beginPath();
-                tctx.moveTo(-5, -20);
-                tctx.lineTo(-5, 20);
-                tctx.stroke();
-                tctx.lineCap = 'butt';
-                const colors = ['#CD5C5C', '#DC143C', '#B22222'];
-                const positions = [-10, 0, 10];
-                for (let i = 0; i < 3; i++) {
-                    tctx.fillStyle = colors[i];
-                    tctx.beginPath();
-                    tctx.arc(positions[i], -5 + i * 10, 10, 0, Math.PI * 2);
-                    tctx.fill();
-                    tctx.strokeStyle = '#000000'; tctx.lineWidth = 2; tctx.stroke();
-                }
-                tctx.fillStyle = '#228B22';
-                tctx.beginPath();
-                tctx.arc(8, 0, 8, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.strokeStyle = '#000000'; tctx.lineWidth = 2; tctx.stroke();
-                tctx.restore();
-            } else if (type === 'track') {
-                tctx.strokeStyle = '#8B7355';
-                tctx.lineWidth = 26;
-                tctx.lineCap = 'round';
-                tctx.beginPath();
-                tctx.moveTo(cx - 60, cy + 20);
-                tctx.lineTo(cx + 60, cy + 20);
-                tctx.stroke();
-                tctx.save();
-                tctx.translate(cx, cy + 8);
-                tctx.scale(1.15, 1.15);
-                tctx.fillStyle = '#1A3A52';
-                tctx.beginPath();
-                tctx.ellipse(0, 0, 16, 22, 0, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.fillStyle = '#FFFFFF';
-                tctx.beginPath();
-                tctx.ellipse(0, -22, 14, 10, 0, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.restore();
-                tctx.font = 'bold 28px Arial';
-                tctx.textAlign = 'center';
-                tctx.fillText('⚠️', cx, cy - 48);
-            } else if (type === 'splitpath') {
-                tctx.strokeStyle = '#C9A76B';
-                tctx.lineWidth = 12;
-                tctx.lineCap = 'round';
-                tctx.beginPath();
-                tctx.moveTo(cx - 60, cy);
-                tctx.lineTo(cx, cy);
-                tctx.lineTo(cx + 45, cy - 35);
-                tctx.stroke();
-                tctx.beginPath();
-                tctx.moveTo(cx, cy);
-                tctx.lineTo(cx + 45, cy + 35);
-                tctx.stroke();
-            } else {
-                const icons = { shop: ['🛍️', '#FFD700'], map: ['🗺️', '#64FF64'], account: ['👤', '#FF69B4'] };
-                const pair = icons[type] || ['❓', '#888888'];
-                tctx.fillStyle = pair[1];
-                tctx.beginPath();
-                tctx.arc(cx, cy - 5, 50, 0, Math.PI * 2);
-                tctx.fill();
-                tctx.font = '58px Arial';
-                tctx.textAlign = 'center';
-                tctx.textBaseline = 'middle';
-                tctx.fillText(pair[0], cx, cy - 3);
-                tctx.textBaseline = 'alphabetic';
-            }
-        }
-        // ===== END TIPS SCREEN =====
+        // ===== END LAST UPDATED DATE =====
 
         // Replacement for window.confirm() - itch.io's sandboxed iframe
         // silently blocks native confirm()/alert()/prompt() dialogs (no
@@ -4490,13 +4275,32 @@
             { id: 'ult25',    name: 'Ultimate Fan',       desc: 'Use 25 ultimates',                stat: 'ultimates', target: 25, pos: 15 },
             { id: 'marks50',  name: 'Marked Men',         desc: 'Mark 50 kebabs with Negative',    stat: 'marks', target: 50, pos: 10 },
             { id: 'shush50',  name: 'Library Rules',      desc: 'Shush 50 kebabs',                 stat: 'shushes', target: 50, pos: 10 },
+            // newer ones: easy first, then trickier and unique ones
+            { id: 'wave1',     name: 'First Day',          desc: 'Clear wave 1',                    stat: 'bestCleared', target: 1, pos: 3 },
+            { id: 'place1',    name: 'Hello, Class',       desc: 'Place your first teacher',        stat: 'placed', target: 1, pos: 3 },
+            { id: 'kills50',   name: 'Warming Up',         desc: 'Defeat 50 kebabs',                stat: 'kills', target: 50, pos: 5 },
+            { id: 'daily1',    name: 'Daily Habit',        desc: 'Claim your first Daily Reward',   stat: 'dailyClaims', target: 1, pos: 5 },
+            { id: 'pshop1',    name: 'Window Shopper',     desc: 'Buy something in the main menu Shop', stat: 'menuBuys', target: 1, pos: 5 },
+            { id: 'pshop5',    name: 'Fashion Icon',       desc: 'Buy 5 things in the main menu Shop', stat: 'menuBuys', target: 5, pos: 25 },
+            { id: 'daily7',    name: 'Streak Master',      desc: 'Reach a 7-day Daily Reward streak', stat: 'dailyStreak', target: 7, pos: 30 },
+            { id: 'buff1',     name: 'Buffed Up',          desc: 'Buy a Teacher Buff',              stat: 'buffsOwned', target: 1, pos: 25 },
+            { id: 'buff3',     name: 'Fully Buffed',       desc: 'Own all 3 Teacher Buffs',         stat: 'buffsOwned', target: 3, pos: 60 },
+            { id: 'kills5000', name: 'Kebab Terminator',   desc: 'Defeat 5000 kebabs',              stat: 'kills', target: 5000, pos: 80 },
+            { id: 'maxstaff',  name: 'Max Staff',          desc: 'Have 7 of the same teacher placed at once', flag: true, pos: 20 },
+            { id: 'clutch',    name: 'Clutch Defence',     desc: 'Defeat a kebab while your school has exactly 1 health left', flag: true, pos: 25 },
+            { id: 'spotless',  name: 'Spotless',           desc: 'Clear wave 10 without your school losing any health', flag: true, pos: 40 },
+            { id: 'triple',    name: 'Triple Threat',      desc: 'Use all three teachers\' ultimates within 5 seconds', flag: true, pos: 35 },
+            { id: 'shebab8',   name: 'Shebab Blast',       desc: 'Hit 8 kebabs with a single SHEBAB', flag: true, pos: 25 },
+            { id: 'boys5',     name: 'Crowd Control',      desc: 'Hit 5 different kebabs with a single BOYS!', flag: true, pos: 30 },
+            { id: 'scan3',     name: 'Triple Scan',        desc: 'Hit 3 or more kebabs with one Area Strike (needs the Area Strike buff)', flag: true, pos: 30 },
+            { id: 'longkill',  name: 'Long Story',         desc: 'Finish off a kebab with Long Shebab\'s lingering damage (needs the Long Shebab buff)', flag: true, pos: 20 },
             // 2 that give skins
             { id: 'fieldtrip',   name: 'Field Trip',      desc: 'Have 4 Wise Sheikhs lined up together in a row or column', flag: true, skin: 'sheikh:fieldtrip' },
             { id: 'fuming',      name: 'Fuming',          desc: 'Mark a kebab with Negative and still let it get into the school', flag: true, skin: 'badui:fuming' }
         ];
         let ACH = null, ACH_USER = null, ACH_DIRTY = false;
         let POS_PENDING = 0, POS_WAVE = 0; // 1 Positive per kebab: saved in batches, not on every kill
-        function achActive() { return !!(game.active && !game.testMode && !game.devMode && getCurrentAccount()); }
+        function achActive() { return !!(!game.testMode && !game.devMode && getCurrentAccount()); } // counts in battles and for menu actions (daily reward, menu shop)
         function achLoad() {
             const a = getCurrentAccount();
             if (!a) { ACH = null; ACH_USER = null; return null; }
@@ -4694,6 +4498,7 @@
         function achOnKill(enemy) {
             if (!achActive()) return;
             achStat('kills');
+            if (game.health === 1) achUnlock('clutch');
             POS_PENDING += 1; POS_WAVE += 1;
             addXp(enemy.isBoss ? 40 : 2);
             if (enemy.isBoss) achStat('bosses');
@@ -4714,11 +4519,20 @@
                 }
             }
         }
+        // Triple Threat: all three teachers' ultimates within 5 seconds (300 frames)
+        function achOnUltimate(type) {
+            game.ultStamp = game.ultStamp || {};
+            game.ultStamp[type] = game.frameCount;
+            const t = game.ultStamp;
+            if (t.sheikh !== undefined && t.badui !== undefined && t.math !== undefined &&
+                Math.max(t.sheikh, t.badui, t.math) - Math.min(t.sheikh, t.badui, t.math) <= 300) achUnlock('triple');
+        }
         function achOnPlace() {
             if (!achActive()) return;
             achStat('placed');
             const has = t => game.towers.some(x => x.type === t);
             if (has('sheikh') && has('badui') && has('math')) achUnlock('fullclass');
+            for (const ty of ['sheikh', 'badui', 'math']) if (game.towers.filter(x => x.type === ty).length >= 7) achUnlock('maxstaff');
             const sh = game.towers.filter(t => t.type === 'sheikh');
             const at = (x, y) => sh.some(t => Math.abs(t.x - x) < 2 && Math.abs(t.y - y) < 2);
             for (const a of sh) {
@@ -4758,6 +4572,7 @@
             if ((a.positives || 0) < d.price) { pNpcSay('You need ' + d.price + ' Positives for that one. Keep earning them from achievements!'); return; }
             updateCurrentAccount(acc => { acc.positives = (acc.positives || 0) - d.price; acc.skins = acc.skins || []; acc.skins.push(key); });
             document.getElementById('pshopBalance').textContent = getPositives();
+            achStat('menuBuys');
             if (typeof playMoneySound === 'function') playMoneySound();
             pNpcSay('Lovely choice! Equip it from your profile.');
             pRenderSlots();
@@ -4953,6 +4768,7 @@
             if ((a.positives || 0) < d.price) { pNpcSay('You need ' + d.price + ' Positives for that one. Defeat kebabs to earn more!'); return; }
             updateCurrentAccount(acc => { acc.positives = (acc.positives || 0) - d.price; acc.items = (acc.items || []).concat([key]); });
             document.getElementById('pshopBalance').textContent = getPositives();
+            achStat('menuBuys');
             if (typeof playMoneySound === 'function') playMoneySound();
             pNpcSay(isBg ? 'Gorgeous backdrop! Pick it in your profile (Customize).' : 'Looking sharp! Wear it from your profile (Customize).');
             pRenderSlots();
@@ -5037,7 +4853,40 @@
             renderAccountScreen();
         }
 
+        // ===== ACCOUNT MENU NAV: Settings, Inbox and Chat live inside the account menu =====
+        let navReturn = null;   // set to 'account' when a screen was opened from the account menu, so its Back button returns there
+        function accountNavHTML() {
+            return '<div class="acct-nav">' +
+                '<button class="acct-nav-btn" onclick="openFromAccount(\'settings\')">⚙️ Settings</button>' +
+                '<button class="acct-nav-btn" onclick="openFromAccount(\'inbox\')">📥 Inbox<span class="corner-badge hidden" id="inboxBadge">0</span></button>' +
+                '<button class="acct-nav-btn" onclick="openFromAccount(\'chat\')">💬 Chat<span class="corner-badge hidden" id="chatBadge">0</span></button>' +
+                '</div>';
+        }
+        function openFromAccount(kind) {
+            if ((kind === 'inbox' || kind === 'chat') && !getCurrentAccount()) { gateSignIn(kind === 'inbox' ? 'Inbox' : 'Chat', () => {}); return; }
+            const acct = document.getElementById('accountScreen');
+            acct.classList.add('fade-out');
+            setTimeout(() => {
+                acct.classList.add('hidden'); acct.classList.remove('fade-out');
+                navReturn = 'account';
+                let id = 'settingsScreen';
+                if (kind === 'settings') { clearContinueModal(); syncSettingsUI(); }
+                else if (kind === 'inbox') { renderInboxScreen(); id = 'inboxScreen'; }
+                else { currentChatFriend = null; renderChatScreen(); id = 'chatScreen'; }
+                const el = document.getElementById(id);
+                el.classList.remove('hidden');
+                el.style.animation = 'none'; void el.offsetWidth; el.style.animation = 'scrIn .5s cubic-bezier(.2,.9,.3,1) both';
+            }, 430);
+        }
         function renderAccountScreen() {
+            renderAccountScreenCore();
+            const content = document.getElementById('accountContent');
+            const acc = getCurrentAccount();
+            const mode = accountViewMode || (acc ? 'profile' : (Object.keys(getAccounts()).length > 0 ? 'login' : 'signup'));
+            if (content && (mode === 'profile' || mode === 'login' || mode === 'signup')) content.insertAdjacentHTML('afterbegin', accountNavHTML());
+            updateSocialButtons();
+        }
+        function renderAccountScreenCore() {
             const acc = getCurrentAccount();
             applyProfileBackground(null);
             const content = document.getElementById('accountContent');
@@ -5858,32 +5707,21 @@
 
         function updateSocialButtons() {
             const acc = getCurrentAccount();
-            const inboxBtn = document.getElementById('inboxCornerBtn');
-            const chatBtn = document.getElementById('chatCornerBtn');
-            const inboxBadge = document.getElementById('inboxBadge');
-            const chatBadge = document.getElementById('chatBadge');
             const shopBtn = document.getElementById('shopCornerBtn');
-            // Shop, Inbox and Chat are always shown; signed-out players get a 🔒 and a sign-in prompt when they press them
+            // Shop is always shown; signed-out players get a 🔒 and a sign-in prompt when they press it
             if (shopBtn) { shopBtn.classList.remove('hidden'); shopBtn.classList.toggle('corner-lock', !acc); }
-            if (!inboxBtn || !chatBtn) return;
-            inboxBtn.classList.remove('hidden'); chatBtn.classList.remove('hidden');
-            inboxBtn.classList.toggle('corner-lock', !acc); chatBtn.classList.toggle('corner-lock', !acc);
-            if (!acc) { inboxBadge.classList.add('hidden'); chatBadge.classList.add('hidden'); return; }
-
-            const incomingCount = (acc.incomingRequests || []).length;
-            if (incomingCount > 0) {
-                inboxBadge.textContent = incomingCount;
-                inboxBadge.classList.remove('hidden');
-            } else {
-                inboxBadge.classList.add('hidden');
-            }
-
-            const unread = countUnreadMessages(acc);
-            if (unread > 0) {
-                chatBadge.textContent = unread;
-                chatBadge.classList.remove('hidden');
-            } else {
-                chatBadge.classList.add('hidden');
+            // Inbox and Chat now live in the account menu. Their counts show on the account button (and on their
+            // buttons inside the account menu).
+            const incomingCount = acc ? (acc.incomingRequests || []).length : 0;
+            const unread = acc ? countUnreadMessages(acc) : 0;
+            const set = (el, n) => { if (!el) return; el.textContent = n; el.classList.toggle('hidden', !(n > 0)); };
+            set(document.getElementById('inboxBadge'), incomingCount);
+            set(document.getElementById('chatBadge'), unread);
+            const ab = document.getElementById('accountCornerBtn');
+            if (ab) {
+                let badge = ab.querySelector('.corner-badge.acct');
+                if (!badge) { badge = document.createElement('span'); badge.className = 'corner-badge acct hidden'; ab.appendChild(badge); }
+                set(badge, incomingCount + unread);
             }
         }
 
@@ -6826,9 +6664,10 @@
                 '<p>Behind the menu is a live battle on the real map: teachers fighting kebabs. You can turn it off with <b>Animated menu background</b> in Settings.</p>' +
                 gList([
                     '<b>▶ PLAY</b> opens the <b>map select</b> (School Grounds, The Quad, and a Coming Soon card), then starts a real game with the kebab shop intro unless you skip it. Under the button is your <b>level and XP bar</b> (or a "Sign in" button if you are signed out). See ' + gLink('maps', 'Maps') + ' and ' + gLink('levels', 'Levels & XP') + '.',
-                    '<b>🧪 Test Mode</b>: sandbox with infinite coins. Inside it is a <b>🛠 Developer Mode</b> switch that turns on time controls (speed, pause, step, rewind).',
+                    '<b>🧪 Test Mode</b>: sandbox with infinite coins. Inside it is a <b>🛠 Developer Mode</b> switch that restarts into the separate Developer Mode: a normal game with time controls (speed, pause, step, rewind).',
                     '<b>🌐 Online Mode</b> is coming soon. <b>📜 Updates</b> is the update log, and under it is the <b>Last updated</b> date, which turns <b>red</b> on the day of an update.',
-                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>Inbox</b>, <b>🎁 Daily</b> (free Positives every day, with a red ! when ready), <b>Shop</b> and <b>Chat</b> (they show a 🔒 until you sign in), <b>Settings</b> and <b>Tips</b>. <b>Credits</b> and <b>Disclaimers</b> are at the bottom.',
+                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b> and <b>Disclaimers</b> are at the bottom.',
+                    'On the longer screens (Profile / Log In, Inbox, Chat, Updates, Credits and Settings) a <b>← BACK</b> button stays in the <b>top-left corner</b>, so you never have to scroll down to leave. The Back button at the bottom still works too. Opening Settings, Inbox or Chat from your account menu and pressing Back returns you to the account menu.',
                     'Switching between menu screens uses a smooth fade and slide.'
                 ]) },
 
@@ -6837,7 +6676,7 @@
                     'The <b>✕ Quit</b> button (top of the screen during a game) always asks <b>"Are you sure you want to quit?"</b> first.',
                     '<b>Not signed in:</b> it tells you that you will lose your progress, or you can sign up to save it and come back to your game.',
                     '<b>Signed in:</b> you can <b>Save &amp; Quit</b> (continue later from the menu), quit without saving, or keep playing.',
-                    'Test Mode (with or without its Developer Mode switch) never saves.'
+                    'Test Mode never saves. Developer Mode saves on this device only.'
                 ]) },
 
             { id: 'popups', group: 'more', icon: '🔔', title: 'Event Pop-ups', html: () =>
@@ -6894,6 +6733,7 @@
             { id: 'account', group: 'more', icon: '👤', title: 'Accounts, Saving & Continue', html: () =>
                 gList([
                     'Signed-in accounts can claim a <b>🎁 Daily Reward</b> of free Positives once a day (see ' + gLink('daily', 'Daily Rewards') + '). Your streak is saved with the account.',
+                    'Your <b>account menu</b> is the hub: along the top are <b>⚙️ Settings</b>, <b>📥 Inbox</b> and <b>💬 Chat</b>, and below are your <b>Overview, 🏆 Achievements, 🎽 Skins and 🎨 Customize</b> tabs. The Back button on those screens returns you to the account menu.',
                     'Press <b>👤 Sign Up</b> in the main menu to make an account with a username and password, or <b>sign in with Google</b>. It is saved on this device.',
                     'Your account remembers your <b>best wave survived</b> and when you were last online.',
                     'You can <b>link a Google account</b> to back up your progress and pick it up on another device (☁️ Synced).',
@@ -6904,7 +6744,7 @@
                     '<b>Google sign-in in the desktop app:</b> pressing a Google button opens your <b>normal web browser</b> with a small sign-in page. Press <b>Continue with Google</b> there, then come back to the game. It can take a moment, and you have about 3 minutes.',
                     'Google sign-in does <b>not</b> work if you open the game as a plain file on your computer. Use the desktop app or the game\'s website. If sign-in fails, the message shown tells you why (for example the browser was closed or you are offline).',
                     'Accounts made during Early Access get a gold <b>EARLY ACCESS</b> badge next to their name. See the ' + gLink('early', 'Early Access & Disclaimers') + ' page.',
-                    'Test Mode never saves. Its Developer Mode switch only adds time controls. See the Developer Mode page.',
+                    'Test Mode never saves. Its Developer Mode switch restarts into the separate Developer Mode (time controls, saves on this device). See the Developer Mode page.',
                     'Starting a new game discards the old save. If you <b>lose</b> a battle its save is cleared too, so the next Play starts fresh.',
                     'Guests and Test Mode do not save.',
                     '<b>Why sign in?</b> Levels and XP, Positives (1 per kebab), achievements, skins, accessories, profile backgrounds, the Quad map, saving a battle, friends and chat.'
@@ -6926,7 +6766,7 @@
 
             { id: 'social', group: 'more', icon: '💬', title: 'Friends, Inbox & Chat', html: () =>
                 gList([
-                    'After you sign in, <b>📥 Inbox</b> and <b>💬 Chat</b> buttons appear in the menu.',
+                    'Open your <b>account menu</b> (press your name, or Sign Up) and use the <b>📥 Inbox</b> and <b>💬 Chat</b> buttons along the top of it. You need to be signed in.',
                     'In the Inbox you can <b>send friend requests</b> by username and <b>accept or decline</b> the ones you get. A red number shows how many are waiting.',
                     'In Chat you can message your friends.',
                     '🌐 <b>Friends on other devices</b>: <b>link your Google account</b> (Profile &gt; Link Google Account). Then type a friend\'s username in the Inbox, just like Roblox. They get your request, press Accept, and you are friends on every device. Chat works across devices too. <b>You must link a Google account to add friends</b>; until you do, the Add a Friend box is locked.',
@@ -6951,9 +6791,9 @@
 
             { id: 'achievements', group: 'more', icon: '🏆', title: 'Achievements', html: () =>
                 '<p>Achievements are tracked on your <b>account</b>, so you need to be <b>signed in</b>. You also earn <b>1 💚 Positive for every kebab you defeat</b> (not in Test Mode). They do not count in Test Mode. Open your profile (your name, top right) and press <b>🏆 Achievements</b> to see progress and <b>Claim</b> rewards.</p>' +
-                '<h4>20 that give Positives 💚</h4>' +
+                '<h4>' + ACHIEVEMENTS.filter(d => d.pos).length + ' that give Positives 💚</h4>' +
                 gTbl(['Achievement', 'What to do', 'Reward'], ACHIEVEMENTS.filter(d => d.pos).map(d => [d.name, d.desc, '+' + d.pos + ' 💚'])) +
-                '<h4>2 that give skins 🎽</h4>' +
+                '<h4>' + ACHIEVEMENTS.filter(d => d.skin).length + ' that give skins 🎽</h4>' +
                 gTbl(['Achievement', 'What to do', 'Skin'], ACHIEVEMENTS.filter(d => d.skin).map(d => [d.name, d.desc, SKIN_DEFS[d.skin].name + ' (' + TEACHER_NAMES[SKIN_DEFS[d.skin].type] + ')'])) +
                 gTip('Fancy Suit and Sporty skins are bought in the main menu shop with Positives. Positives come from achievements, from defeating kebabs (1 each) and from the 🎁 Daily Reward.') },
 
@@ -7021,7 +6861,7 @@
                 ]) },
 
             { id: 'dev', group: 'more', icon: '🛠', title: 'Developer Mode (time controls)', html: () =>
-                '<p>Developer Mode is now a <b>switch inside Test Mode</b> (the <b>DEVELOPER MODE</b> toggle at the top of the Sandbox Controls panel). Turn it on and a <b>🛠 Developer Controls</b> panel appears with controls over <b>time</b>. Turn it off to hide it and go back to normal speed. Because it lives in Test Mode, you also have infinite coins and the sandbox buttons, and nothing is saved.</p>' +
+                '<p>Developer Mode is a <b>normal game with time controls and no cheats</b>. To start it, open <b>Test Mode</b>, open the <b>Sandbox Controls</b> panel and flip the <b>DEVELOPER MODE</b> switch. It asks you to confirm, then <b>restarts into Developer Mode</b> (you leave Test Mode, so there are no infinite coins or sandbox buttons). A <b>🛠 Developer Controls</b> panel gives you control over <b>time</b>. Use <b>✕ Exit to Menu</b> in that panel to leave.</p>' +
                 gTbl(['Control', 'What it does'], [
                     ['Game speed 0.25× / 0.5× / 1× / 2× / 3×', 'Slow motion or fast forward. Only gameplay speed changes: the game is still drawn smoothly.'],
                     ['⏸ Pause / ▶ Resume', 'Freezes the game (the normal Pause button and P / Esc work too).'],
@@ -7035,7 +6875,7 @@
                     'Rewinding is blocked while the <b>shop</b> is open (close it first) and the history starts fresh each time you start Developer Mode.',
                     'Little visual effects (floating text, sparks) are cleared when you rewind. They are not part of the game state.',
                     'The – button in the corner of the panel collapses it.',
-                    '<b>Saving:</b> Developer Mode saves by itself after <b>every cleared wave</b> and when you press <b>Quit</b>. You do <b>not</b> need to sign in. Next time you press 🛠 Developer Mode you can pick <b>Continue Battle</b> or <b>New Battle</b>.',
+                    '<b>Saving:</b> Developer Mode saves by itself after <b>every cleared wave</b> and when you press <b>Quit</b>. You do <b>not</b> need to sign in. Next time you start Developer Mode you can pick <b>Continue Battle</b> or <b>New Battle</b>.',
                     'The save is stored <b>in your browser on this device</b> (not inside the HTML file itself, a web page cannot rewrite its own file). Open the game from the <b>same file or link in the same browser</b> to find it again. Clearing your browser data deletes it.',
                     'A save restores your wave, coins, upgrades, teachers and school health. Kebabs on screen and the rewind history are not saved. If your school is destroyed, the save is deleted.'
                 ]) +
@@ -7045,8 +6885,8 @@
                 gList([
                     'The version is shown at the top left (like <b>v1.0.16 Alpha</b>). <b>Alpha</b> means a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
-                    '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (soon) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Inbox / Chat / Settings / Tips</b> sit along the top right and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
-                    '<b>💡 Tips</b> is a slideshow of hints, and <b>❓ How to Play</b> is the quick tutorial.',
+                    '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (soon) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
+                    '<b>❓ How to Play</b> is the quick tutorial.',
                     '<b>🎬 Credits</b>: made by Jaiden Maximiliano Hernandez.',
                     '<b>⚠️ Disclaimers</b>: the Early Access and "made with AI" notes. They also pop up the first time you open the game.',
                     'The game also runs as a <b>desktop app</b> for Windows, which updates itself.'
@@ -7431,6 +7271,31 @@
 
         // ===== END ALL YOU NEED TO KNOW =====
 
+        // A Back button that stays in the top-left corner of the long menu screens, so you never have to scroll to
+        // the bottom to leave. It presses the screen's own (last) Back button, so it follows sub-views like Forgot Password.
+        const FLOAT_BACK_SCREENS = ['accountScreen', 'inboxScreen', 'chatScreen', 'updatesScreen', 'creditsScreen', 'settingsScreen'];
+        function floatBackScreen() {
+            for (const id of FLOAT_BACK_SCREENS) {
+                const el = document.getElementById(id);
+                if (el && !el.classList.contains('hidden') && !el.classList.contains('fade-out')) return el;
+            }
+            return null;
+        }
+        function updateFloatBack() {
+            const b = document.getElementById('floatBackBtn'); if (!b) return;
+            b.classList.toggle('show', !!floatBackScreen());
+        }
+        function floatBackClick() {
+            const el = floatBackScreen(); if (!el) return;
+            const btns = el.querySelectorAll('.back-btn');
+            if (btns.length) btns[btns.length - 1].click();
+        }
+        (function initFloatBack() {
+            const mo = new MutationObserver(updateFloatBack);
+            FLOAT_BACK_SCREENS.forEach(id => { const el = document.getElementById(id); if (el) mo.observe(el, { attributes: true, attributeFilter: ['class'] }); });
+            updateFloatBack();
+        })();
+
         function backToMenu(from) {
             const screenMap = {
                 updates: 'updatesScreen',
@@ -7438,7 +7303,6 @@
                 credits: 'creditsScreen',
                 inbox: 'inboxScreen',
                 chat: 'chatScreen',
-                tips: 'tipsScreen',
                 settings: 'settingsScreen',
                 guide: 'guideScreen'
             };
@@ -7448,6 +7312,16 @@
             setTimeout(() => {
                 screen.classList.add('hidden');
                 screen.classList.remove('fade-out');
+                if (navReturn === 'account' && from !== 'account') {
+                    navReturn = null;
+                    accountViewMode = null;
+                    renderAccountScreen();
+                    const as = document.getElementById('accountScreen');
+                    as.classList.remove('hidden');
+                    as.style.animation = 'none'; void as.offsetWidth; as.style.animation = 'scrIn .5s cubic-bezier(.2,.9,.3,1) both';
+                    return;
+                }
+                navReturn = null;
                 const menuScreen = document.getElementById('menuScreen');
                 menuScreen.classList.remove('hidden');
                 menuScreen.style.animation = 'none'; void menuScreen.offsetWidth; menuScreen.style.animation = 'scrIn .5s cubic-bezier(.2,.9,.3,1) both';
@@ -8483,6 +8357,7 @@
             active: false,
             testMode: false,
             devMode: false,
+            schoolHurt: false,
             balancedMode: false,
             towerCapBonus: 0,
             mathUnlocked: false,
@@ -8567,6 +8442,7 @@
             }
             updateCurrentAccount(acc => { acc.positives = (acc.positives || 0) - d.price; acc.buffs = Object.assign({}, acc.buffs || {}, { [type]: true }); });
             _buffCache.t = -9999;
+            achStat('menuBuys'); achStatMax('buffsOwned', Object.keys(getCurrentAccount().buffs || {}).length);
             if (typeof playMoneySound === 'function') playMoneySound();
             document.getElementById('pshopBalance').textContent = getPositives();
             pRenderSlots();
@@ -8623,6 +8499,7 @@
             const st = dailyState(acc); if (st.claimed) return;
             updateCurrentAccount(a => { a.positives = (a.positives || 0) + st.reward; a.daily = { last: dailyKey(), streak: st.nextStreak }; });
             showToast('🎁 +' + st.reward + ' Positives! Day ' + (st.nextIdx + 1) + ' of 7', 2800);
+            achStat('dailyClaims'); achStatMax('dailyStreak', st.nextStreak);
             renderDailyReward(); updateDailyBadge();
         }
         // ===== END DAILY REWARDS =====
@@ -9842,6 +9719,7 @@
                             for (const enemy of game.enemies) {
                                 if (Math.hypot(enemy.x - cx, enemy.y - cy) < (circle.size || 20) + 10) {
                                     enemy.health -= 1.5 * game.damageMultiplier * (enemy.nsDamageMultiplier || 1);
+                                    if (this.boysHit) { this.boysHit.add(enemy); if (this.boysHit.size >= 5) achUnlock('boys5'); }
                                 }
                             }
                         }
@@ -9896,6 +9774,7 @@
                             game.particles.push({ type: 'text', owner: 'math', x: st.x, y: st.y - 30, text: '-30%', life: 30, size: 18 });
                             this.areaStrikes.splice(i, 1);
                         }
+                        if (struck.size >= 3) achUnlock('scan3');
                     }
 
                     // Beam-pull: drags up to 3 kebabs back toward Mathematician
@@ -10111,12 +9990,14 @@
 
                 this.shebabCharge = 0;
                 achStat('ultimates');
+                achOnUltimate(this.type);
                 if (this.type === 'sheikh') this.shakeTimer = 50;
                 const boysLife = (this.type === 'badui' && hasBuff('badui')) ? 180 : 120; // Long BOYS! buff: 1.5x longer
                 if (this.type === 'badui') this.shakeTimer = boysLife; // head swells and shakes during her ultimate
                 playSound(1200, 0.3, 'sine');
 
                 if (this.type === 'badui') {
+                    this.boysHit = new Set();
                     for (let i = 0; i < 6; i++) {
                         const angle = (Math.PI * 2 / 6) * i;
                         this.ultimateCircles.push({
@@ -10199,12 +10080,15 @@
                     const ultimateRange = this.range * GRID_SIZE * 0.8;
                     const ultimateDamage = 100 * game.damageMultiplier;
 
+                    let blasted = 0;
                     for (let enemy of game.enemies) {
                         const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
                         if (dist < ultimateRange) {
                             enemy.health -= ultimateDamage * (enemy.nsDamageMultiplier || 1);
+                            blasted++;
                         }
                     }
+                    if (blasted >= 8) achUnlock('shebab8');
 
                     game.particles.push({
                         type: 'text',
@@ -10467,6 +10351,7 @@
                     if (++this.dotTick >= 30) {
                         this.dotTick = 0;
                         this.health -= this.dotDmg;
+                        if (this.health <= 0) achUnlock('longkill');
                         game.particles.push({ type: 'text', owner: 'sheikh', x: this.x, y: this.y - 40, text: '✦', life: 18, size: 14 });
                     }
                 }
@@ -10516,7 +10401,7 @@
 
                 if (this.pathIndex >= this.path.length - 1) {
                     if (this.hasNS) achUnlock('fuming');
-                    game.health -= 1;
+                    game.health -= 1; game.schoolHurt = true;
                     startShake(12, 6);
                     return true;
                 }
@@ -10536,7 +10421,7 @@
                     this.progress = 0;
                     if (this.pathIndex >= this.path.length - 1) {
                         if (this.hasNS) achUnlock('fuming');
-                        game.health -= 1;
+                        game.health -= 1; game.schoolHurt = true;
                         startShake(12, 6);
                         return true;
                     }
@@ -10877,8 +10762,8 @@
 
         // ===== DEVELOPER MODE =====
         // A normal game (normal coins, normal waves, nothing free) with a few
-        // controls over time: game speed, pause, single-step and rewind. It
-        // never saves and has none of the Test Mode cheats.
+        // controls over time: game speed, pause, single-step and rewind. They only exist
+        // inside Test Mode (the Developer Mode switch) and never change Test Mode itself.
         const DEV_META = new Set(['active', 'testMode', 'devMode', 'balancedMode', 'paused', 'timeScale', 'frameAccumulator',
             'hover', 'particles', 'introActive', 'trackAnim', 'shake', 'selectedTower']);
         const DEV_SNAP_EVERY = 6;      // game steps between snapshots (0.1 s)
@@ -10925,7 +10810,7 @@
         function devRefreshHud() {
             setHudText('health', Math.max(0, game.health));
             setHudText('maxHealth', game.maxHealth);
-            setHudText('sentrals', game.sentrals);
+            setHudText('sentrals', game.testMode ? '∞' : game.sentrals);
             setHudText('wave', 'Wave ' + game.wave);
             setHudText('kebabHp', 'Kebab HP: ' + kebabBaseHealth(topWave()));
             setHudText('kebabSpeed', 'Kebab Speed: ' + kebabSpeedFor(topWave()).toFixed(1));
@@ -11003,28 +10888,20 @@
             devRecord(true);
         }
 
-        // Developer Mode is now a switch inside Test Mode: it shows the time controls
-        // (speed, pause, step, rewind) and starts recording history for rewinding.
-        let devStatusTimer = null;
+        // Developer Mode is a separate mode again: a NORMAL game (no cheats, no infinite coins) with time
+        // controls (speed, pause, step, rewind) that saves on this device. The switch inside Test Mode
+        // leaves Test Mode and restarts into it.
         function setDevControls(on) {
-            if (!game.testMode) { const sw = document.getElementById('devSwitch'); if (sw) sw.checked = false; return; }
-            game.devMode = !!on;
-            document.getElementById('devPanel').style.display = on ? 'block' : 'none';
-            const banner = document.getElementById('testModeBanner');
-            if (banner) banner.textContent = on ? '🧪 TEST MODE + 🛠 DEVELOPER MODE (time controls)' : '🧪 TEST MODE — Infinite Coins';
-            if (on) {
-                devHistory = [];
-                if (!devStatusTimer) devStatusTimer = setInterval(() => {
-                    const el = document.getElementById('devStatus');
-                    if (!el || !game.devMode) return;
-                    const secs = (devHistory.length * DEV_SNAP_EVERY / 60).toFixed(1);
-                    el.innerHTML = 'Speed <b>' + game.timeScale + 'x</b>' + (game.paused ? ' · <b>paused</b>' : '') + (devRewinding ? ' · <b>rewinding</b>' : '') +
-                        '<br>Can rewind <b>' + secs + ' s</b> (max ' + (DEV_MAX_SNAPS * DEV_SNAP_EVERY / 60) + ' s)';
-                }, 250);
-            } else {
-                game.timeScale = 1; game.paused = false; devRewinding = false;
-            }
+            const sw = document.getElementById('devSwitch');
+            if (sw) sw.checked = false;
+            if (!on || !game.testMode) return;
+            showConfirm('This leaves Test Mode and starts Developer Mode: a normal game with no cheats, but with time controls (speed, pause, step, rewind). Your Test Mode sandbox will be reset.', () => {
+                try { sessionStorage.setItem('ugd_boot_dev', '1'); } catch (e) {}
+                location.reload();
+            }, 'Switch to Developer Mode?');
         }
+        // after that reload, go straight into Developer Mode
+        setTimeout(() => { try { if (sessionStorage.getItem('ugd_boot_dev')) { sessionStorage.removeItem('ugd_boot_dev'); openDevMode(); } } catch (e) {} }, 700);
 
         function startDevMode(cont) {
             const menuScreen = document.getElementById('menuScreen');
@@ -11207,6 +11084,7 @@
                 const prevWave = game.wave;
                 game.wave += wavesCleared;
                 achStatMax('bestCleared', game.wave - 1);
+                if (game.wave - 1 >= 10 && !game.schoolHurt && game.health >= game.maxHealth) achUnlock('spotless');
                 for (let k = 0; k < wavesCleared; k++) addXp(15 + 3 * (prevWave + k));
                 achSave();
                 if (POS_WAVE > 0) { const pw = POS_WAVE; POS_WAVE = 0; setTimeout(() => showToast('💚 +' + pw + ' Positives  ·  ⭐ ' + XP_RUN + ' XP this battle', 2400), 700); }
@@ -11252,7 +11130,7 @@
                 if (game.devMode) devClearSave();
                 // The battle is over, so a saved battle must not be offered again
                 // (it used to stay behind after you continued it and then lost).
-                else if (!game.testMode && getCurrentAccount()) updateCurrentAccount(acc => { acc.savedGame = null; });
+                else if (getCurrentAccount()) updateCurrentAccount(acc => { acc.savedGame = null; });
                 document.getElementById('gameOverScreen').style.display = 'flex';
                 document.getElementById('finalcoins').textContent = game.sentrals;
                 try { achSave(); } catch (e) {}

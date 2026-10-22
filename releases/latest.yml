@@ -1,8 +1,8 @@
-version: 1.0.22
+version: 1.0.23
 files:
-  - url: UnityGrammarDefense-Setup-1.0.22.exe
-    sha512: TY1dQR5APwEJcBRdQwS0mPKQI3fegCaTOZZN7+i0fKOcqkiIadt1/MaEp2xAc5r/X9qlA4LQKw3YImjBi08MGw==
-    size: 79062828
-path: UnityGrammarDefense-Setup-1.0.22.exe
-sha512: TY1dQR5APwEJcBRdQwS0mPKQI3fegCaTOZZN7+i0fKOcqkiIadt1/MaEp2xAc5r/X9qlA4LQKw3YImjBi08MGw==
-releaseDate: '2026-10-20T23:53:59.411Z'
+  - url: UnityGrammarDefense-Setup-1.0.23.exe
+    sha512: 7m+q2y/wSI7cTiq1Kc3C1diK/qDUWMk/KmmBtxdDviZXU/oSUENAqG7N+64SwRGh7mrjbkULzNa8H4qzj7HPoA==
+    size: 79068496
+path: UnityGrammarDefense-Setup-1.0.23.exe
+sha512: 7m+q2y/wSI7cTiq1Kc3C1diK/qDUWMk/KmmBtxdDviZXU/oSUENAqG7N+64SwRGh7mrjbkULzNa8H4qzj7HPoA==
+releaseDate: '2026-10-22T19:42:31.375Z'

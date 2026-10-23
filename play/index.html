@@ -2537,6 +2537,28 @@
             text-decoration: underline;
         }
 
+        /* GUIDE MODE */
+        #gmLayer { position: fixed; inset: 0; z-index: 99500; pointer-events: none; display: none; }
+        #gmLayer.on { display: block; }
+        #gmSvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .gm-ring { stroke: #FFD700; stroke-width: 5; filter: drop-shadow(0 0 8px rgba(255,215,0,.9)); }
+        .gm-arrow { stroke: #FFD700; stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,215,0,.8)); stroke-dasharray: 2 11; animation: gmDash .7s linear infinite; }
+        .gm-head { fill: #FFD700; filter: drop-shadow(0 0 6px rgba(255,215,0,.8)); }
+        @keyframes gmDash { to { stroke-dashoffset: -13; } }
+        .gm-card { position: absolute; pointer-events: auto; width: min(350px, calc(100vw - 24px)); box-sizing: border-box; background: linear-gradient(135deg, #1a1a1a, #000); border: 3px solid #FFD700; border-radius: 16px; padding: 14px 16px 10px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.6), 0 0 18px rgba(255,215,0,.35); font-family: inherit; }
+        .gm-card.pop { animation: gmPop .28s cubic-bezier(.2,1.4,.4,1); }
+        @keyframes gmPop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .gm-title { color: #FFD700; font-weight: 800; font-size: 17px; margin-bottom: 6px; }
+        .gm-text { font-size: 14px; line-height: 1.45; }
+        .gm-actions { display: flex; align-items: center; justify-content: flex-end; margin-top: 10px; gap: 10px; }
+        .gm-next { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 8px 18px; font-weight: 800; cursor: pointer; }
+        .gm-next:hover { filter: brightness(1.1); }
+        .gm-hint { color: #FFD700; font-size: 12px; font-weight: 700; animation: gmBlink 1.2s ease-in-out infinite; }
+        @keyframes gmBlink { 50% { opacity: .45; } }
+        .gm-foot { display: flex; justify-content: space-between; margin-top: 8px; }
+        .gm-foot button { background: none; border: none; color: #999; font-size: 11px; cursor: pointer; text-decoration: underline; padding: 2px; }
+        .gm-foot button:hover { color: #fff; }
+
         /* GAME OVER SCREEN */
         .game-over-screen {
             position: fixed;
@@ -2787,7 +2809,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.23</div>
+    <div id="versionTag">v1.0.24</div>
 
     <!-- PWA UPDATE BANNER -->
     <div class="update-banner" id="updateBanner">
@@ -2861,15 +2883,22 @@
     </div>
 
     <!-- TUTORIAL SYSTEM (first pass - built to be expanded on later) -->
+    <!-- GUIDE MODE overlay: dims the screen, circles things and points arrows at them -->
+    <div id="gmLayer"><svg id="gmSvg" xmlns="http://www.w3.org/2000/svg">
+        <defs><mask id="gmMask"><rect width="100%" height="100%" fill="#fff"/><rect id="gmHoleR" fill="#000" style="display:none"/><circle id="gmHoleC" fill="#000" style="display:none"/></mask></defs>
+        <rect id="gmDim" width="100%" height="100%" fill="#000" fill-opacity="0.55" mask="url(#gmMask)"/>
+        <rect id="gmRingR" class="gm-ring" fill="none" style="display:none"/><circle id="gmRingC" class="gm-ring" fill="none" style="display:none"/>
+        <path id="gmArrow" class="gm-arrow" fill="none" style="display:none"/><polygon id="gmHead" class="gm-head" style="display:none"/>
+    </svg></div>
     <div class="tutorial-modal" id="tutorialModal">
         <div class="tutorial-content">
-            <button class="tutorial-skip" onclick="closeTutorial()">Skip</button>
+            <button class="tutorial-skip" onclick="closeTutorial()">Close</button>
             <h4 id="tutorialTitle"></h4>
             <p id="tutorialText"></p>
             <div class="tutorial-dots" id="tutorialDots"></div>
             <div class="tutorial-nav">
-                <button class="tut-back" id="tutBackBtn" onclick="tutorialStepBy(-1)">Back</button>
-                <button class="tut-next" id="tutNextBtn" onclick="tutorialStepBy(1)">Next</button>
+                <button class="tut-back" id="tutBackBtn" onclick="guideModalBtn(0)">Not now</button>
+                <button class="tut-next" id="tutNextBtn" onclick="guideModalBtn(1)">Next ▶</button>
             </div>
         </div>
     </div>
@@ -2880,6 +2909,22 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
+                    <div class="update-date">October 24, 2026</div>
+                    <ul>
+                        <li><b>Boss kebabs are weaker</b>: they now have <b>10x</b> the health of a normal kebab (was 15x)</li>
+                        <li>NEW: <b>Hitter kebabs!</b> 1 in 10 kebabs is angry (look for the red anger mark). Each teacher it walks past, it has a 50% chance to <b>stop for half a second and hit them</b> for 3 HP</li>
+                        <li><b>Angry Teacher</b> now only has <b>1 marked kebab at a time</b>: she waits until her marked kebab is defeated before writing another Negative</li>
+                        <li>Fixed: Angry Teacher sometimes <b>typed forever</b> without doing anything. Her Negative is now scheduled, she only types in the last 3 seconds before it fires, and she does not type when there is nothing to mark</li>
+                        <li><b>📜 Long Shebab</b> reworked: the sentence now flies <b>upright</b> (standing up, not sideways) and hits the kebab <b>3 times</b> for <b>3x</b> the damage of a normal throw (no more lingering damage)</li>
+                        <li>NEW: you can <b>equip and unequip teacher buffs</b> in the main menu Shop (Upgrades → Teachers). An unequipped buff stays owned but is switched off</li>
+                        <li>All You Need to Know: new <b>Hitter Kebabs</b> page, and the Boss, Angry Teacher, Teacher Buffs and Wise Sheikh pages were updated. Guide Mode explains hitters too</li>
+                        <li>NEW: <b>Guide Mode!</b> The old How to Play pop-up no longer opens in the menu. In a battle, press <b>❓ How to Play</b> and it asks <b>Enable Guide Mode?</b>. Press Next and the game follows along as you play, <b>circling and pointing arrows at things</b>: first the basics and the controls, then every new teacher, upgrade, boss and track the moment you get it. There is also a Guide Mode switch in Settings</li>
+                        <li>The <b>in-game shop is more expensive</b> (about double): upgrades 300, mega upgrades 600, Angry Teacher 200, Mathematician 600 and More Teachers 500 then 700 (all still rise every shop)</li>
+                        <li>You can now place up to <b>10 of each teacher</b> (was 7). More Teachers still adds +3 each, so the new maximum is 16. The Max Staff achievement now asks for 10</li>
+                        <li>All You Need to Know: new <b>Guide Mode</b> page, and the shop, price table, teacher cap, Settings and menu pages were updated</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
                     <div class="update-date">October 23, 2026</div>
                     <ul>
                         <li>Developer Mode is <b>back as its own mode</b>: flip the <b>🛠 Developer Mode</b> switch in Test Mode, confirm, and the game restarts into a <b>normal game with no cheats</b> but with the time controls (speed, pause, step, rewind). It saves on this device again with Continue Battle / New Battle</li>
@@ -2888,7 +2933,7 @@
                         <li>NEW: <b>18 more achievements</b>, from easy ones to some unique ones (check the 🏆 Achievements tab in your account). They are listed in All You Need to Know</li>
                         <li>NEW: a <b>← BACK</b> button now stays in the top-left corner of the Profile/Login, Inbox, Chat, Updates, Credits and Settings screens, so you no longer have to scroll to the bottom to leave. The Back button at the bottom still works</li>
                         <li>NEW: <b>Teacher Buffs!</b> One permanent buff for each teacher, bought once in the main menu <b>Shop → Upgrades → Teachers</b> for <b>1000 💚 Positives</b> each (they cost a lot). They are saved on your account and work in every battle while you are signed in</li>
-                        <li><b>📜 Long Shebab</b> (Wise Sheikh): his throws are Arabic <b>sentences</b> instead of one letter, and each one keeps damaging the kebab for 3 more seconds after it hits</li>
+                        <li><b>📜 Long Shebab</b> (Wise Sheikh): his throws are Arabic <b>sentences</b> instead of one letter, and each one hits the kebab 3 times (3x damage)</li>
                         <li><b>🔥 Long BOYS!</b> (Angry Teacher): her BOYS! ultimate lasts <b>1.5x longer</b> (3 seconds instead of 2)</li>
                         <li><b>🎯 Area Strike</b> (Mathematician): replaces Algebra Swarm. It locks onto <b>3 kebabs</b>, scans their area with a ring, then strikes for <b>30% of their health</b> (it is still a 50/50 with Beam Pull)</li>
                         <li>All You Need to Know: the three teacher pages, Ultimates, All Teachers at a Glance and the Shop pages now cover the buffs</li>
@@ -3458,6 +3503,8 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
+                    <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Event pop-ups<small>Pop-ups at the bottom for the next boss, split track, tri-track and shop.</small></div>
                     <label class="switch"><input type="checkbox" id="set_eventPopups" onchange="onSettingChange('eventPopups', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Skip intro animation<small>Turn on to skip the kebab shop cutscene (and the track pop-up) when you press Play.</small></div>
@@ -4030,7 +4077,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-10-23';
+        const LAST_UPDATE_DATE = '2026-10-24';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4286,14 +4333,14 @@
             { id: 'buff1',     name: 'Buffed Up',          desc: 'Buy a Teacher Buff',              stat: 'buffsOwned', target: 1, pos: 25 },
             { id: 'buff3',     name: 'Fully Buffed',       desc: 'Own all 3 Teacher Buffs',         stat: 'buffsOwned', target: 3, pos: 60 },
             { id: 'kills5000', name: 'Kebab Terminator',   desc: 'Defeat 5000 kebabs',              stat: 'kills', target: 5000, pos: 80 },
-            { id: 'maxstaff',  name: 'Max Staff',          desc: 'Have 7 of the same teacher placed at once', flag: true, pos: 20 },
+            { id: 'maxstaff',  name: 'Max Staff',          desc: 'Have 10 of the same teacher placed at once', flag: true, pos: 20 },
             { id: 'clutch',    name: 'Clutch Defence',     desc: 'Defeat a kebab while your school has exactly 1 health left', flag: true, pos: 25 },
             { id: 'spotless',  name: 'Spotless',           desc: 'Clear wave 10 without your school losing any health', flag: true, pos: 40 },
             { id: 'triple',    name: 'Triple Threat',      desc: 'Use all three teachers\' ultimates within 5 seconds', flag: true, pos: 35 },
             { id: 'shebab8',   name: 'Shebab Blast',       desc: 'Hit 8 kebabs with a single SHEBAB', flag: true, pos: 25 },
             { id: 'boys5',     name: 'Crowd Control',      desc: 'Hit 5 different kebabs with a single BOYS!', flag: true, pos: 30 },
             { id: 'scan3',     name: 'Triple Scan',        desc: 'Hit 3 or more kebabs with one Area Strike (needs the Area Strike buff)', flag: true, pos: 30 },
-            { id: 'longkill',  name: 'Long Story',         desc: 'Finish off a kebab with Long Shebab\'s lingering damage (needs the Long Shebab buff)', flag: true, pos: 20 },
+            { id: 'longkill',  name: 'Long Story',         desc: 'Finish off a kebab with the 2nd or 3rd hit of a Long Shebab sentence (needs the Long Shebab buff)', flag: true, pos: 20 },
             // 2 that give skins
             { id: 'fieldtrip',   name: 'Field Trip',      desc: 'Have 4 Wise Sheikhs lined up together in a row or column', flag: true, skin: 'sheikh:fieldtrip' },
             { id: 'fuming',      name: 'Fuming',          desc: 'Mark a kebab with Negative and still let it get into the school', flag: true, skin: 'badui:fuming' }
@@ -4532,7 +4579,7 @@
             achStat('placed');
             const has = t => game.towers.some(x => x.type === t);
             if (has('sheikh') && has('badui') && has('math')) achUnlock('fullclass');
-            for (const ty of ['sheikh', 'badui', 'math']) if (game.towers.filter(x => x.type === ty).length >= 7) achUnlock('maxstaff');
+            for (const ty of ['sheikh', 'badui', 'math']) if (game.towers.filter(x => x.type === ty).length >= BASE_TOWER_CAP) achUnlock('maxstaff');
             const sh = game.towers.filter(t => t.type === 'sheikh');
             const at = (x, y) => sh.some(t => Math.abs(t.x - x) < 2 && Math.abs(t.y - y) < 2);
             for (const a of sh) {
@@ -6288,17 +6335,17 @@
             // ---------------------------------------------------------- TEACHERS
             { id: 'compare', group: 'teachers', icon: '📋', title: 'All Teachers at a Glance', html: () =>
                 gTbl(['', '🧑‍🏫 Wise Sheikh', '👩‍🏫 Angry Teacher', '📐 Mathematician'], [
-                    ['How you get them', 'Available from the start', 'Hire in the shop (from wave 15) for 100 🪙', 'Hire in the shop from wave 30 for 300 🪙'],
+                    ['How you get them', 'Available from the start', 'Hire in the shop (from wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop from wave 30 for ' + SHOP_PRICES.math + ' 🪙'],
                     ['Cost to place', 'First 2 free, then 100 + 4 per wave (max 250)', '230 + 5 per wave (no max)', '330 🪙 each (flat)'],
                     ['Health', '10', '8', '125'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles'],
-                    ['Main attack', 'Throws Arabic letters (sentences with Long Shebab): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2× damage', 'None. "Shhhh!" every 10 s: 50 damage and knockback to 3 kebabs'],
+                    ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2× damage', 'None. "Shhhh!" every 10 s: 50 damage and knockback to 3 kebabs'],
                     ['Ultimate', '🔥 SHEBAB: 100 damage blast around him', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull'],
-                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that keep hurting for 3 s', '🔥 Long BOYS!: ultimate lasts 1.5x longer', '🎯 Area Strike: replaces Algebra Swarm'],
+                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '🔥 Long BOYS!: ultimate lasts 1.5x longer', '🎯 Area Strike: replaces Algebra Swarm'],
                     ['Ultimate charges by', 'Killing blows (+20% each)', 'Time (about 17 seconds)', 'Time (about 17 seconds)'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits']
                 ]) +
-                gTip('All three teachers have separate caps. You can place up to <b>7 of each</b> (13 with both "More Teachers" upgrades).') },
+                gTip('All three teachers have separate caps. You can place up to <b>' + BASE_TOWER_CAP + ' of each</b> (' + (BASE_TOWER_CAP + 6) + ' with both "More Teachers" upgrades).') },
 
             { id: 'sheikh', group: 'teachers', icon: '🧑‍🏫', title: 'Wise Sheikh', html: () =>
                 gStats([['Health', '10'], ['Damage', '25 per throw'], ['Fire rate', '2 per second'], ['Range', '2 tiles (160 px)'], ['Ult range', '1.6 tiles']]) +
@@ -6312,7 +6359,7 @@
                 gList([
                     'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + '. Signed-in players only.',
                     'His throws become <b>Arabic sentences</b> (like "يا شباب") instead of a single letter.',
-                    'A sentence hits for the normal damage and then <b>keeps damaging the kebab for 3 more seconds</b> (about the same damage again, spread over 6 ticks, shown as little ✦ sparks). Hitting the same kebab again restarts the 3 seconds.'
+                    'The sentence flies <b>upright</b> (standing up like a pillar of text). It hits the kebab <b>3 times</b> (the first on impact, then two more shortly after, shown as little ✦ sparks). Each hit is a normal throw\'s damage, so one sentence is <b>3× the damage</b>. Marked kebabs take 2× on each hit. If the 2nd or 3rd hit finishes a kebab, Wise Sheikh still gets his ultimate charge.'
                 ]) +
                 '<h4>Cost</h4>' +
                 gList([
@@ -6333,17 +6380,17 @@
                 gStats([['Health', '8'], ['Attack', 'None'], ['Ability cooldown', '5 s'], ['Marks', '1 kebab'], ['Damage on marked', '2×']]) +
                 '<h4>How to get her</h4>' +
                 gList([
-                    'Hire her in the shop for a flat <b>100 🪙</b> (she is available from the first shop at wave 15). Hiring only unlocks her.',
+                    'Hire her in the shop for a flat <b>' + SHOP_PRICES.badui + ' 🪙</b> (she is available from the first shop at wave 15). Hiring only unlocks her.',
                     'Then each one you place costs <b>230 🪙 + 5 per wave</b> with no cap. Right now: <b>' + getBaduiCost() + ' 🪙</b>.'
                 ]) +
                 '<h4>Negative</h4>' +
                 gList([
-                    'During a wave, every <b>5 seconds</b> she writes Negative and marks the <b>1 unmarked kebab that is closest to the school</b>.',
+                    'During a wave, every <b>5 seconds</b> she writes Negative and marks <b>only 1 kebab</b>: the unmarked kebab that is closest to the school. She can only have <b>one marked kebab at a time</b>: until that kebab is defeated she does not write another, and she does not type while she waits (or while there is nothing to mark).',
                     'A marked kebab shows a red <b>Negative</b> label and takes <b>2× damage from everything</b>: Sheikh\'s throws, ultimates, Mathematician\'s shushes, beams, your own clicks.',
                     'The mark stays until that kebab is defeated. Her marks <b>do not need her to be in range</b>: she picks kebabs anywhere on the map.',
                     'In the last <b>3 seconds</b> before it fires you will see her <b>typing on her laptop</b>. Right before it goes off she lifts her hand and <b>presses Enter</b> (a little Enter key pops up), then the laptop fades away as the marks go out.',
-                    'Several Angry Teachers each mark their own kebab, and marks do <b>not</b> stack (a kebab is only ever 2×).',
-                    'Angry Teachers <b>never fire at the same moment</b>: each one waits for her turn, at least <b>2.5 seconds</b> after the last one, so you see every Enter press and every set of marks on its own. A teacher waiting her turn just keeps typing.'
+                    'Several Angry Teachers each have their own marked kebab, and marks do <b>not</b> stack (a kebab is only ever 2×).',
+                    'Angry Teachers <b>never fire at the same moment</b>: each one waits for her turn, at least <b>2.5 seconds</b> after the last one, so you see every Enter press and every mark on its own. Each one picks her time slot first and only types in the <b>last 3 seconds</b> before it, so nobody sits typing for ages.'
                 ]) +
                 '<h4>🔥 Ultimate: BOYS!</h4>' +
                 gList([
@@ -6363,7 +6410,7 @@
                 '<h4>How to get him</h4>' +
                 gList([
                     'He appears in the shop <b>from wave 30</b> (the second shop). Until then the row is locked and the shop teacher says he is "still marking papers".',
-                    'Hiring costs a flat <b>300 🪙</b> once. After that <b>each Mathematician you place costs a flat 330 🪙</b> (no price rise per wave).'
+                    'Hiring costs a flat <b>' + SHOP_PRICES.math + ' 🪙</b> once. After that <b>each Mathematician you place costs a flat 330 🪙</b> (no price rise per wave).'
                 ]) +
                 '<h4>Shhhh!</h4>' +
                 gList([
@@ -6390,7 +6437,7 @@
                 gList([
                     'Pick a teacher in the right panel, then click an empty grass tile. A tile holds one teacher.',
                     'You can place teachers <b>on the track</b> but a teacher on the track gets hurt by passing kebabs (see ' + gLink('health', 'Teacher Health') + ').',
-                    'The cap is <b>7 of each type</b> (7 Wise Sheikhs, 7 Angry Teachers, 7 Mathematicians). The shop\'s <b>🏫 More Teachers</b> adds <b>+3 of each</b> per purchase and can be bought twice, so the maximum is <b>13 of each</b>.',
+                    'The cap is <b>' + BASE_TOWER_CAP + ' of each type</b> (' + BASE_TOWER_CAP + ' Wise Sheikhs, ' + BASE_TOWER_CAP + ' Angry Teachers, ' + BASE_TOWER_CAP + ' Mathematicians). The shop\'s <b>🏫 More Teachers</b> adds <b>+3 of each</b> per purchase and can be bought twice, so the maximum is <b>' + (BASE_TOWER_CAP + 6) + ' of each</b>.',
                     'Teacher buttons are greyed out if you cannot afford them or you are at the cap.',
                     'Removing a teacher frees up a slot but gives <b>no refund</b>, so placing a new one costs coins again.'
                 ]) },
@@ -6441,6 +6488,16 @@
                 ]) },
 
             // ---------------------------------------------------------- KEBABS
+            { id: 'hitters', group: 'kebabs', icon: '😠', title: 'Hitter Kebabs', html: () =>
+                '<p><b>1 in every 10 kebabs</b> is a <b>hitter</b>. It has a little <b>red anger mark</b> next to its top meat piece, so you can spot it.</p>' +
+                gList([
+                    'Every <b>teacher it walks past</b> it has a <b>' + Math.round(HITTER_HIT_CHANCE * 100) + '% chance</b> to hit them: it <b>stops on the spot for half a second</b>, shakes, and takes <b>' + HITTER_DAMAGE + ' HP</b> off that teacher (a red <b>HIT!</b> pops up).',
+                    'It decides <b>once per teacher</b>, so a hitter can walk past a whole line of teachers and only hit some of them.',
+                    'Wise Sheikh only has <b>10 HP</b> and Angry Teacher <b>8 HP</b>, so a few hits can finish them. The Mathematician has 125 HP.',
+                    'Because it stops while hitting, a hitter that picks a fight gives your other teachers <b>free time to shoot it</b>. Heal hurt teachers between waves.',
+                    'Boss kebabs are never hitters (they have their own pulse). The menu background has none.'
+                ]) },
+
             { id: 'kebab', group: 'kebabs', icon: '🍢', title: 'Kebabs (Health, Speed, Count)', html: () => {
                 const waves = [1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100];
                 const rows = waves.map(w => {
@@ -6472,10 +6529,10 @@
 
             { id: 'boss', group: 'kebabs', icon: '👹', title: 'Boss Kebab', html: () => {
                 const rows = [20, 40, 60, 80, 100].map(w => [w, kebabBaseHealth(w), kebabBaseHealth(w) * BOSS_HEALTH_MULTIPLIER]);
-                return gStats([['Appears', 'Every 20 waves'], ['Reward', '60 🪙'], ['Health', '15× normal'], ['Speed', '0.6× normal'], ['Pulse', 'Every 1.25 s'], ['Pulse damage', '3 HP to teachers within 200 px']]) +
+                return gStats([['Appears', 'Every 20 waves'], ['Reward', '60 🪙'], ['Health', BOSS_HEALTH_MULTIPLIER + '× normal'], ['Speed', '0.6× normal'], ['Pulse', 'Every 1.25 s'], ['Pulse damage', '3 HP to teachers within 200 px']]) +
                     gList([
                         'On waves <b>20, 40, 60, 80...</b> the <b>first kebab</b> of the wave is a boss. The screen shakes when it spawns.',
-                        'It has <b>15× the health</b> of a normal kebab on that wave.',
+                        'It has <b>' + BOSS_HEALTH_MULTIPLIER + '× the health</b> of a normal kebab on that wave.',
                         'Every 1.25 seconds it sends out a pulse that hurts <b>every teacher within 200 px (2.5 tiles)</b> for 3 HP, with a screen shake. Teachers beside the track can be hit, too!',
                         'Combined waves (Skip Wave) that include a boss wave still spawn their boss.',
                         'A boss pays <b>60 🪙</b> when defeated (normal kebabs pay 15) and costs the school 1 health if it gets through.'
@@ -6548,6 +6605,7 @@
                 '<p>Each teacher has <b>one special buff</b>. You buy it <b>once</b> in the main menu <b>Shop → Upgrades → Teachers</b> with 💚 Positives, and you keep it forever. They cost a lot on purpose: <b>' + BUFF_PRICE + ' 💚 each</b>.</p>' +
                 gTbl(['Buff', 'Teacher', 'What it does'], Object.keys(TEACHER_BUFFS).map(k => [TEACHER_BUFFS[k].icon + ' ' + TEACHER_BUFFS[k].name, TEACHER_BUFFS[k].teacher, TEACHER_BUFFS[k].desc])) +
                 gList([
+                    '<b>Equip and unequip:</b> once you own a buff, the shop shows <b>Unequip</b> / <b>Equip</b> under it. An unequipped buff stays owned but does nothing, so you can switch back to the normal teacher any time.',
                     'Buffs are saved on your <b>account</b> and sync to the cloud, so they follow you to other devices.',
                     'They work in <b>every battle while you are signed in</b>, including Test Mode. If you are signed out you do not get them.',
                     'Buying one does <b>not</b> use up the in-game shop. It is a different shop that uses Positives, not coins.',
@@ -6581,11 +6639,11 @@
 
             { id: 'upgrades', group: 'shop', icon: '💪', title: 'Upgrades Menu', html: () =>
                 gTbl(['Upgrade', 'Effect', 'Base price', 'Limit'], [
-                    ['💪 Damage Boost', '<b>1.5×</b> damage for every attack', '150 🪙', '2'],
-                    ['⚡ Attack Speed', 'Wise Sheikh throws <b>1.5× faster</b>', '150 🪙', '2'],
-                    ['❤️ School Health', '<b>+5 max health</b> and +5 health now. Only while the school is hurt', '150 🪙', '2'],
-                    ['💥 Mega Damage', '<b>3.5×</b> damage (appears at wave 45)', '300 🪙', '2'],
-                    ['⚡⚡ Lightning Speed', '<b>2.5×</b> faster attacks (appears at wave 45)', '300 🪙', '2']
+                    ['💪 Damage Boost', '<b>1.5×</b> damage for every attack', SHOP_PRICES.upgrade + ' 🪙', '2'],
+                    ['⚡ Attack Speed', 'Wise Sheikh throws <b>1.5× faster</b>', SHOP_PRICES.upgrade + ' 🪙', '2'],
+                    ['❤️ School Health', '<b>+5 max health</b> and +5 health now. Only while the school is hurt', SHOP_PRICES.upgrade + ' 🪙', '2'],
+                    ['💥 Mega Damage', '<b>3.5×</b> damage (appears at wave 45)', SHOP_PRICES.mega + ' 🪙', '2'],
+                    ['⚡⚡ Lightning Speed', '<b>2.5×</b> faster attacks (appears at wave 45)', SHOP_PRICES.mega + ' 🪙', '2']
                 ]) +
                 gList([
                     'Damage upgrades <b>multiply together</b>: both Damage Boosts = 2.25×; adding both Mega Damages = <b>27.6×</b> total. Both speed upgrades together give <b>14×</b>.',
@@ -6607,9 +6665,9 @@
 
             { id: 'shopteachers', group: 'shop', icon: '👩‍🏫', title: 'Teachers Menu', html: () =>
                 gTbl(['Item', 'What it does', 'Price'], [
-                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel', '100 🪙 (flat)'],
-                    ['📐 Mathematician', 'Unlocks Mathematician (wave 30+). Each one you place then costs 330 🪙', '300 🪙 (flat)'],
-                    ['🏫 More Teachers', '<b>+3 max of every teacher type</b> (7 → 10 → 13)', '250 🪙 the first time, 350 🪙 the second (× shop multiplier)']
+                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel', SHOP_PRICES.badui + ' 🪙 (flat)'],
+                    ['📐 Mathematician', 'Unlocks Mathematician (wave 30+). Each one you place then costs 330 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
+                    ['🏫 More Teachers', '<b>+3 max of every teacher type</b> (' + BASE_TOWER_CAP + ' → ' + (BASE_TOWER_CAP + 3) + ' → ' + (BASE_TOWER_CAP + 6) + ')', SHOP_PRICES.cap + ' 🪙 the first time, ' + (SHOP_PRICES.cap + SHOP_PRICES.capStep) + ' 🪙 the second (× shop multiplier)']
                 ]) +
                 gList([
                     'The two teacher unlock prices do <b>not</b> go up with the shop multiplier. More Teachers does.',
@@ -6621,11 +6679,11 @@
                 const rows = [];
                 for (let n = 1; n <= 8; n++) {
                     const m = 1 + 0.5 * (n - 1);
-                    rows.push(['#' + n + ' (wave ' + (n * 15) + ')', 'x' + m.toFixed(1), Math.round(150 * m), Math.round(300 * m), Math.round(250 * m), Math.round(350 * m)]);
+                    rows.push(['#' + n + ' (wave ' + (n * 15) + ')', 'x' + m.toFixed(1), Math.round(SHOP_PRICES.upgrade * m), Math.round(SHOP_PRICES.mega * m), Math.round(SHOP_PRICES.cap * m), Math.round((SHOP_PRICES.cap + SHOP_PRICES.capStep) * m)]);
                 }
                 return '<p>The price multiplier is <b>1 + 0.5 per shop already reached</b>:</p>' +
                     gTbl(['Shop', 'Multiplier', 'Damage / Speed / Health', 'Mega upgrades', 'More Teachers #1', 'More Teachers #2'], rows) +
-                    gTip('Teacher unlocks stay at 100 / 300 forever. Hiring a teacher is one of the cheapest things you can buy in a late shop.');
+                    gTip('Teacher unlocks stay at ' + SHOP_PRICES.badui + ' / ' + SHOP_PRICES.math + ' forever. Hiring a teacher is one of the cheapest things you can buy in a late shop.');
             } },
 
             { id: 'npc', group: 'shop', icon: '🧣', title: 'The Shop Teacher', html: () =>
@@ -6702,6 +6760,7 @@
                     ['Shop music', 'On by default. The shop theme song plays while the in-game shop or the menu Shop is open and fades out when it closes. It follows the Volume slider.'],
                     ['Screen shake', 'Boss spawns, tracks appearing, kebabs reaching the school.'],
                     ['Animated menu background', 'On by default. The main menu shows a live little battle on the map (teachers vs kebabs). Turn it off for a still picture; low-effects mode also freezes it.'],
+                    ['Guide Mode', 'Off by default. Turn it on here or with the <b>❓ How to Play</b> button in a battle. See the ' + gLink('guidemode', 'Guide Mode') + ' page.'],
                     ['Event pop-ups', 'On by default. Stacked pop-ups at the bottom after each wave telling you how far away the next <b>boss kebab</b>, <b>split track</b>, <b>tri-track</b> and <b>shop</b> are, plus an alert when a boss arrives or a new track unlocks.'],
                     ['Skip intro animation', 'Off by default. Turn it on and the kebab shop cutscene (the villain kebab cook at the start of the track, the 2 second rumble he causes, then the track pops up tile by tile) never plays when you press Play. You can also click or press any key during the intro to skip just that one (clicks and keys in the first moment are ignored, so a double-click on Play will not skip it by accident). Continuing a saved battle and Test Mode never play it.'],
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
@@ -6860,6 +6919,19 @@
                     'Equip skins from your profile under <b>🎽 Skins</b>. Your skins and achievements are saved on your account and sync to the cloud.'
                 ]) },
 
+            { id: 'guidemode', group: 'more', icon: '🧭', title: 'Guide Mode (How to Play)', html: () =>
+                '<p>Guide Mode is the game\'s <b>interactive tutorial</b>. Instead of a menu full of words, it follows along as you play, <b>dims the screen, circles</b> the thing it is talking about and <b>points an arrow</b> at it from a small card.</p>' +
+                gList([
+                    '<b>Turn it on:</b> start a battle and press <b>❓ How to Play</b> (bottom right). It asks <b>Enable Guide Mode?</b> Press <b>Next ▶</b>. You can also use the <b>Guide Mode</b> switch in ' + gLink('settings', 'Settings') + '. The button shows <b>Guide ON</b> while it is on.',
+                    '<b>First, the basics and the controls:</b> the goal, the map arrows, school health, coins, waves, picking and placing your first teacher (it points at the exact tile), how teachers attack, pausing, healing, removing, ultimates, Skip Wave and starting a wave.',
+                    '<b>Then it explains new things as you get them:</b> the shop boards, Angry Teacher, the Mathematician, every upgrade you buy, ultimates that are ready, hurt teachers, boss kebabs, the second and third tracks, Soccer and OZ Tag kebabs, the teacher limit and low school health.',
+                    'Tips with a <b>Next</b> button <b>pause the game</b> while you read. Tips that ask you to do something (like placing a teacher) let you play, and finish by themselves when you do it.',
+                    'Press <b>Skip tip</b> on a tip to skip it, or <b>Turn off Guide Mode</b> to stop. Each tip is only shown <b>once</b> and is remembered on this device.',
+                    'Press <b>❓ How to Play</b> again while it is on to <b>Turn off</b> or <b>Restart guide</b> (hear everything again).',
+                    'It works in every mode, including Test Mode. If you turn it on halfway through a game, it explains what you have right now.'
+                ]) +
+                gTip('Guide Mode is off by default and is only offered inside a battle, so it never gets in the way of the menu.') },
+
             { id: 'dev', group: 'more', icon: '🛠', title: 'Developer Mode (time controls)', html: () =>
                 '<p>Developer Mode is a <b>normal game with time controls and no cheats</b>. To start it, open <b>Test Mode</b>, open the <b>Sandbox Controls</b> panel and flip the <b>DEVELOPER MODE</b> switch. It asks you to confirm, then <b>restarts into Developer Mode</b> (you leave Test Mode, so there are no infinite coins or sandbox buttons). A <b>🛠 Developer Controls</b> panel gives you control over <b>time</b>. Use <b>✕ Exit to Menu</b> in that panel to leave.</p>' +
                 gTbl(['Control', 'What it does'], [
@@ -6886,7 +6958,7 @@
                     'The version is shown at the top left (like <b>v1.0.16 Alpha</b>). <b>Alpha</b> means a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (soon) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
-                    '<b>❓ How to Play</b> is the quick tutorial.',
+                    'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
                     '<b>🎬 Credits</b>: made by Jaiden Maximiliano Hernandez.',
                     '<b>⚠️ Disclaimers</b>: the Early Access and "made with AI" notes. They also pop up the first time you open the game.',
                     'The game also runs as a <b>desktop app</b> for Windows, which updates itself.'
@@ -6923,7 +6995,7 @@
 
             { id: 'faq', group: 'more', icon: '❓', title: 'FAQ', html: () =>
                 gTbl(['Question', 'Answer'], [
-                    ['Why can\'t I place a teacher?', 'Not enough coins, you reached the cap (7 of that type), or the tile is already taken.'],
+                    ['Why can\'t I place a teacher?', 'Not enough coins, you reached the cap (' + BASE_TOWER_CAP + ' of that type), or the tile is already taken.'],
                     ['Why can\'t I heal?', 'You can only heal <b>between waves</b>.'],
                     ['Why did the shop close after one buy?', 'You only get one purchase per shop.'],
                     ['Where is Angry Teacher / Mathematician?', 'Hire them in the shop: Angry Teacher from the first shop (wave 15), Mathematician from the second (wave 30).'],
@@ -7090,6 +7162,7 @@
             ['damage', 'attack', 'hit', 'dmg', 'strong', 'stronger', 'power'],
             ['school', 'lose', 'lost', 'losing', 'gameover', 'defeated'],
             ['friend', 'friends', 'chat', 'inbox', 'message'],
+            ['guide mode', 'tutorial', 'how to play', 'help', 'tips'],
             ['test', 'sandbox', 'practice'],
             ['wave', 'waves', 'round'],
             ['map', 'camera', 'arrow', 'arrows', 'side', 'scroll']
@@ -7367,6 +7440,7 @@
             sfx: true,
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
+            guideMode: false,       // Guide Mode: circles and points at things while you play
             eventPopups: true,      // pop-ups for boss kebabs, split track, tri-track and shop countdowns
             uiSounds: true,         // little click sound when you press buttons + wind whoosh between menu screens
             music: true,            // the shop theme song
@@ -7589,8 +7663,11 @@
         // Mathematician: 300 coins to unlock (first available the 2nd
         // shop onward, same as Angry Teacher's flat 100). After that each
         // Mathematician you place costs a flat 330 coins.
+        // In-game shop base prices (doubled in v1.0.24). Upgrade and More Teachers prices also rise with every shop reached.
+        const SHOP_PRICES = { upgrade: 300, mega: 600, badui: 200, math: 600, cap: 500, capStep: 200 };
+        const BASE_TOWER_CAP = 10;   // max of EACH teacher (More Teachers adds +3 per purchase)
         function getMathUnlockCost() {
-            return 300;
+            return SHOP_PRICES.math;
         }
         function getMathCost() {
             return 330;
@@ -7605,7 +7682,7 @@
         // Max of each teacher type you can have placed. Starts at 5;
         // the shop's "More Teachers" upgrade adds +3 per purchase.
         function getTowerCap() {
-            return 7 + game.towerCapBonus;
+            return BASE_TOWER_CAP + game.towerCapBonus;
         }
 
         function towerName(type) {
@@ -8376,37 +8453,7 @@
             frameAccumulator: 0
         };
 
-        // ===== TUTORIAL SYSTEM =====
-        // A simple first pass - one array of {title, text} steps with
-        // dots + prev/next/skip. Meant to be built on further later
-        // (branching steps, pointing at specific UI elements, etc).
-        const TUTORIAL_STEPS = [
-            { title: 'Welcome!', text: "Defend your school from the kebabs! Here's a quick rundown to get you started." },
-            { title: 'Placing Teachers', text: "Click a teacher's name on the right, then click a grass tile to place them." },
-            { title: 'Automatic Attacks', text: 'Placed teachers automatically attack any kebabs that come into range.' },
-            { title: 'Ultimates', text: 'When a teacher is glowing, click them to unleash their ultimate!' },
-            { title: 'Healing', text: "Left-click a hurt teacher between waves to heal them 5% of their HP per click." },
-            { title: 'Removing Teachers', text: "Right-click a teacher to remove them (you won't get your coins back)." },
-            { title: 'Coins', text: 'Earn coins by defeating kebabs (5 each, 50 for a boss) and 10 more for every wave you clear. Spend them on new teachers and upgrades.' },
-            { title: 'The Shop', text: 'A shop opens every 15 waves with powerful upgrades - but you only get ONE purchase per shop, and prices rise with every shop. Spend wisely!' }
-        ];
-        let tutorialIndex = 0;
-
-        function renderTutorial() {
-            const step = TUTORIAL_STEPS[tutorialIndex];
-            document.getElementById('tutorialTitle').textContent = step.title;
-            document.getElementById('tutorialText').textContent = step.text;
-            document.getElementById('tutBackBtn').disabled = tutorialIndex === 0;
-            document.getElementById('tutNextBtn').textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? "Got it!" : 'Next';
-
-            const dots = document.getElementById('tutorialDots');
-            dots.innerHTML = '';
-            TUTORIAL_STEPS.forEach((_, i) => {
-                const dot = document.createElement('span');
-                if (i === tutorialIndex) dot.className = 'active';
-                dots.appendChild(dot);
-            });
-        }
+        // (the old step-by-step tutorial was replaced by Guide Mode, see GUIDE MODE below)
 
         // ===== TEACHER BUFFS =====
         // One permanent buff per teacher, bought once in the main-menu Shop (Upgrades > Teachers) with Positives.
@@ -8414,7 +8461,7 @@
         const BUFF_PRICE = 1000;
         const TEACHER_BUFFS = {
             sheikh: { icon: '📜', name: 'Long Shebab', teacher: 'Wise Sheikh', price: BUFF_PRICE,
-                desc: 'His throws become Arabic <b>sentences</b>. Each one hits as normal, then keeps hurting the kebab for <b>3 more seconds</b>.' },
+                desc: 'His throws become upright Arabic <b>sentences</b>. Each sentence hits the kebab <b>3 times</b> (3x the damage of a normal throw).' },
             badui:  { icon: '🔥', name: 'Long BOYS!', teacher: 'Angry Teacher', price: BUFF_PRICE,
                 desc: 'Her BOYS! ultimate lasts <b>1.5x longer</b>.' },
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
@@ -8429,9 +8476,23 @@
                 _buffCache.v = (a && a.buffs) || {};
                 _buffCache.t = now;
             }
-            return !!_buffCache.v[type];
+            return _buffCache.v[type] === true;   // owned AND equipped ('off' = owned but switched off)
         }
         function buffOwned(type) { const a = getCurrentAccount(); return !!(a && a.buffs && a.buffs[type]); }
+        function buffEquipped(type) { const a = getCurrentAccount(); return !!(a && a.buffs && a.buffs[type] === true); }
+        // Owned buffs can be switched on and off: acc.buffs[type] is true (equipped) or 'off' (owned, not equipped)
+        function toggleTeacherBuff(type) {
+            const a = getCurrentAccount();
+            if (!a || !buffOwned(type)) return;
+            const on = !buffEquipped(type);
+            updateCurrentAccount(acc => { acc.buffs = Object.assign({}, acc.buffs || {}, { [type]: on ? true : 'off' }); });
+            _buffCache.t = -9999;
+            if (typeof playSound === 'function') playSound(on ? 880 : 520, 0.08, 'sine');
+            pRenderSlots();
+            const d = TEACHER_BUFFS[type];
+            const line = on ? d.name + ' is equipped.' : d.name + ' is switched off. You can equip it again any time.';
+            pNpcSay(line, () => pNpcSchedule(line.length));
+        }
         function buyTeacherBuff(type) {
             const d = TEACHER_BUFFS[type], a = getCurrentAccount();
             if (!d || !a || pShopState !== 'open') return;
@@ -8524,27 +8585,390 @@
             return acc && acc.earlyAccess ? '<span class="ea-badge' + (small ? ' sm' : '') + '" title="This account was made during Early Access">EARLY ACCESS</span>' : '';
         }
 
-        function openTutorial() {
-            tutorialIndex = 0;
-            renderTutorial();
-            document.getElementById('tutorialModal').classList.add('show');
-        }
+        // ===== GUIDE MODE =====
+        // "❓ How to Play" (inside a battle) asks to enable Guide Mode. While it is on, the game follows along as you
+        // play: it dims the screen, draws a pulsing circle around the thing it is talking about and points an arrow at
+        // it from a little card. First it covers the basics and the controls, then it explains every new teacher,
+        // upgrade and surprise the moment you get one. Each tip is only shown once (they are remembered on this device).
+        const GM_SEEN_KEY = 'ugd_guide_seen';
+        const GM = { seen: {}, cur: null, lastEnd: 0, modal: false, raf: 0, card: null };
+        try { GM.seen = JSON.parse(localStorage.getItem(GM_SEEN_KEY) || '{}') || {}; } catch (e) { GM.seen = {}; }
+        function gmSaveSeen() { try { localStorage.setItem(GM_SEEN_KEY, JSON.stringify(GM.seen)); } catch (e) {} }
+        function gmOn() { return !!settings.guideMode; }
 
-        function closeTutorial() {
-            document.getElementById('tutorialModal').classList.remove('show');
-            try { localStorage.setItem('ugd_tutorial_seen', '1'); } catch (e) {}
+        // ---- targets: each returns a shape in screen pixels ({type:'circle'|'rect'}) or null if it is not on screen ----
+        function gmEl(sel, pad) {
+            if (pad === undefined) pad = 6;
+            const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            if (r.width < 2 || r.height < 2) return null;
+            return { type: 'rect', x: r.left - pad, y: r.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 };
         }
+        function gmBoxes(sels, pad) {
+            const list = sels.map(s => gmEl(s, 0)).filter(Boolean);
+            if (!list.length) return null;
+            const l = Math.min(...list.map(r => r.x)), t = Math.min(...list.map(r => r.y));
+            const rr = Math.max(...list.map(r => r.x + r.w)), b = Math.max(...list.map(r => r.y + r.h));
+            return { type: 'rect', x: l - pad, y: t - pad, w: rr - l + pad * 2, h: b - t + pad * 2 };
+        }
+        // a point in the game world (kebabs, teachers, tiles)
+        function gmWorld(wx, wy, r) {
+            const cr = canvas.getBoundingClientRect();
+            if (!cr.width) return null;
+            const kx = cr.width / canvas.width, ky = cr.height / canvas.height;
+            const sx = wx - cameraOffset;
+            if (sx < 0 || sx > canvas.width) return null;
+            return { type: 'circle', cx: cr.left + sx * kx, cy: cr.top + wy * ky, r: r * kx };
+        }
+        // a spot on the visible canvas (the map arrows)
+        function gmCanvasSpot(x, y, r) {
+            const cr = canvas.getBoundingClientRect();
+            if (!cr.width) return null;
+            const kx = cr.width / canvas.width, ky = cr.height / canvas.height;
+            return { type: 'circle', cx: cr.left + x * kx, cy: cr.top + y * ky, r: r * kx };
+        }
+        function gmEnemyVisible(e) { const sx = e.x - cameraOffset; return sx > 20 && sx < canvas.width - 20; }
+        function gmFirstEnemy(filter) { return game.enemies.find(e => e.health > 0 && gmEnemyVisible(e) && (!filter || filter(e))); }
+        function gmEnemyShape(e) { return e ? gmWorld(e.x, e.y, e.isBoss ? 70 : 42) : null; }
+        function gmTowerShape(t, r) { return t ? gmWorld(t.x, t.y, r || 55) : null; }
+        function gmDist(px, py, a, b) {
+            const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+            let t = l2 ? ((px - a.x) * dx + (py - a.y) * dy) / l2 : 0;
+            t = Math.max(0, Math.min(1, t));
+            return Math.hypot(px - (a.x + t * dx), py - (a.y + t * dy));
+        }
+        // a free grass tile, next to the track, on the half of the map you can see
+        function gmFreeTile() {
+            const paths = [PATH1, PATH2, PATH3];
+            let best = null, bestScore = 1e9;
+            for (let col = 2; col < CANVAS_COLS - 1; col++) {
+                for (let row = 0; row < ROWS; row++) {
+                    const cx = col * GRID_SIZE + GRID_SIZE / 2 + (cameraOffset > 0 ? cameraOffset : 0), cy = row * GRID_SIZE + GRID_SIZE / 2;
+                    const c = Math.floor(cx / GRID_SIZE);
+                    if (c < 1 || c >= WORLD_COLS - 1) continue;
+                    if (game.towers.some(t => t.col === c && t.row === row)) continue;
+                    let d = 1e9;
+                    for (const p of paths) for (let i = 0; i < p.length - 1; i++) d = Math.min(d, gmDist(cx, cy, p[i], p[i + 1]));
+                    if (d < 66) continue;                      // that's the track itself
+                    const score = d + Math.abs(col - 5) * 6;    // close to the track, not too far from the shop
+                    if (score < bestScore) { bestScore = score; best = { x: cx, y: cy }; }
+                }
+            }
+            return best ? gmWorld(best.x, best.y, 44) : null;
+        }
+        const gmCount = type => game.towers.filter(t => t.type === type).length;
+        const gmHasUp = id => (game.purchasedUpgrades && game.purchasedUpgrades[id] > 0);
 
-        function tutorialStepBy(delta) {
-            tutorialIndex += delta;
-            if (tutorialIndex >= TUTORIAL_STEPS.length) {
-                closeTutorial();
+        // ---- the tips, in order. when() = shown once true, done() = the player already did it (action tips complete on it),
+        // skip() = does not apply right now, next:true = pauses the game and shows a Next button ----
+        const GM_TIPS = [
+            // --- the basics and the controls ---
+            { id: 'welcome', next: true, title: 'Guide Mode is on 👋',
+              text: () => "I'll follow along while you play and point things out. First the basics and the controls, then I'll explain every new teacher and upgrade the moment you get one. Press <b>Next</b>." },
+            { id: 'goal', next: true, after: 'welcome', title: 'The goal',
+              target: () => gmWorld(40, PATH1[0].y, 80),
+              text: () => "Kebabs spill out of the <b>kebab shop</b> on the left and run along the track. Don't let them reach your <b>school</b> at the far right: every kebab that gets in costs you school health." },
+            { id: 'camera', next: true, after: 'goal', title: 'Look around',
+              target: () => cameraOffset === 0 ? gmCanvasSpot(canvas.width - 25, canvas.height / 2, 32) : gmCanvasSpot(25, canvas.height / 2, 32),
+              text: () => "The map is <b>twice as wide</b> as the screen. Click the <b>arrows</b> on the sides of the map to look at the other half." },
+            { id: 'health', next: true, after: 'camera', title: 'School health',
+              target: () => gmEl('#health') && gmEl(document.getElementById('health').closest('.stat-box')),
+              text: () => "This is your <b>school's health</b>. Each kebab that gets in takes some. At 0 it's game over." },
+            { id: 'coins', next: true, after: 'health', title: 'Coins 🪙',
+              target: () => gmEl(document.getElementById('sentrals').closest('.stat-box')),
+              text: () => "Your <b>coins</b>. You earn <b>" + KEBAB_COIN_REWARD + "</b> for every kebab you defeat (<b>" + BOSS_COIN_REWARD + "</b> for a boss). Spend them on teachers and in the shop." },
+            { id: 'wavebar', next: true, after: 'coins', title: 'Waves',
+              target: () => gmBoxes(['#wave', '#kebabHp', '#kebabSpeed'].map(s => document.querySelector(s).closest('.stat-box')), 6),
+              text: () => "The <b>wave number</b>, and how tough and fast the kebabs are this wave. Both go up every wave, so keep building." },
+            { id: 'pick', after: 'wavebar', title: 'Pick a teacher', done: () => game.towers.length > 0 || !!game.selectedTower,
+              target: () => gmEl('#sheikhBtn'),
+              text: () => "Teachers fight for you. Click <b>Wise Sheikh</b> to pick him up" + (game.freeTeachersLeft > 0 ? " (your first " + game.freeTeachersLeft + " are <b>free</b>)." : ".") },
+            { id: 'place', after: 'pick', title: 'Place him', done: () => game.towers.length > 0, valid: () => !!game.selectedTower,
+              when: () => !!game.selectedTower, target: () => gmFreeTile(),
+              text: () => "Now click a <b>green tile</b> next to the track, like this one." },
+            { id: 'range', next: true, after: 'place', title: 'He fights by himself', when: () => game.towers.length > 0,
+              target: () => gmTowerShape(game.towers[0], 60),
+              text: () => "Teachers <b>attack automatically</b> anything that comes in range. Hover over a teacher to see their range circle. You can place up to <b>" + BASE_TOWER_CAP + " of each teacher</b>." },
+            { id: 'controls', next: true, after: 'range', title: 'Controls', target: () => gmEl('#pauseBtn'),
+              text: () => "<b>Pause</b> here (or press <b>P</b> / <b>Esc</b>).<br>• <b>Left-click</b> a hurt teacher <b>between waves</b> to heal 5%.<br>• <b>Right-click</b> a teacher to remove them (no refund).<br>• When a teacher <b>glows</b>, click them for their <b>ultimate</b>!" },
+            { id: 'skipwave', next: true, after: 'controls', title: 'Skip Wave', target: () => gmEl('#skipWaveBtn'),
+              text: () => "<b>Skip Wave</b> merges the next wave into this one for a bigger fight and an earlier shop. Only use it when your defence is strong." },
+            { id: 'start', after: 'skipwave', title: 'Start the first wave', done: () => game.waveInProgress || game.wave > 1,
+              target: () => gmEl('#waveBtn'),
+              text: () => "Ready? Press this to send <b>wave " + game.wave + "</b>. After each wave a short countdown starts the next one by itself." },
+
+            // --- the shop ---
+            { id: 'shop1', shop: true, next: true, title: 'The shop', target: () => gmEl('#shopUpgradeList', 4),
+              text: () => "A shop opens <b>every 15 waves</b>. This board has <b>upgrades</b>: more damage, faster attacks and school health. You can make <b>ONE purchase</b> per shop, then it closes, so choose wisely." },
+            { id: 'shop2', shop: true, next: true, after: 'shop1', title: 'Hire teachers', target: () => gmEl('#shopTeacherList', 4),
+              text: () => "This board <b>hires new teachers</b> (Angry Teacher, then the Mathematician at wave 30) and <b>More Teachers</b>, which raises the max of every teacher by <b>+3</b>." },
+            { id: 'shop3', shop: true, next: true, after: 'shop2', title: 'Prices & coins', target: () => gmBoxes(['#shopNumberLabel', '#shopBalance'], 10),
+              text: () => "Your coins are shown here. Prices go <b>up every shop</b> you reach. Rows you can't afford shake, and the shop teacher tells you." },
+
+            // --- new teachers ---
+            { id: 'badui', next: true, title: 'New teacher: Angry Teacher', when: () => document.getElementById('baduiBtn').style.display !== 'none',
+              target: () => gmEl('#baduiBtn'),
+              text: () => "<b>Angry Teacher</b> has no attack of her own. She writes <b>Negative</b> on a kebab every 5 seconds, so it takes <b>2× damage</b> from everyone else. Her ultimate, <b>BOYS!</b>, sends damaging circles around her. Put her near your Wise Sheikhs." },
+            { id: 'math', next: true, title: 'New teacher: Mathematician', when: () => game.mathUnlocked && document.getElementById('mathBtn').style.display !== 'none',
+              target: () => gmEl('#mathBtn'),
+              text: () => "The <b>Mathematician</b> is tough (125 HP). Every 10 seconds he shushes <b>3 kebabs</b>: they get blown back and take bonus damage. His ultimate is random: <b>Algebra Swarm</b> or <b>Beam Pull</b>. Each one you place costs <b>" + getMathCost() + " 🪙</b>." },
+
+            // --- new upgrades (explained once you own them) ---
+            { id: 'up_damage', next: true, title: 'Upgrade: Damage Boost', when: () => gmHasUp('damage1.5'),
+              target: () => gmTowerShape(game.towers[0], 60),
+              text: () => "<b>Damage Boost</b>: every attack from every teacher now deals <b>1.5×</b> damage. Damage upgrades multiply together." },
+            { id: 'up_speed', next: true, title: 'Upgrade: Attack Speed', when: () => gmHasUp('speed1.5'),
+              target: () => gmTowerShape(game.towers.find(t => t.type === 'sheikh') || game.towers[0], 60),
+              text: () => "<b>Attack Speed</b>: Wise Sheikh now throws <b>1.5× faster</b>. It only speeds up him." },
+            { id: 'up_health', next: true, title: 'Upgrade: School Health', when: () => gmHasUp('health'),
+              target: () => gmEl(document.getElementById('health').closest('.stat-box')),
+              text: () => "<b>School Health</b>: your school's max health went up by <b>5</b> and you got 5 back." },
+            { id: 'up_mega', next: true, title: 'Upgrade: Mega!', when: () => gmHasUp('damage3.5') || gmHasUp('speed2.5'),
+              target: () => gmTowerShape(game.towers[0], 60),
+              text: () => "<b>Mega upgrades</b> (they appear at wave 45) are huge: <b>3.5× damage</b> or <b>2.5× attack speed</b>. They stack with the smaller ones." },
+            { id: 'up_cap', next: true, title: 'Upgrade: More Teachers', when: () => gmHasUp('towercap'),
+              target: () => gmEl('.tower-selector'),
+              text: () => "<b>More Teachers</b>: you can now place up to <b>" + getTowerCap() + " of each teacher</b>." },
+
+            // --- things that happen while you play ---
+            { id: 'kebab', next: true, title: 'A kebab!', when: () => !!gmFirstEnemy(), target: () => gmEnemyShape(gmFirstEnemy()),
+              text: () => "That's a <b>kebab</b>. The green bar is its health. Your teachers hit it as soon as it is in range. Kebabs get stronger every wave." },
+            { id: 'ult', next: true, title: 'Ultimate ready!', when: () => game.towers.some(t => t.shebabCharge >= t.shebabMax),
+              target: () => gmTowerShape(game.towers.find(t => t.shebabCharge >= t.shebabMax), 56),
+              text: () => {
+                  const t = game.towers.find(x => x.shebabCharge >= x.shebabMax);
+                  const nm = t ? (t.type === 'badui' ? 'BOYS!' : t.type === 'math' ? (hasBuff('math') ? 'Area Strike' : 'a random ultimate') : 'SHEBAB') : 'their ultimate';
+                  return "A <b>glowing</b> teacher has their ultimate ready. <b>Click them</b> to unleash <b>" + nm + "</b>! It charges again as they fight.";
+              } },
+            { id: 'heal', next: true, title: 'Heal your teachers', when: () => !game.waveInProgress && game.towers.some(t => t.hp < t.maxHp * 0.9),
+              target: () => gmTowerShape(game.towers.find(t => t.hp < t.maxHp * 0.9), 55),
+              text: () => "This teacher is hurt. <b>Left-click</b> them <b>between waves</b> to heal 5% each click." },
+            { id: 'hitter', next: true, title: 'An angry kebab!', when: () => !!gmFirstEnemy(e => e.hitter), target: () => gmEnemyShape(gmFirstEnemy(e => e.hitter)),
+              text: () => "See the <b>red anger mark</b>? This is a <b>hitter</b>. As it walks past each teacher it has a <b>50% chance</b> to stop for half a second and <b>hit them</b>. Heal hurt teachers between waves." },
+            { id: 'boss', next: true, title: 'Boss kebab!', when: () => !!gmFirstEnemy(e => e.isBoss), target: () => gmEnemyShape(gmFirstEnemy(e => e.isBoss)),
+              text: () => "A <b>boss kebab</b>: big, slow, very tough and it <b>hurts your teachers</b>. Use ultimates and Angry Teacher's Negative on it." },
+            { id: 'split', next: true, title: 'Second track!', when: () => game.wave >= 10 && !game.triTrackActive,
+              target: () => gmWorld(40, PATH2[0].y, 80),
+              text: () => "A <b>second track</b> has opened. Kebabs now come along two paths, so spread your teachers out." },
+            { id: 'tri', next: true, title: 'Tri-track!', when: () => game.triTrackActive,
+              target: () => gmWorld(40, PATH3[0].y, 80),
+              text: () => "The track has split into <b>three</b> and the map got bigger. Watch every lane." },
+            { id: 'soccer', next: true, title: 'Soccer Kebab', when: () => !!gmFirstEnemy(e => e.kind === 'soccer'), target: () => gmEnemyShape(gmFirstEnemy(e => e.kind === 'soccer')),
+              text: () => "The <b>Soccer Kebab</b> can <b>dodge</b> your attacks for a moment, then has to rest. Keep hitting it." },
+            { id: 'oz', next: true, title: 'OZ Tag Kebab', when: () => !!gmFirstEnemy(e => e.kind === 'oz'), target: () => gmEnemyShape(gmFirstEnemy(e => e.kind === 'oz')),
+              text: () => "The <b>OZ Tag Kebab</b> is <b>much faster</b> than the others. Put teachers near the end of the track." },
+            { id: 'cap', next: true, title: 'Teacher limit', when: () => ['sheikh', 'badui', 'math'].some(t => gmCount(t) >= getTowerCap()),
+              target: () => gmEl('.tower-selector'),
+              text: () => "You have the <b>maximum</b> of one teacher type (" + getTowerCap() + "). The shop's <b>More Teachers</b> upgrade adds +3 of each." },
+            { id: 'lowhp', next: true, title: 'School in danger!', when: () => game.health > 0 && game.health <= game.maxHealth * 0.3,
+              target: () => gmEl(document.getElementById('health').closest('.stat-box')),
+              text: () => "Your school's health is <b>low</b>. Add teachers where the kebabs get through, use ultimates, and buy <b>School Health</b> in the next shop." }
+        ];
+
+        // ---- engine ----
+        function gmReady() {
+            const w = document.getElementById('gameWrapper');
+            return gmOn() && game.active && !game.gameOver && !game.introActive && w && w.style.display === 'block' && !GM.modal;
+        }
+        function gmMark(id) { GM.seen[id] = 1; gmSaveSeen(); }
+        function gmTick() {
+            if (!gmReady()) { if (GM.cur) gmClose(false); if (!GM.modal) game.guideHold = false; return; }
+            if (GM.cur) {
+                const t = GM.cur;
+                const shopOk = t.shop ? shopState === 'open' : shopState === 'closed';
+                if (!shopOk || (t.valid && !t.valid())) { gmClose(false); return; }
+                if (t.done && t.done()) { gmClose(true); return; }
                 return;
             }
-            tutorialIndex = Math.max(0, tutorialIndex);
-            renderTutorial();
+            game.guideHold = false;
+            if (game.paused || performance.now() - GM.lastEnd < 700) return;
+            for (const t of GM_TIPS) {
+                if (GM.seen[t.id]) continue;
+                if (t.after && !GM.seen[t.after]) continue;
+                if (t.shop ? shopState !== 'open' : shopState !== 'closed') continue;
+                if (t.done && t.done()) { gmMark(t.id); continue; }      // already did it
+                if (t.skip && t.skip()) { gmMark(t.id); continue; }
+                if (t.when && !t.when()) continue;
+                gmShow(t);
+                break;
+            }
         }
-        // ===== END TUTORIAL SYSTEM =====
+        function gmBuild() {
+            if (GM.card) return;
+            const layer = document.getElementById('gmLayer');
+            GM.card = document.createElement('div');
+            GM.card.className = 'gm-card';
+            GM.card.innerHTML = '<div class="gm-title"></div><div class="gm-text"></div>' +
+                '<div class="gm-actions"><button class="gm-next" id="gmNext" onclick="gmNext()">Next ▶</button><span class="gm-hint" id="gmHint">Do it to continue ✨</span></div>' +
+                '<div class="gm-foot"><button onclick="gmSkipTip()">Skip tip</button><button onclick="gmTurnOff()">Turn off Guide Mode</button></div>';
+            layer.appendChild(GM.card);
+        }
+        function gmShow(t) {
+            gmBuild();
+            GM.cur = t;
+            GM.card.querySelector('.gm-title').textContent = t.title;
+            GM.card.querySelector('.gm-text').innerHTML = t.text();
+            GM.card.querySelector('#gmNext').style.display = t.next ? '' : 'none';
+            GM.card.querySelector('#gmNext').textContent = (t.id === 'skipwave' || t.id === 'welcome') ? 'Next ▶' : 'Got it ▶';
+            GM.card.querySelector('#gmHint').style.display = t.next ? 'none' : '';
+            GM.card.classList.remove('pop'); void GM.card.offsetWidth; GM.card.classList.add('pop');
+            document.getElementById('gmLayer').classList.add('on');
+            game.guideHold = !!t.next;       // reading tips pause the game, action tips let you play
+            playSound(880, 0.08, 'sine');
+            cancelAnimationFrame(GM.raf);
+            GM.raf = requestAnimationFrame(gmFrame);
+        }
+        function gmClose(mark) {
+            const t = GM.cur;
+            if (t && mark) gmMark(t.id);
+            GM.cur = null;
+            GM.lastEnd = performance.now();
+            game.guideHold = false;
+            cancelAnimationFrame(GM.raf);
+            const l = document.getElementById('gmLayer'); if (l) l.classList.remove('on');
+        }
+        function gmNext() { if (GM.cur) gmClose(true); }
+        function gmSkipTip() { if (GM.cur) gmClose(true); }
+        function gmTurnOff() { gmSetEnabled(false); }
+        function gmSetEnabled(v) {
+            settings.guideMode = !!v;
+            saveSettings();
+            if (!v) gmClose(false);
+            gmRefreshBtn();
+            try { syncSettingsUI(); } catch (e) {}
+        }
+        function gmRefreshBtn() {
+            const b = document.querySelector('.tutorial-btn');
+            if (b) b.textContent = '❓ How to Play' + (gmOn() ? ' · Guide ON' : '');
+        }
+
+        // ---- drawing: dim + hole, pulsing ring, card and arrow ----
+        const gmClamp = (v, a, b) => Math.max(a, Math.min(b, v));
+        function gmBox(s) {
+            return s.type === 'circle'
+                ? { l: s.cx - s.r, t: s.cy - s.r, r: s.cx + s.r, b: s.cy + s.r, cx: s.cx, cy: s.cy }
+                : { l: s.x, t: s.y, r: s.x + s.w, b: s.y + s.h, cx: s.x + s.w / 2, cy: s.y + s.h / 2 };
+        }
+        function gmEdge(box, toX, toY) {            // point on a box's border in the direction of (toX,toY)
+            const dx = toX - box.cx, dy = toY - box.cy;
+            if (!dx && !dy) return { x: box.cx, y: box.cy };
+            const hw = (box.r - box.l) / 2, hh = (box.b - box.t) / 2;
+            const k = Math.min(hw / Math.abs(dx || 1e-9), hh / Math.abs(dy || 1e-9));
+            return { x: box.cx + dx * k, y: box.cy + dy * k };
+        }
+        function gmFrame() {
+            const t = GM.cur;
+            if (!t) return;
+            const vw = window.innerWidth, vh = window.innerHeight;
+            const svg = document.getElementById('gmSvg');
+            svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
+            let s = null;
+            try { s = t.target ? t.target() : null; } catch (e) { s = null; }
+            const pulse = 4 + Math.sin(performance.now() / 180) * 4;
+            const holeR = document.getElementById('gmHoleR'), holeC = document.getElementById('gmHoleC');
+            const ringR = document.getElementById('gmRingR'), ringC = document.getElementById('gmRingC');
+            const dim = document.getElementById('gmDim');
+            dim.setAttribute('fill-opacity', t.next ? '0.62' : '0.42');
+            [holeR, holeC, ringR, ringC].forEach(e => e.style.display = 'none');
+            const card = GM.card, cw = card.offsetWidth, ch = card.offsetHeight, M = 12;
+            let x = (vw - cw) / 2, y = (vh - ch) / 2;
+            let tb = null;
+            if (s) {
+                if (s.type === 'circle') {
+                    holeC.style.display = ringC.style.display = '';
+                    holeC.setAttribute('cx', s.cx); holeC.setAttribute('cy', s.cy); holeC.setAttribute('r', s.r + 2);
+                    ringC.setAttribute('cx', s.cx); ringC.setAttribute('cy', s.cy); ringC.setAttribute('r', s.r + pulse);
+                } else {
+                    holeR.style.display = ringR.style.display = '';
+                    [holeR].forEach(h => { h.setAttribute('x', s.x); h.setAttribute('y', s.y); h.setAttribute('width', s.w); h.setAttribute('height', s.h); h.setAttribute('rx', 12); });
+                    ringR.setAttribute('x', s.x - pulse); ringR.setAttribute('y', s.y - pulse);
+                    ringR.setAttribute('width', s.w + pulse * 2); ringR.setAttribute('height', s.h + pulse * 2); ringR.setAttribute('rx', 14 + pulse);
+                }
+                tb = gmBox(s);
+                const gap = 70;
+                const order = tb.cy < vh / 2 ? ['below', 'above', 'right', 'left'] : ['above', 'below', 'right', 'left'];
+                let placed = false;
+                for (const side of order) {
+                    let px, py;
+                    if (side === 'below') { px = tb.cx - cw / 2; py = tb.b + gap; }
+                    else if (side === 'above') { px = tb.cx - cw / 2; py = tb.t - gap - ch; }
+                    else if (side === 'right') { px = tb.r + gap; py = tb.cy - ch / 2; }
+                    else { px = tb.l - gap - cw; py = tb.cy - ch / 2; }
+                    px = gmClamp(px, M, vw - cw - M); py = gmClamp(py, M, vh - ch - M);
+                    const hit = px < tb.r + 10 && px + cw > tb.l - 10 && py < tb.b + 10 && py + ch > tb.t - 10;
+                    if (!hit) { x = px; y = py; placed = true; break; }
+                }
+                if (!placed) { x = gmClamp(tb.cx - cw / 2, M, vw - cw - M); y = tb.cy < vh / 2 ? vh - ch - M : M; }
+            }
+            card.style.left = Math.round(x) + 'px';
+            card.style.top = Math.round(y) + 'px';
+            // arrow from the card to the ring
+            const arrow = document.getElementById('gmArrow'), head = document.getElementById('gmHead');
+            arrow.style.display = head.style.display = 'none';
+            if (tb) {
+                const cb = { l: x, t: y, r: x + cw, b: y + ch, cx: x + cw / 2, cy: y + ch / 2 };
+                const a = gmEdge(cb, tb.cx, tb.cy);
+                const e0 = gmEdge(tb, cb.cx, cb.cy);
+                // stop just outside the ring (circles use their radius)
+                let e = e0;
+                if (s.type === 'circle') { const dx = cb.cx - s.cx, dy = cb.cy - s.cy, l = Math.hypot(dx, dy) || 1; e = { x: s.cx + dx / l * (s.r + pulse + 6), y: s.cy + dy / l * (s.r + pulse + 6) }; }
+                else { const dx = e0.x - tb.cx, dy = e0.y - tb.cy, l = Math.hypot(dx, dy) || 1; e = { x: e0.x + dx / l * (pulse + 8), y: e0.y + dy / l * (pulse + 8) }; }
+                const len = Math.hypot(e.x - a.x, e.y - a.y);
+                if (len > 26) {
+                    const mx = (a.x + e.x) / 2, my = (a.y + e.y) / 2;
+                    const nx = -(e.y - a.y) / len, ny = (e.x - a.x) / len;
+                    const cx = mx + nx * len * 0.16, cy = my + ny * len * 0.16;
+                    arrow.setAttribute('d', 'M' + a.x + ' ' + a.y + ' Q' + cx + ' ' + cy + ' ' + e.x + ' ' + e.y);
+                    const ang = Math.atan2(e.y - cy, e.x - cx), hs = 15;
+                    const p1 = [e.x, e.y];
+                    const p2 = [e.x - Math.cos(ang - 0.45) * hs, e.y - Math.sin(ang - 0.45) * hs];
+                    const p3 = [e.x - Math.cos(ang + 0.45) * hs, e.y - Math.sin(ang + 0.45) * hs];
+                    head.setAttribute('points', p1.join(',') + ' ' + p2.join(',') + ' ' + p3.join(','));
+                    arrow.style.display = head.style.display = '';
+                }
+            }
+            GM.raf = requestAnimationFrame(gmFrame);
+        }
+
+        // ---- the "How to Play" pop-up (asks to enable Guide Mode) ----
+        function gmRenderModal() {
+            const on = gmOn();
+            document.getElementById('tutorialTitle').textContent = on ? 'Guide Mode is ON ✅' : 'Enable Guide Mode?';
+            document.getElementById('tutorialText').innerHTML = on
+                ? "The game is following along and pointing things out as you play. Turn it off any time, or restart it to hear the basics again."
+                : "Guide Mode follows along as you play. It <b>circles and points at things on the screen</b>: first the basics and the controls, then it explains every new teacher and upgrade as soon as you get one. You can turn it off any time.";
+            const dots = document.getElementById('tutorialDots'); dots.innerHTML = ''; dots.style.display = 'none';
+            const b0 = document.getElementById('tutBackBtn'), b1 = document.getElementById('tutNextBtn');
+            b0.disabled = false;
+            b0.textContent = on ? 'Turn off' : 'Not now';
+            b1.textContent = on ? 'Restart guide' : 'Next ▶';
+        }
+        function openTutorial() {
+            GM.modal = true;
+            if (GM.cur) gmClose(false);
+            game.guideHold = !!game.active;
+            gmRenderModal();
+            document.getElementById('tutorialModal').classList.add('show');
+        }
+        function closeTutorial() {
+            GM.modal = false;
+            game.guideHold = false;
+            document.getElementById('tutorialModal').classList.remove('show');
+            GM.lastEnd = performance.now();
+        }
+        function guideModalBtn(which) {
+            if (!gmOn()) {
+                if (which === 1) gmSetEnabled(true);
+            } else if (which === 0) {
+                gmSetEnabled(false);
+            } else {
+                GM.seen = {}; gmSaveSeen();
+            }
+            closeTutorial();
+        }
+        setInterval(() => { try { gmTick(); } catch (e) {} }, 250);
+        // ===== END GUIDE MODE =====
 
         // ===== UDR SHOP (cafe storefront) =====
         const NPC_SCARVES = ['#26A69A', '#42A5F5', '#7E57C2', '#66BB6A', '#FFCA28', '#FF7043', '#5C6BC0', '#26C6DA'];
@@ -8837,7 +9261,7 @@
                 const buffCard = k => {
                     const d = TEACHER_BUFFS[k], own = buffOwned(k);
                     return '<div class="pbuff-card"><div class="pbuff-ico">' + d.icon + '</div><div class="pskin-info"><b>' + d.name + '<small>' + d.teacher + '</small></b><span>' + d.desc + '</span>' +
-                        (own ? '<span class="pskin-own">✓ Owned</span>' : '<button onclick="buyTeacherBuff(\'' + k + '\')">' + d.price + ' 💚 Buy</button>') + '</div></div>';
+                        (own ? (buffEquipped(k) ? '<span class="pskin-own">✓ Equipped</span><button onclick="toggleTeacherBuff(\'' + k + '\')">Unequip</button>' : '<span class="pskin-own" style="color:#aab4d8">Owned (off)</span><button onclick="toggleTeacherBuff(\'' + k + '\')">Equip</button>') : '<button onclick="buyTeacherBuff(\'' + k + '\')">' + d.price + ' 💚 Buy</button>') + '</div></div>';
                 };
                 s1.innerHTML = '<div class="pshop-menu-title">Teacher Buffs</div><div class="pshop-menu-sub">ONE FOR EACH TEACHER</div><div class="pshop-scroll">' + Object.keys(TEACHER_BUFFS).map(buffCard).join('') + '</div>';
                 s2.innerHTML = pBoardHTML('Menu', 'GAME');
@@ -9034,8 +9458,8 @@
             // (shop 1 = base, shop 2 = 1.5x, shop 3 = 2x, ...)
             const shopNumber = Math.max(1, game.shopsOpened);
             const priceMult = 1 + 0.5 * (shopNumber - 1);
-            const upgradeCost = Math.round(150 * priceMult);
-            const megaUpgradeCost = Math.round(300 * priceMult);
+            const upgradeCost = Math.round(SHOP_PRICES.upgrade * priceMult);
+            const megaUpgradeCost = Math.round(SHOP_PRICES.mega * priceMult);
             const bought = id => upgradeCount(id) + '/' + MAX_PER_UPGRADE + ' bought';
 
             document.getElementById('shopNumberLabel').textContent = 'Shop #' + shopNumber + ' - prices rise every shop';
@@ -9080,9 +9504,9 @@
             const baduiOwned = document.getElementById('baduiBtn').style.display !== 'none';
             addMenuRow(teList, {
                 name: '👩‍🏫 Angry Teacher', desc: 'Writes Negative: marked kebabs take 2x damage',
-                price: 100, off: baduiOwned, priceLabel: baduiOwned ? 'HIRED' : null,
+                price: SHOP_PRICES.badui, off: baduiOwned, priceLabel: baduiOwned ? 'HIRED' : null,
                 offLine: "She's already on your team!",
-                buy: () => buyTeacher('badui', 100)
+                buy: () => buyTeacher('badui', SHOP_PRICES.badui)
             });
             const mathCost = getMathUnlockCost();
             if (game.mathUnlocked) {
@@ -9101,7 +9525,7 @@
                     buy: () => buyTeacher('math', mathCost)
                 });
             }
-            const capCost = Math.round((250 + 100 * upgradeCount('towercap')) * priceMult);
+            const capCost = Math.round((SHOP_PRICES.cap + SHOP_PRICES.capStep * upgradeCount('towercap')) * priceMult);
             addMenuRow(teList, {
                 name: '🏫 More Teachers', desc: '+3 max of EACH teacher · now ' + getTowerCap() + ' each · ' + bought('towercap'),
                 price: capCost, off: upgradeMaxed('towercap'), priceLabel: upgradeMaxed('towercap') ? 'MAXED' : null,
@@ -9294,10 +9718,10 @@
             if (tower.type === 'badui') {
                 // Typing on her laptop in the seconds BEFORE Negative,
                 // fading away the moment the ability fires.
-                const TYPE_START = 420; // last 3 seconds of the 10s cooldown
+                const TYPE_FRAMES = 180; // she types for the last 3 seconds before her Negative fires
                 let alpha = 0;
-                if (game.waveInProgress && tower.lastNS >= TYPE_START) {
-                    alpha = Math.min(1, (tower.lastNS - TYPE_START) / 12);
+                if (game.waveInProgress && tower.nsFireAt >= 0 && game.frameCount >= tower.nsFireAt - TYPE_FRAMES && game.frameCount <= tower.nsFireAt + 5) {
+                    alpha = Math.min(1, (game.frameCount - (tower.nsFireAt - TYPE_FRAMES)) / 12);
                 } else if (tower.enterTimer > 0) {
                     alpha = 1;
                 } else if (tower.gestureType === 'write' && tower.gestureTimer > 0) {
@@ -9541,6 +9965,8 @@
 
                 if (type === 'badui') {
                     this.lastNS = 0;
+                    this.nsFireAt = -1;      // frame her next Negative fires (scheduled so she never waits around typing)
+                    this.markedEnemy = null; // she only has ONE marked kebab at a time
                     this.nsCounter = 0;
                     this.enterTimer = 0;
                     this.ultimateCircles = [];
@@ -9681,23 +10107,37 @@
                 if (this.type === 'badui') {
                     this.lastNS++;
                     
-                    // Ready every 5 seconds. Before it fires she presses Enter, and
-                    // two Angry Teachers never fire at the same moment: each one
-                    // reserves a slot and the next must wait NS_SLOT_GAP frames.
-                    if (this.enterTimer > 0) {
-                        if (!game.waveInProgress) {
-                            this.enterTimer = 0;
-                        } else {
-                            this.enterTimer--;
-                            if (this.enterTimer === NS_ENTER_FRAMES - 11) playSound(950, 0.05, 'square'); // key click
-                            if (this.enterTimer <= 0) {
-                                this.attackNS();
-                                this.lastNS = 0;
-                            }
+                    // Her Negative is SCHEDULED: after the 5 second cooldown she picks a time slot (two Angry Teachers never
+                    // fire at the same moment), types for the last 3 seconds before it, then presses Enter and fires. She only
+                    // has ONE marked kebab at a time: while her kebab is still alive she waits (no typing).
+                    const stillMarked = this.markedEnemy && this.markedEnemy.health > 0 && game.enemies.includes(this.markedEnemy);
+                    if (!stillMarked) this.markedEnemy = null;
+                    // nothing to mark (no unmarked kebab on the map): she does not type at all
+                    const hasTarget = game.enemies.some(e => !e.hasNS && e.health > 0);
+                    if (!game.waveInProgress || stillMarked || !hasTarget) {
+                        this.enterTimer = 0;
+                        this.nsFireAt = -1;
+                    } else if (this.enterTimer > 0) {
+                        this.enterTimer--;
+                        if (this.enterTimer === NS_ENTER_FRAMES - 11) playSound(950, 0.05, 'square'); // key click
+                        if (this.enterTimer <= 0) {
+                            this.attackNS();
+                            this.lastNS = 0;
+                            this.nsFireAt = -1;
                         }
-                    } else if (this.lastNS >= NS_COOLDOWN_FRAMES && game.waveInProgress && game.frameCount >= (game.nsNextSlot || 0)) {
-                        this.enterTimer = NS_ENTER_FRAMES;
-                        game.nsNextSlot = game.frameCount + NS_SLOT_GAP;
+                    } else {
+                        if (this.nsFireAt > game.frameCount + 3000) this.nsFireAt = -1;      // stale (e.g. after a rewind)
+                        if (this.nsFireAt < 0) {
+                            if ((game.nsNextSlot || 0) > game.frameCount + 3000) game.nsNextSlot = 0;
+                            const n = Math.max(1, game.towers.filter(t => t.type === 'badui').length);
+                            const gap = Math.max(60, Math.min(NS_SLOT_GAP, Math.floor(NS_COOLDOWN_FRAMES / n)));
+                            let at = game.frameCount + Math.max(NS_ENTER_FRAMES, NS_COOLDOWN_FRAMES - this.lastNS);
+                            at = Math.max(at, (game.nsNextSlot || 0) + gap);
+                            game.nsNextSlot = at;
+                            this.nsFireAt = at;
+                        } else if (game.frameCount >= this.nsFireAt - NS_ENTER_FRAMES) {
+                            this.enterTimer = NS_ENTER_FRAMES;
+                        }
                     }
 
                     for (let i = this.ultimateCircles.length - 1; i >= 0; i--) {
@@ -9902,6 +10342,7 @@
                 for (const enemy of targets) {
                     enemy.hasNS = true;
                     enemy.nsDamageMultiplier = 2;
+                    this.markedEnemy = enemy;
                     achStat('marks');
                 }
 
@@ -9971,7 +10412,11 @@
                     letter: this.type === 'sheikh' && !longShebab ? ARABIC_LETTERS[Math.floor(Math.random() * ARABIC_LETTERS.length)] : null,
                     sentence: longShebab ? SHEBAB_SENTENCES[Math.floor(Math.random() * SHEBAB_SENTENCES.length)] : null
                 });
-                if (longShebab && target.health > 0) { target.dotLeft = 180; target.dotDmg = dmg / 6; target.dotTick = 0; } // Long Shebab: keeps hurting for 3 more seconds
+                if (longShebab && target.health > 0) {
+                    // Long Shebab: the sentence hits 3 times in total (this one + 2 more), so 3x a normal throw
+                    target.hitQueue = target.hitQueue || [];
+                    target.hitQueue.push({ t: 18, dmg: dmg, src: this }, { t: 36, dmg: dmg, src: this });
+                }
 
                 if (this.type === 'sheikh') {
                     game.particles.push({
@@ -10265,10 +10710,12 @@
         // Coins: every kebab pays 15 and a boss kebab pays 60 (there is no wave-clear bonus)
         const KEBAB_COIN_REWARD = 15;
         const BOSS_COIN_REWARD = 60;
-        const BOSS_HEALTH_MULTIPLIER = 15;
+        const BOSS_HEALTH_MULTIPLIER = 10;   // boss kebabs have 10x the health of a normal kebab (nerfed from 15x)
         const BOSS_ATTACK_INTERVAL = 75; // 1.25s
         const BOSS_ATTACK_RANGE = 200;
         const BOSS_ATTACK_DAMAGE = 3;
+        // "Hitter" kebabs: 1 in 10 kebabs is angry. Every teacher it walks past, it has a 50% chance to stop for half a second and hit them.
+        const HITTER_CHANCE = 0.10, HITTER_HIT_CHANCE = 0.5, HITTER_RANGE = 62, HITTER_STOP_FRAMES = 30, HITTER_DAMAGE = 3;
         // Quad kebab variants
         const SOCCER_KEBAB_WAVE = 5, OZ_KEBAB_WAVE = 10;
         const SOCCER_DODGE_CHANCE = 0.25, SOCCER_DODGE_FRAMES = 120, SOCCER_DODGE_COOLDOWN = 300;
@@ -10300,6 +10747,9 @@
                 this.bounceOffset = Math.random() * Math.PI * 2;
                 this.hasNS = false;
                 this.nsDamageMultiplier = 1;
+                this.hitter = !isBoss && Math.random() < HITTER_CHANCE;   // can hit teachers it walks past
+                this.hitStop = 0; this.hitSwing = 0; this.hitSeen = new Set();
+                this.hitQueue = [];                                        // Long Shebab's extra hits
                 this.pulledBy = null;
                 this.beingShushed = false;
                 this.shushRotation = 0;
@@ -10346,15 +10796,23 @@
             }
 
             update() {
-                if (this.dotLeft > 0) {
-                    this.dotLeft--;
-                    if (++this.dotTick >= 30) {
-                        this.dotTick = 0;
-                        this.health -= this.dotDmg;
-                        if (this.health <= 0) achUnlock('longkill');
-                        game.particles.push({ type: 'text', owner: 'sheikh', x: this.x, y: this.y - 40, text: '✦', life: 18, size: 14 });
+                if (this.hitQueue && this.hitQueue.length) {
+                    // Long Shebab: the sentence lands 3 times in total (the first hit happens when it is thrown)
+                    for (let q = this.hitQueue.length - 1; q >= 0; q--) {
+                        const h = this.hitQueue[q];
+                        if (--h.t > 0) continue;
+                        this.hitQueue.splice(q, 1);
+                        if (this.health <= 0) continue;
+                        this.health -= h.dmg;
+                        game.particles.push({ type: 'text', owner: 'sheikh', x: this.x, y: this.y - 40, text: '✦', life: 18, size: 16 });
+                        if (!lowFx()) playSound(700, 0.05, 'sine');
+                        if (this.health <= 0) {
+                            achUnlock('longkill');
+                            if (h.src && game.towers.includes(h.src)) h.src.shebabCharge = Math.min(h.src.shebabCharge + 20, h.src.shebabMax);
+                        }
                     }
                 }
+                if (this.hitSwing > 0) this.hitSwing--;
                 this.prevX = this.x;
                 this.prevY = this.y;
                 if (this.hitTimer > 0) this.hitTimer--;
@@ -10374,6 +10832,24 @@
                 // otherwise a fast kebab's normal speed would cancel out the
                 // pull and it would just look like it's frozen in place.
                 if (this.pulledBy) return false;
+
+                // Hitter kebab: stands still while it hits a teacher, and decides at each teacher it passes
+                if (this.hitter) {
+                    if (this.hitStop > 0) { this.hitStop--; return false; }
+                    for (const tower of game.towers) {
+                        if (this.hitSeen.has(tower)) continue;
+                        if (Math.hypot(tower.x - this.x, tower.y - this.y) > HITTER_RANGE) continue;
+                        this.hitSeen.add(tower);
+                        if (Math.random() < HITTER_HIT_CHANCE) {
+                            this.hitStop = HITTER_STOP_FRAMES; this.hitSwing = HITTER_STOP_FRAMES;
+                            tower.hp -= HITTER_DAMAGE;
+                            game.particles.push({ type: 'text', color: '#B71C1C', x: tower.x, y: tower.y - 55, vy: -0.4, text: '-' + HITTER_DAMAGE, life: 30, size: 16 });
+                            game.particles.push({ type: 'text', color: '#FF3B30', x: this.x, y: this.y - 62, vy: -0.3, text: 'HIT!', life: 28, size: 15 });
+                            if (!lowFx()) playSound(220, 0.12, 'square');
+                            break;
+                        }
+                    }
+                }
 
                 if (this.isBoss) {
                     this.lastBossAttack++;
@@ -11560,6 +12036,7 @@
             setVal('set_teacherAnim', settings.teacherAnim);
             setVal('set_skipIntro', settings.skipIntro);
             setVal('set_eventPopups', settings.eventPopups);
+            setVal('set_guideMode', settings.guideMode);
             setVal('set_menuAnim', settings.menuAnim);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
@@ -11579,6 +12056,7 @@
             applySettings();
             syncSettingsUI();
             if (key === 'music' && !val) stopShopTheme(0.3);
+            if (key === 'guideMode') { if (!val) gmClose(false); gmRefreshBtn(); }
             if (key === 'volume' || key === 'sfx') playSound(660, 0.08, 'sine'); // preview
         }
         function resetSettings() {
@@ -12163,6 +12641,20 @@
                     ctx.restore();
                 }
 
+                if (enemy.hitter) {
+                    // angry mark: a little red anger-vein by the top of the kebab (and it shakes while it is hitting)
+                    const sw = enemy.hitSwing > 0 ? Math.sin(enemy.hitSwing * 1.6) * 2 : 0;
+                    ctx.save();
+                    ctx.translate(x + 16 + sw, y - 26 - top);
+                    ctx.strokeStyle = '#000'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+                    for (let pass = 0; pass < 2; pass++) {
+                        if (pass) { ctx.strokeStyle = '#FF2A1F'; ctx.lineWidth = 2.5; }
+                        ctx.beginPath(); ctx.arc(-3, -3, 4, Math.PI * 0.1, Math.PI * 1.4); ctx.stroke();
+                        ctx.beginPath(); ctx.arc(4, 3, 4, Math.PI * 1.1, Math.PI * 2.4); ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
                 if (enemy.hasNS) {
                     ctx.fillStyle = '#FF0000';
                     ctx.font = 'bold 12px Arial';
@@ -12196,7 +12688,12 @@
                     if (x < -30 || x > canvas.width + 30) continue; // off-screen
                     if (p.sentence) {
                         const sp = getSentenceSprite(p.sentence, pColor);
-                        ctx.drawImage(sp, x - sp.width / 2, y - 16);
+                        // the sentence stands UPRIGHT (written bottom-to-top like a pillar of text) and flies to the kebab
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.rotate(-Math.PI / 2);
+                        ctx.drawImage(sp, -sp.width / 2, -16);
+                        ctx.restore();
                     } else if (p.letter) {
                         ctx.drawImage(getLetterSprite(p.letter, pColor), x - 20, y - 20);
                     } else {
@@ -12301,7 +12798,7 @@
         // background loop passes a bigger limit so nothing is lost while hidden.
         function stepGame(deltaMs, maxSteps) {
             if (game.devMode && devRewindTick(deltaMs)) return;
-            if (!game.paused) {
+            if (!game.paused && !game.guideHold) {
                 game.frameAccumulator += (deltaMs / (1000 / TARGET_FPS)) * game.timeScale;
                 const limit = maxSteps || Math.max(4, Math.ceil(game.timeScale * 3));
                 let steps = 0;
@@ -12474,6 +12971,7 @@
             if (--MB.spawnIn <= 0 && E.length < 7) {
                 MB.spawnIn = 120 + Math.random() * 90;
                 const e = new Enemy(0, 1, 1, false);
+                e.hitter = false;
                 e.health = e.maxHealth = 100; e.speed = 1.5 + Math.random() * 0.4;
                 E.push(e);
             }
@@ -12594,10 +13092,8 @@
         requestAnimationFrame(menuBgLoop);
 
         updateLastUpdateDateDisplay();
-        try {
-            if (!localStorage.getItem('ugd_tutorial_seen')) openTutorial();
-        } catch (e) {}
         maybeShowDisclaimers();
+        gmRefreshBtn();
 
         applySettings();
         restartGameLoop();

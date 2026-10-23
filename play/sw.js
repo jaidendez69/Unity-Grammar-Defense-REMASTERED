@@ -2,7 +2,7 @@
 // Bump CACHE_VERSION any time you upload a new version of the game -
 // that's what makes the "Update available" prompt appear for players
 // who already have it installed.
-const CACHE_VERSION = 'ugd-v8';
+const CACHE_VERSION = 'ugd-v9';
 const CACHE_NAME = 'unity-defense-remastered-' + CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [

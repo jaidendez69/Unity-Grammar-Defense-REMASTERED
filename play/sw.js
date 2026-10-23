@@ -1,8 +1,8 @@
-// Service worker for Unity Defense Remastered.
-// Bump CACHE_VERSION any time you upload a new version of the game -
-// that's what makes the "Update available" prompt appear for players
-// who already have it installed.
-const CACHE_VERSION = 'ugd-v9';
+// Service worker for Unity Defense Remastered (browser version).
+// Pages are fetched from the NETWORK first (and always revalidated), so reopening the link
+// gives the newest version as soon as it is published. The cache is only a fallback for when
+// you are offline. Bump CACHE_VERSION on every publish.
+const CACHE_VERSION = 'ugd-v10';
 const CACHE_NAME = 'unity-defense-remastered-' + CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [
@@ -14,37 +14,41 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+    // 'reload' skips the browser's HTTP cache so the cache never gets filled with an old copy
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+        caches.open(CACHE_NAME).then((cache) =>
+            Promise.all(ASSETS_TO_CACHE.map((url) =>
+                fetch(new Request(url, { cache: 'reload' })).then((res) => res.ok ? cache.put(url, res) : null).catch(() => null)
+            ))
+        )
     );
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) =>
-            Promise.all(
-                keys
-                    .filter((key) => key !== CACHE_NAME)
-                    .map((key) => caches.delete(key))
-            )
+            Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
         )
     );
     self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
     event.respondWith(
-        caches.match(event.request).then((cached) => {
-            return cached || fetch(event.request);
-        })
+        fetch(event.request, { cache: 'no-cache' })
+            .then((res) => {
+                if (res && res.ok && new URL(event.request.url).origin === location.origin) {
+                    const copy = res.clone();
+                    caches.open(CACHE_NAME).then((c) => c.put(event.request, copy)).catch(() => {});
+                }
+                return res;
+            })
+            .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
     );
 });
 
-// Lets the page tell a waiting new version to take over immediately
-// once the player taps "Update Now".
 self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
+    if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

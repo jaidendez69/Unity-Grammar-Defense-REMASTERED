@@ -2,7 +2,7 @@
 // Pages are fetched from the NETWORK first (and always revalidated), so reopening the link
 // gives the newest version as soon as it is published. The cache is only a fallback for when
 // you are offline. Bump CACHE_VERSION on every publish.
-const CACHE_VERSION = 'ugd-v10';
+const CACHE_VERSION = 'ugd-v12';
 const CACHE_NAME = 'unity-defense-remastered-' + CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [
@@ -35,17 +35,19 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
+    const req = event.request;
+    if (req.method !== 'GET') return;
+    if (new URL(req.url).origin !== location.origin) return;   // other sites (Firebase etc.) are not touched
     event.respondWith(
-        fetch(event.request, { cache: 'no-cache' })
+        fetch(req, { cache: 'no-cache' })
             .then((res) => {
-                if (res && res.ok && new URL(event.request.url).origin === location.origin) {
+                if (res && res.ok) {
                     const copy = res.clone();
-                    caches.open(CACHE_NAME).then((c) => c.put(event.request, copy)).catch(() => {});
+                    caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
                 }
                 return res;
             })
-            .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+            .catch(() => caches.match(req).then((cached) => cached || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
     );
 });
 

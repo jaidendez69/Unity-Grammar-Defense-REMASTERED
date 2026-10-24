@@ -145,9 +145,10 @@
 
         /* smoother switching between menu screens: the old one drifts back and blurs out,
            the new one slides up and settles in */
-        @keyframes scrOut { to { opacity: 0; transform: scale(1.05); filter: blur(6px); } }
-        @keyframes scrIn { from { opacity: 0; transform: translateY(28px) scale(.97); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+        @keyframes scrOut { to { opacity: 0; transform: scale(1.04); } }
+        @keyframes scrIn { from { opacity: 0; transform: translateY(22px) scale(.98); } to { opacity: 1; transform: none; } }
         .menu-screen.fade-out, .updates-screen.fade-out, .credits-screen.fade-out, .account-screen.fade-out { animation: scrOut .42s cubic-bezier(.5, 0, .8, .4) forwards !important; pointer-events: none; }
+        .menu-screen, .updates-screen, .credits-screen, .account-screen { will-change: transform, opacity; }
         .updates-screen, .credits-screen, .account-screen { animation: scrIn .5s cubic-bezier(.2, .9, .3, 1) both; }
         @media (prefers-reduced-motion: reduce) { .menu-screen.fade-out, .updates-screen.fade-out, .credits-screen.fade-out, .account-screen.fade-out { animation: fadeOut .2s forwards !important; } .updates-screen, .credits-screen, .account-screen { animation: fadeIn .2s both; } }
         @keyframes fadeOut {
@@ -921,6 +922,17 @@
             transition: transform 0.3s ease;
         }
 
+        /* UPDATING screen: shown after pressing Update Now until the new version is fully loaded */
+        #updatingOverlay { position: fixed; inset: 0; z-index: 100000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+            background: radial-gradient(ellipse at 50% 40%, #17503a 0%, #0e3a28 55%, #07190f 100%); color: #fff; text-align: center; padding: 24px; }
+        #updatingOverlay.show { display: flex; }
+        #updatingOverlay .up-title { font-size: clamp(28px, 6vw, 46px); font-weight: 900; color: #FFE066; letter-spacing: 2px; text-shadow: 3px 3px 0 #000; }
+        #updatingOverlay .up-spin { width: 54px; height: 54px; border-radius: 50%; border: 6px solid rgba(255,255,255,.2); border-top-color: #FF1493; animation: upSpin .9s linear infinite; }
+        #updatingOverlay .up-bar { width: min(420px, 86vw); height: 18px; border-radius: 12px; border: 3px solid #000; background: rgba(0,0,0,.45); overflow: hidden; }
+        #updatingOverlay .up-fill { height: 100%; width: 0; background: linear-gradient(90deg, #FF1493, #FF69B4); transition: width .35s ease; }
+        #updatingOverlay .up-msg { font-size: 15px; font-weight: 700; opacity: .92; min-height: 22px; }
+        @keyframes upSpin { to { transform: rotate(360deg); } }
+
         .update-banner.show {
             transform: translateY(0);
         }
@@ -1212,6 +1224,10 @@
             font-weight: 800; font-size: 15px; cursor: pointer; letter-spacing: .3px;
             box-shadow: 0 6px 18px rgba(0,0,0,.45); transition: transform .12s, box-shadow .12s;
         }
+        .sug-corner-btn { right: 22px; bottom: 78px; background: linear-gradient(135deg, #7CF3C0, #2FB5E8); color: #04202a; }
+        .sug-box { width: 100%; min-height: 110px; resize: vertical; padding: 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; font: 600 15px system-ui, sans-serif; box-sizing: border-box; }
+        .sug-item { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); border-radius: 12px; padding: 10px 14px; margin: 8px 0; text-align: left; line-height: 1.4; }
+        .sug-item small { display: block; color: #9fb3c8; margin-top: 4px; }
         .guide-corner-btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 24px rgba(0,0,0,.55); }
         .theme-halloween .guide-corner-btn { background: linear-gradient(135deg, #FF8A1F, #B34700); color: #fff; border-color: #FFB347; }
         .theme-candy .guide-corner-btn { background: linear-gradient(135deg, #FF9EC9, #C77DFF); color: #3a1730; }
@@ -2809,9 +2825,11 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.24</div>
+    <div id="versionTag">v1.0.25</div>
 
     <!-- PWA UPDATE BANNER -->
+    <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
+        <div class="up-bar"><div class="up-fill" id="upFill"></div></div><div class="up-msg" id="upMsg">Preparing the update...</div></div>
     <div class="update-banner" id="updateBanner">
         <span>🔄 A new version is available!</span>
         <button class="update-banner-btn" id="updateNowBtn">Update Now</button>
@@ -2849,6 +2867,7 @@
             <div class="mm-foot"><button class="mm-link" onclick="showCredits()">🎬 Credits</button><button class="mm-link" onclick="showDisclaimers()">⚠️ Disclaimers</button></div>
         </div>
         <button class="guide-corner-btn" onclick="openGuide()">📖 All You Need to Know</button>
+        <button class="guide-corner-btn sug-corner-btn" onclick="openSuggestions()">💡 Suggestions</button>
     </div>
 
     <!-- ACCOUNT SCREEN -->
@@ -2911,6 +2930,17 @@
                 <div class="update-entry">
                     <div class="update-date">October 24, 2026</div>
                     <ul>
+                        <li>NEW: a read-only <b>🛡️ Admin Panel</b> for the game's admin (player list and suggestions; it never changes anyone's game)</li>
+                        <li>NEW: <b>💡 Suggestions</b> section next to All You Need to Know in the main menu. Write your idea for the game and send it (signed-in players send it to everyone; otherwise it is saved on your device)</li>
+                        <li>NEW: <b>🩺 Medic</b> upgrade in the in-game shop (500 🪙 base): the school heals <b>3 health after every wave</b></li>
+                        <li>The school now has <b>30 health</b> (was 20)</li>
+                        <li>Teacher Buffs now <b>unlock at level 15</b>, and you can only equip or unequip them in your <b>profile → ✨ Buffs</b> tab (not in the shop)</li>
+                        <li><b>📜 Long Shebab</b>: Wise Sheikh's main attack now has a <b>1 second cooldown</b> while the buff is equipped</li>
+                        <li>NEW: the kebab shop <b>cutscene</b> now also plays before the <b>split track</b> (wave 10), the <b>tri-track</b> (wave 40) and every <b>boss kebab</b>. Turn them off with Skip intro animation</li>
+                        <li>The menu wind sound is now a soft <b>breeze</b>, and switching between menu screens is smoother (less lag)</li>
+                        <li>All You Need to Know: new <b>Suggestions</b> page, and the shop, price table, Medic, School, Buffs and Wise Sheikh pages were updated</li>
+                        <li>NEW: pressing <b>Update Now</b> in the browser version now shows an <b>UPDATING</b> loading screen with a progress bar. The new version is downloaded completely first, and only then does the page refresh</li>
+                        <li>Fixed: the browser version could keep showing the old version after Update Now. It now always loads the newest version from the internet first (and only uses its saved copy when you are offline)</li>
                         <li><b>Boss kebabs are weaker</b>: they now have <b>10x</b> the health of a normal kebab (was 15x)</li>
                         <li>NEW: <b>Hitter kebabs!</b> 1 in 10 kebabs is angry (look for the red anger mark). Each teacher it walks past, it has a 50% chance to <b>stop for half a second and hit them</b> for 3 HP</li>
                         <li><b>Angry Teacher</b> now only has <b>1 marked kebab at a time</b>: she waits until her marked kebab is defeated before writing another Negative</li>
@@ -3449,6 +3479,31 @@
     </div>
 
     <!-- ALL YOU NEED TO KNOW SCREEN -->
+    <div class="updates-screen hidden" id="adminScreen">
+        <div class="guide-wrap" style="max-width:1000px;margin:0 auto;padding:24px 16px">
+            <div class="guide-head"><h2>🛡️ Admin Panel</h2><button class="back-btn" onclick="backToMenu('admin')">Back</button></div>
+            <p style="color:#cfe0ee;margin:4px 0 10px">Read-only. Nothing here changes anyone's game or account.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                <button class="acc-tab on" id="admTabP" onclick="adminTab('players')">👥 Players</button>
+                <button class="acc-tab" id="admTabS" onclick="adminTab('sugs')">💡 Suggestions</button>
+                <button class="acc-tab" onclick="adminLoad()">🔄 Refresh</button>
+            </div>
+            <div id="adminBody" style="color:#fff"></div>
+        </div>
+    </div>
+
+    <div class="updates-screen hidden" id="suggestionsScreen">
+        <div class="guide-wrap" style="max-width:720px;margin:0 auto;padding:24px 16px">
+            <div class="guide-head"><h2>💡 Suggestions</h2><button class="back-btn" onclick="backToMenu('suggestions')">Back</button></div>
+            <p style="color:#cfe0ee">Got an idea for the game? A new teacher, a new kebab, a fix? Write it here!</p>
+            <textarea class="sug-box" id="sugText" maxlength="500" placeholder="Type your suggestion..."></textarea>
+            <div style="display:flex;gap:10px;align-items:center;margin:8px 0"><button class="account-submit-btn" id="sugSend" onclick="submitSuggestion()">Send suggestion</button><span id="sugCount" style="color:#9fb3c8;font-size:13px">0 / 500</span></div>
+            <div id="sugMsg" style="min-height:20px;color:#7CF3C0;font-weight:700"></div>
+            <h3 style="margin-top:18px">Latest suggestions</h3>
+            <div id="sugList"></div>
+        </div>
+    </div>
+
     <div class="updates-screen guide-screen hidden" id="guideScreen">
         <div class="guide-wrap">
             <div class="guide-head">
@@ -3507,7 +3562,7 @@
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Event pop-ups<small>Pop-ups at the bottom for the next boss, split track, tri-track and shop.</small></div>
                     <label class="switch"><input type="checkbox" id="set_eventPopups" onchange="onSettingChange('eventPopups', this.checked)"><span class="slider"></span></label></div>
-                <div class="set-row"><div class="set-label">Skip intro animation<small>Turn on to skip the kebab shop cutscene (and the track pop-up) when you press Play.</small></div>
+                <div class="set-row"><div class="set-label">Skip intro animation<small>Turn on to skip the kebab shop cutscenes (when you press Play, and before the split track, tri-track and boss kebabs).</small></div>
                     <label class="switch"><input type="checkbox" id="set_skipIntro" onchange="onSettingChange('skipIntro', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Teacher animations<small>Blinking, eye movement and teachers chatting with their neighbours.</small></div>
                     <label class="switch"><input type="checkbox" id="set_teacherAnim" onchange="onSettingChange('teacherAnim', this.checked)"><span class="slider"></span></label></div>
@@ -3766,7 +3821,7 @@
             <div class="stats-group">
                 <div class="stat-box">
                     <span>❤️</span>
-                    <span id="health">20</span><span style="color: #999;">/</span><span id="maxHealth" style="color: #999;">20</span>
+                    <span id="health">30</span><span style="color: #999;">/</span><span id="maxHealth" style="color: #999;">30</span>
                 </div>
                 <div class="stat-box">
                     <span>🪙</span>
@@ -3867,6 +3922,7 @@
             game.maxHealth = saved.maxHealth;
             game.sentrals = saved.sentrals;
             game.purchasedUpgrades = saved.purchasedUpgrades || {};
+            game.medicHeal = saved.medicHeal || 0;
             game.damageMultiplier = saved.damageMultiplier || 1;
             game.attackSpeedMultiplier = saved.attackSpeedMultiplier || 1;
             game.towerCapBonus = saved.towerCapBonus || 0;
@@ -3960,6 +4016,7 @@
                         maxHealth: game.maxHealth,
                         sentrals: game.sentrals,
                         purchasedUpgrades: game.purchasedUpgrades,
+                        medicHeal: game.medicHeal || 0,
                         damageMultiplier: game.damageMultiplier,
                         attackSpeedMultiplier: game.attackSpeedMultiplier,
                         towerCapBonus: game.towerCapBonus,
@@ -4854,6 +4911,16 @@
             return out;
         }
         let accountTab = 'overview';
+        function buffsTabHTML(acc) {
+            const keys = Object.keys(TEACHER_BUFFS);
+            const cards = keys.map(k => {
+                const d = TEACHER_BUFFS[k], own = buffOwned(k), on = buffEquipped(k);
+                return '<div class="pbuff-card" style="margin:8px 0"><div class="pbuff-ico">' + d.icon + '</div><div class="pskin-info"><b>' + d.name + '<small>' + d.teacher + '</small></b><span>' + d.desc + '</span>' +
+                    (own ? '<span class="pskin-own"' + (on ? '' : ' style="color:#aab4d8"') + '>' + (on ? '✓ Equipped' : 'Owned (off)') + '</span><button onclick="toggleTeacherBuff(\'' + k + '\')">' + (on ? 'Unequip' : 'Equip') + '</button>'
+                        : '<span class="pskin-own" style="color:#aab4d8">Not owned. Buy it in the main menu Shop' + (buffLevelOk(acc) ? '' : ' (unlocks at level ' + BUFF_UNLOCK_LEVEL + ')') + '</span>') + '</div></div>';
+            }).join('');
+            return '<div class="account-hint">Teacher Buffs you own are equipped here. Unequipped buffs stay yours but do nothing in battle.</div>' + cards;
+        }
         function setAccountTab(t) { accountTab = t; renderAccountScreen(); }
 
         function updateAccountCornerBtn() {
@@ -4907,6 +4974,7 @@
                 '<button class="acct-nav-btn" onclick="openFromAccount(\'settings\')">⚙️ Settings</button>' +
                 '<button class="acct-nav-btn" onclick="openFromAccount(\'inbox\')">📥 Inbox<span class="corner-badge hidden" id="inboxBadge">0</span></button>' +
                 '<button class="acct-nav-btn" onclick="openFromAccount(\'chat\')">💬 Chat<span class="corner-badge hidden" id="chatBadge">0</span></button>' +
+                (isAdminAccount() ? '<button class="acct-nav-btn" onclick="openFromAccount(\'admin\')">🛡️ Admin</button>' : '') +
                 '</div>';
         }
         function openFromAccount(kind) {
@@ -4918,6 +4986,7 @@
                 navReturn = 'account';
                 let id = 'settingsScreen';
                 if (kind === 'settings') { clearContinueModal(); syncSettingsUI(); }
+                else if (kind === 'admin') { id = 'adminScreen'; adminOpen(); }
                 else if (kind === 'inbox') { renderInboxScreen(); id = 'inboxScreen'; }
                 else { currentChatFriend = null; renderChatScreen(); id = 'chatScreen'; }
                 const el = document.getElementById(id);
@@ -4967,6 +5036,8 @@
                     body = `<div class="ach-list">${achRowsHTML()}</div>`;
                 } else if (accountTab === 'skins') {
                     body = `<div class="skin-wrap">${skinsHTML()}</div>`;
+                } else if (accountTab === 'buffs') {
+                    body = buffsTabHTML(acc);
                 } else if (accountTab === 'custom') {
                     body = customizeHTML(acc);
                 } else {
@@ -5003,7 +5074,7 @@
                 content.innerHTML = `
                     <h2>👤 Profile</h2>
                     ${bannerHTML(acc)}
-                    <div class="acc-tabs">${tabBtn('overview', 'Overview')}${tabBtn('ach', '🏆 Achievements' + (readyN ? ' (' + readyN + ')' : ''))}${tabBtn('skins', '🎽 Skins')}${tabBtn('custom', '🎨 Customize')}</div>
+                    <div class="acc-tabs">${tabBtn('overview', 'Overview')}${tabBtn('ach', '🏆 Achievements' + (readyN ? ' (' + readyN + ')' : ''))}${tabBtn('skins', '🎽 Skins')}${tabBtn('buffs', '✨ Buffs')}${tabBtn('custom', '🎨 Customize')}</div>
                     ${body}
                     <button class="back-btn" onclick="backToMenu('account')">Back</button>
                     <button class="account-reset-link" onclick="logOutAccount()">Log Out</button>
@@ -6286,7 +6357,7 @@
                 '<p>Hordes of <b>kebabs</b> march along a track toward <b>your school</b>. Place <b>teachers</b> beside the track and they will stop the kebabs before they reach the school.</p>' +
                 gList([
                     'When you press <b>Play</b> on a new battle, a short <b>intro</b> plays: the camera zooms in on the <b>kebab shop at the start of the track</b> (where the kebabs come from) and its <b>villain cook</b> grills kebabs, then pounds his counter to <b>cause a 2 second rumble</b>. The camera pulls back and the first track builds itself <b>tile by tile</b> out of his shop. Click or press any key to skip it, or turn on <b>Skip intro animation</b> in ' + gLink('settings', 'Settings') + ' to never see it.',
-                    'Your school starts with <b>20 health</b>. Every kebab that reaches the school takes <b>1</b> away. At 0 the game is over.',
+                    'Your school starts with <b>30 health</b>. Every kebab that reaches the school takes <b>1</b> away. At 0 the game is over.',
                     'You start with <b>0 coins</b> (🪙, the money), but your <b>first 2 Wise Sheikhs are free</b>, so place them right away.',
                     'Press <b>▶ Wave 1</b> to send the first wave. After that, each wave starts by itself <b>10 seconds</b> after the last one is cleared (or press the wave button to go sooner).',
                     'Every kebab you defeat gives you <b>15 coins</b> (a boss gives <b>60</b>). Spend them on more teachers, then on shop upgrades.',
@@ -6310,11 +6381,12 @@
                 ]) },
 
             { id: 'goal', group: 'basics', icon: '🏫', title: 'The School & Losing', html: () =>
-                gStats([['School health', '20'], ['Lost per kebab that gets through', '1'], ['Max extra health from shop', '+10 (two buys)']]) +
+                gStats([['School health', '30'], ['Lost per kebab that gets through', '1'], ['Max extra health from shop', '+10 (two buys)']]) +
                 gList([
                     'The school is at the far end of the track. Kebabs that reach it disappear and cost you 1 health. The screen shakes when it happens.',
                     'When health hits 0 you see <b>💔 Defeated!</b> with the coins you earned. <b>Play Again</b> restarts from wave 1.',
                     'The shop\'s <b>❤️ School Health</b> upgrade gives <b>+5 max health and +5 health now</b>. You can only buy it while the school is hurt, and only twice.',
+                    'The shop\'s <b>🩺 Medic</b> upgrade heals the school <b>3 health after every wave</b> you clear.',
                     'Test Mode has no game over (see ' + gLink('test', 'Test Mode') + ').'
                 ]) },
 
@@ -6339,7 +6411,7 @@
                     ['Cost to place', 'First 2 free, then 100 + 4 per wave (max 250)', '230 + 5 per wave (no max)', '330 🪙 each (flat)'],
                     ['Health', '10', '8', '125'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles'],
-                    ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2× damage', 'None. "Shhhh!" every 10 s: 50 damage and knockback to 3 kebabs'],
+                    ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2× damage', 'None. "Shhhh!" every 10 s: 50 damage and knockback to 3 kebabs'],
                     ['Ultimate', '🔥 SHEBAB: 100 damage blast around him', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull'],
                     ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '🔥 Long BOYS!: ultimate lasts 1.5x longer', '🎯 Area Strike: replaces Algebra Swarm'],
                     ['Ultimate charges by', 'Killing blows (+20% each)', 'Time (about 17 seconds)', 'Time (about 17 seconds)'],
@@ -6357,7 +6429,8 @@
                 ]) +
                 '<h4>📜 Buff: Long Shebab (1000 💚)</h4>' +
                 gList([
-                    'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + '. Signed-in players only.',
+                    'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + '. Signed-in players only, from <b>level 15</b>.',
+                    'With this buff his main attack has a <b>1 second cooldown</b> (normally he throws 2 times a second), because each sentence hits 3 times.',
                     'His throws become <b>Arabic sentences</b> (like "يا شباب") instead of a single letter.',
                     'The sentence flies <b>upright</b> (standing up like a pillar of text). It hits the kebab <b>3 times</b> (the first on impact, then two more shortly after, shown as little ✦ sparks). Each hit is a normal throw\'s damage, so one sentence is <b>3× the damage</b>. Marked kebabs take 2× on each hit. If the 2nd or 3rd hit finishes a kebab, Wise Sheikh still gets his ultimate charge.'
                 ]) +
@@ -6602,10 +6675,10 @@
 
             // ---------------------------------------------------------- SHOP
             { id: 'teacherbuffs', group: 'shop', icon: '✨', title: 'Teacher Buffs', html: () =>
-                '<p>Each teacher has <b>one special buff</b>. You buy it <b>once</b> in the main menu <b>Shop → Upgrades → Teachers</b> with 💚 Positives, and you keep it forever. They cost a lot on purpose: <b>' + BUFF_PRICE + ' 💚 each</b>.</p>' +
+                '<p>Each teacher has <b>one special buff</b>. You buy it <b>once</b> in the main menu <b>Shop → Upgrades → Teachers</b> with 💚 Positives, and you keep it forever. Buffs <b>unlock at level 15</b>. They cost a lot on purpose: <b>' + BUFF_PRICE + ' 💚 each</b>.</p>' +
                 gTbl(['Buff', 'Teacher', 'What it does'], Object.keys(TEACHER_BUFFS).map(k => [TEACHER_BUFFS[k].icon + ' ' + TEACHER_BUFFS[k].name, TEACHER_BUFFS[k].teacher, TEACHER_BUFFS[k].desc])) +
                 gList([
-                    '<b>Equip and unequip:</b> once you own a buff, the shop shows <b>Unequip</b> / <b>Equip</b> under it. An unequipped buff stays owned but does nothing, so you can switch back to the normal teacher any time.',
+                    '<b>Equip and unequip:</b> only in your <b>profile → ✨ Buffs</b> tab (not in the shop). An unequipped buff stays owned but does nothing, so you can switch back to the normal teacher any time.',
                     'Buffs are saved on your <b>account</b> and sync to the cloud, so they follow you to other devices.',
                     'They work in <b>every battle while you are signed in</b>, including Test Mode. If you are signed out you do not get them.',
                     'Buying one does <b>not</b> use up the in-game shop. It is a different shop that uses Positives, not coins.',
@@ -6642,6 +6715,7 @@
                     ['💪 Damage Boost', '<b>1.5×</b> damage for every attack', SHOP_PRICES.upgrade + ' 🪙', '2'],
                     ['⚡ Attack Speed', 'Wise Sheikh throws <b>1.5× faster</b>', SHOP_PRICES.upgrade + ' 🪙', '2'],
                     ['❤️ School Health', '<b>+5 max health</b> and +5 health now. Only while the school is hurt', SHOP_PRICES.upgrade + ' 🪙', '2'],
+                    ['🩺 Medic', 'Heals the school <b>3 health every wave</b> you clear', SHOP_PRICES.medic + ' 🪙', '2'],
                     ['💥 Mega Damage', '<b>3.5×</b> damage (appears at wave 45)', SHOP_PRICES.mega + ' 🪙', '2'],
                     ['⚡⚡ Lightning Speed', '<b>2.5×</b> faster attacks (appears at wave 45)', SHOP_PRICES.mega + ' 🪙', '2']
                 ]) +
@@ -6679,10 +6753,10 @@
                 const rows = [];
                 for (let n = 1; n <= 8; n++) {
                     const m = 1 + 0.5 * (n - 1);
-                    rows.push(['#' + n + ' (wave ' + (n * 15) + ')', 'x' + m.toFixed(1), Math.round(SHOP_PRICES.upgrade * m), Math.round(SHOP_PRICES.mega * m), Math.round(SHOP_PRICES.cap * m), Math.round((SHOP_PRICES.cap + SHOP_PRICES.capStep) * m)]);
+                    rows.push(['#' + n + ' (wave ' + (n * 15) + ')', 'x' + m.toFixed(1), Math.round(SHOP_PRICES.upgrade * m), Math.round(SHOP_PRICES.medic * m), Math.round(SHOP_PRICES.mega * m), Math.round(SHOP_PRICES.cap * m), Math.round((SHOP_PRICES.cap + SHOP_PRICES.capStep) * m)]);
                 }
                 return '<p>The price multiplier is <b>1 + 0.5 per shop already reached</b>:</p>' +
-                    gTbl(['Shop', 'Multiplier', 'Damage / Speed / Health', 'Mega upgrades', 'More Teachers #1', 'More Teachers #2'], rows) +
+                    gTbl(['Shop', 'Multiplier', 'Damage / Speed / Health', '🩺 Medic', 'Mega upgrades', 'More Teachers #1', 'More Teachers #2'], rows) +
                     gTip('Teacher unlocks stay at ' + SHOP_PRICES.badui + ' / ' + SHOP_PRICES.math + ' forever. Hiring a teacher is one of the cheapest things you can buy in a late shop.');
             } },
 
@@ -6718,6 +6792,14 @@
                 gTbl(['Wave', 'Wise Sheikh', 'Angry Teacher'], [1, 10, 20, 30, 40, 50, 60, 80].map(w =>
                     [w, Math.min(baseTowerCost + (w - 1) * 4, 250) + ' 🪙', (230 + (w - 1) * 5) + ' 🪙'])) },
 
+            { id: 'suggestions', group: 'basics', icon: '💡', title: 'Suggestions', html: () =>
+                '<p>The <b>💡 Suggestions</b> button is in the main menu, next to <b>📖 All You Need to Know</b>. Use it to tell the makers what to add or fix.</p>' +
+                gList([
+                    'Type your idea (up to <b>500 letters</b>) and press <b>Send suggestion</b>.',
+                    'If you are <b>signed in with Google linked</b>, your suggestion is sent online and you can see the latest ones from everyone.',
+                    'If not, it is only <b>saved on your device</b>. Link Google in your profile to send it for real.',
+                    'You can only send one every few seconds, so make each one count.'
+                ]) },
             { id: 'mainmenu', group: 'basics', icon: '🏠', title: 'The Main Menu', html: () =>
                 '<p>Behind the menu is a live battle on the real map: teachers fighting kebabs. You can turn it off with <b>Animated menu background</b> in Settings.</p>' +
                 gList([
@@ -6726,6 +6808,7 @@
                     '<b>🌐 Online Mode</b> is coming soon. <b>📜 Updates</b> is the update log, and under it is the <b>Last updated</b> date, which turns <b>red</b> on the day of an update.',
                     'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b> and <b>Disclaimers</b> are at the bottom.',
                     'On the longer screens (Profile / Log In, Inbox, Chat, Updates, Credits and Settings) a <b>← BACK</b> button stays in the <b>top-left corner</b>, so you never have to scroll down to leave. The Back button at the bottom still works too. Opening Settings, Inbox or Chat from your account menu and pressing Back returns you to the account menu.',
+                    'Bottom right: <b>📖 All You Need to Know</b> (this guide) and <b>💡 Suggestions</b> (' + gLink('suggestions', 'send your ideas') + ').',
                     'Switching between menu screens uses a smooth fade and slide.'
                 ]) },
 
@@ -6762,7 +6845,7 @@
                     ['Animated menu background', 'On by default. The main menu shows a live little battle on the map (teachers vs kebabs). Turn it off for a still picture; low-effects mode also freezes it.'],
                     ['Guide Mode', 'Off by default. Turn it on here or with the <b>❓ How to Play</b> button in a battle. See the ' + gLink('guidemode', 'Guide Mode') + ' page.'],
                     ['Event pop-ups', 'On by default. Stacked pop-ups at the bottom after each wave telling you how far away the next <b>boss kebab</b>, <b>split track</b>, <b>tri-track</b> and <b>shop</b> are, plus an alert when a boss arrives or a new track unlocks.'],
-                    ['Skip intro animation', 'Off by default. Turn it on and the kebab shop cutscene (the villain kebab cook at the start of the track, the 2 second rumble he causes, then the track pops up tile by tile) never plays when you press Play. You can also click or press any key during the intro to skip just that one (clicks and keys in the first moment are ignored, so a double-click on Play will not skip it by accident). Continuing a saved battle and Test Mode never play it.'],
+                    ['Skip intro animation', 'Off by default. Turn it on and the kebab shop cutscenes never play: not when you press Play (the villain kebab cook, the 2 second rumble, then the track pops up tile by tile), and not before the split track (wave 10), the tri-track (wave 40) or a boss kebab (short versions of the same cutscene). You can also click or press any key during the intro to skip just that one (clicks and keys in the first moment are ignored, so a double-click on Play will not skip it by accident). Continuing a saved battle and Test Mode never play it.'],
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
@@ -6901,7 +6984,7 @@
                 ]) },
 
             { id: 'profile', group: 'more', icon: '🎨', title: 'Profile & Customizing', html: () =>
-                '<p>Your profile (the button with your name, top right of the menu) has a banner with your character, plus four tabs: Overview, Achievements, Skins and <b>Customize</b>.</p>' +
+                '<p>Your profile (the button with your name, top right of the menu) has a banner with your character, plus five tabs: Overview, Achievements, Skins, ✨ Buffs (equip your Teacher Buffs here) and <b>Customize</b>.</p>' +
                 gList([
                     '<b>Character</b>: pick Wise Sheikh, Angry Teacher or Mathematician. They wear the skin you have equipped.',
                     '<b>Accessories</b>: a hat, glasses and a neck item. Buy them in the menu Shop under <b>Style</b>, then wear them here. Hats: Party, Beanie, Sports Cap, Top Hat, Graduation Cap, Golden Crown. Glasses: Round, Cool Shades, Heart. Neck: Bow Tie, Striped Scarf, Gold Medal.',
@@ -6961,6 +7044,7 @@
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
                     '<b>🎬 Credits</b>: made by Jaiden Maximiliano Hernandez.',
                     '<b>⚠️ Disclaimers</b>: the Early Access and "made with AI" notes. They also pop up the first time you open the game.',
+                    'In the <b>browser version</b>, when a new version is out a pink bar says <b>A new version is available!</b>. Press <b>Update Now</b> and a loading screen with a progress bar shows while the new version downloads, then the page refreshes by itself. Simply reopening the link also loads the newest version.',
                     'The game also runs as a <b>desktop app</b> for Windows, which updates itself.'
                 ]) },
 
@@ -7086,6 +7170,118 @@
             const box = document.getElementById('guideSearch');
             if (box) box.value = '';
             renderGuide();
+        }
+
+        // ===== ADMIN PANEL (read-only) =====
+        // Only shown for the account named Jaiden. The REAL protection is the Firestore rule in firestore.rules.txt
+        // (only the uid that owns usernames/jaiden may read every player), so nobody else can load this data.
+        function isAdminAccount() { const a = getCurrentAccount(); return !!(a && a.username && a.username.toLowerCase() === 'jaiden' && a.cloudUid); }
+        let _adm = { tab: 'players', players: null, sugs: null, err: '', q: '', sort: 'last', open: '' };
+        function adminOpen() { _adm.tab = 'players'; _adm.open = ''; adminRender(); adminLoad(); }
+        function adminTab(t) { _adm.tab = t; document.getElementById('admTabP').classList.toggle('on', t === 'players'); document.getElementById('admTabS').classList.toggle('on', t === 'sugs'); adminRender(); }
+        function adminTs(v) { try { if (!v) return 0; if (v.toDate) return v.toDate().getTime(); const t = new Date(v).getTime(); return isNaN(t) ? 0 : t; } catch (e) { return 0; } }
+        function adminLoad() {
+            _adm.err = ''; _adm.players = null; _adm.sugs = null; adminRender();
+            if (!isAdminAccount() || !sugCloudUser()) { _adm.err = 'Sign in to the Jaiden account with Google (cloud) on this device to load the online data.'; adminRender(); return; }
+            const db = firebase.firestore();
+            db.collection('players').limit(1000).get().then(snap => {
+                _adm.players = []; snap.forEach(d => { const v = d.data(); v._id = d.id; _adm.players.push(v); }); adminRender();
+            }).catch(e => { _adm.err = 'Could not load players (' + (e && e.code || 'error') + '). Publish the updated firestore.rules.txt in the Firebase console.'; _adm.players = []; adminRender(); });
+            db.collection('suggestions').orderBy('createdAt', 'desc').limit(200).get().then(snap => {
+                _adm.sugs = []; snap.forEach(d => _adm.sugs.push(d.data())); adminRender();
+            }).catch(() => { _adm.sugs = []; adminRender(); });
+        }
+        function adminSet(k, v) { _adm[k] = v; adminRender(); }
+        function adminRender() {
+            const el = document.getElementById('adminBody'); if (!el) return;
+            const fmt = ms => ms ? new Date(ms).toLocaleString() : '-';
+            let h = _adm.err ? '<div style="color:#ffb74d;font-weight:700;margin:8px 0">' + escapeHtml(_adm.err) + '</div>' : '';
+            if (_adm.tab === 'sugs') {
+                if (!_adm.sugs) { el.innerHTML = h + '<div>Loading...</div>'; return; }
+                el.innerHTML = h + '<div style="color:#9fb3c8">' + _adm.sugs.length + ' suggestions</div>' + (_adm.sugs.map(r => '<div class="sug-item">' + escapeHtml(r.text || '') + '<small>' + escapeHtml(r.name || 'Guest') + ' · ' + fmt(adminTs(r.createdAt)) + '</small></div>').join('') || '<div style="color:#9fb3c8;margin-top:8px">None yet.</div>');
+                return;
+            }
+            if (!_adm.players) { el.innerHTML = h + '<div>Loading...</div>'; return; }
+            const now = Date.now(), DAY = 864e5;
+            const rows = _adm.players.map(v => ({
+                v: v, name: v.username || '?', xp: v.xp || 0, lvl: levelInfo(v.xp || 0).level, best: v.bestWave || 0, pos: v.positives || 0,
+                ach: Object.keys((v.ach && v.ach.done) || {}).length, skins: (v.skins || []).length, buffs: Object.keys(v.buffs || {}).length,
+                made: adminTs(v.createdAt), last: adminTs(v.updatedAt)
+            }));
+            const q = _adm.q.toLowerCase();
+            let list = rows.filter(r => !q || r.name.toLowerCase().includes(q));
+            const key = _adm.sort;
+            list.sort((a, b) => key === 'name' ? a.name.localeCompare(b.name) : (b[key] || 0) - (a[key] || 0));
+            const stat = (n, l) => '<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:10px 16px;min-width:110px"><div style="font-size:24px;font-weight:900">' + n + '</div><div style="color:#9fb3c8;font-size:12px">' + l + '</div></div>';
+            h += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px">' + stat(rows.length, 'cloud accounts') + stat(rows.filter(r => now - r.made < DAY).length, 'made in 24h') + stat(rows.filter(r => now - r.last < 7 * DAY).length, 'active in 7 days') + stat(rows.filter(r => r.v.earlyAccess).length, 'early access') + stat(Object.keys(getAccounts()).length, 'on this device') + '</div>';
+            h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><input class="account-input" style="max-width:240px;margin:0" placeholder="Search username..." value="' + escapeHtml(_adm.q) + '" oninput="_adm.q=this.value;_adm.focus=1;adminRender()">' +
+                '<select class="account-input" style="max-width:200px;margin:0" onchange="adminSet(\'sort\',this.value)">' + [['last', 'Last active'], ['made', 'Newest'], ['best', 'Best wave'], ['xp', 'Level'], ['pos', 'Positives'], ['ach', 'Achievements'], ['name', 'Name A-Z']].map(o => '<option value="' + o[0] + '"' + (key === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></div>';
+            h += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:#9fb3c8"><th>Player</th><th>Lvl</th><th>Best wave</th><th>💚</th><th>🏆</th><th>🎽</th><th>✨</th><th>Joined</th><th>Last active</th></tr>' +
+                list.map(r => '<tr style="border-top:1px solid rgba(255,255,255,.12);cursor:pointer" onclick="adminSet(\'open\',_adm.open===\'' + r.v._id + '\'?\'\':\'' + r.v._id + '\')"><td><b>' + escapeHtml(r.name) + '</b>' + (r.v.earlyAccess ? ' <span style="color:#FFD700;font-size:10px">EARLY</span>' : '') + '</td><td>' + r.lvl + '</td><td>' + r.best + '</td><td>' + r.pos + '</td><td>' + r.ach + '</td><td>' + r.skins + '</td><td>' + r.buffs + '</td><td>' + (r.made ? new Date(r.made).toLocaleDateString() : '-') + '</td><td>' + (r.last ? new Date(r.last).toLocaleString() : '-') + '</td></tr>' +
+                    (_adm.open === r.v._id ? '<tr><td colspan="9" style="background:rgba(0,0,0,.25);padding:8px 12px;color:#cfe0ee">XP ' + r.xp + ' · saved battle: ' + (r.v.savedGame ? 'yes (wave ' + (r.v.savedGame.wave || '?') + ')' : 'no') + ' · buffs: ' + (Object.keys(r.v.buffs || {}).join(', ') || 'none') + ' · skins: ' + ((r.v.skins || []).join(', ') || 'none') + ' · daily streak: ' + ((r.v.daily && r.v.daily.streak) || 0) + '</td></tr>' : '')).join('') + '</table></div>' +
+                (list.length ? '' : '<div style="color:#9fb3c8;margin-top:8px">No players match.</div>');
+            el.innerHTML = h;
+            if (_adm.focus) { _adm.focus = 0; const inp = el.querySelector('input'); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }
+        }
+        // ===== END ADMIN PANEL =====
+
+        // ===== SUGGESTIONS =====
+        // Signed-in (cloud) players send suggestions to Firestore ('suggestions' collection, see firestore.rules.txt).
+        // Anyone else can still write one: it is kept on this device only.
+        let _sugLast = 0;
+        function sugCloudUser() { try { return (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) || null; } catch (e) { return null; } }
+        function sugLocal() { try { return JSON.parse(localStorage.getItem('ugd_suggestions') || '[]'); } catch (e) { return []; } }
+        function openSuggestions() {
+            clearContinueModal();
+            const menuScreen = document.getElementById('menuScreen');
+            menuScreen.classList.add('fade-out');
+            setTimeout(() => {
+                menuScreen.classList.add('hidden');
+                menuScreen.classList.remove('fade-out');
+                const sc = document.getElementById('suggestionsScreen');
+                sc.classList.remove('hidden');
+                const t = document.getElementById('sugText');
+                t.oninput = () => { document.getElementById('sugCount').textContent = t.value.length + ' / 500'; };
+                document.getElementById('sugMsg').textContent = '';
+                renderSuggestions();
+            }, 430);
+        }
+        function renderSuggestions() {
+            const list = document.getElementById('sugList');
+            const draw = rows => {
+                list.innerHTML = rows.length ? rows.map(r => '<div class="sug-item">' + escapeHtml(r.text) + '<small>' + escapeHtml(r.name || 'Guest') + (r.local ? ' · saved on this device' : '') + '</small></div>').join('') : '<div style="color:#9fb3c8">No suggestions yet. Be the first!</div>';
+            };
+            const local = sugLocal().slice().reverse().map(r => ({ text: r.text, name: r.name, local: true }));
+            draw(local);
+            const u = sugCloudUser();
+            if (u) {
+                try {
+                    firebase.firestore().collection('suggestions').orderBy('createdAt', 'desc').limit(30).get().then(snap => {
+                        const rows = []; snap.forEach(d => { const v = d.data(); rows.push({ text: v.text || '', name: v.name }); });
+                        draw(rows.concat(local));
+                    }).catch(() => {});
+                } catch (e) {}
+            }
+        }
+        function submitSuggestion() {
+            const t = document.getElementById('sugText'), msg = document.getElementById('sugMsg');
+            const text = (t.value || '').trim().slice(0, 500);
+            if (text.length < 5) { msg.style.color = '#ffb74d'; msg.textContent = 'Write a little more first (at least 5 letters).'; return; }
+            if (Date.now() - _sugLast < 20000) { msg.style.color = '#ffb74d'; msg.textContent = 'Please wait a few seconds before sending another one.'; return; }
+            _sugLast = Date.now();
+            const acc = getCurrentAccount(), name = acc ? acc.username : 'Guest';
+            const done = (cloud) => {
+                t.value = ''; document.getElementById('sugCount').textContent = '0 / 500';
+                msg.style.color = '#7CF3C0'; msg.textContent = cloud ? '✅ Thank you! Your suggestion was sent.' : '✅ Saved on this device. Sign in (link Google in your profile) so suggestions can be sent to everyone.';
+                renderSuggestions();
+            };
+            const saveLocal = () => { const a = sugLocal(); a.push({ text: text, name: name, at: Date.now() }); try { localStorage.setItem('ugd_suggestions', JSON.stringify(a.slice(-50))); } catch (e) {} done(false); };
+            const u = sugCloudUser();
+            if (!u) { saveLocal(); return; }
+            try {
+                firebase.firestore().collection('suggestions').add({ text: text, name: name, uid: u.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+                    .then(() => done(true)).catch(() => saveLocal());
+            } catch (e) { saveLocal(); }
         }
 
         function openGuide() {
@@ -7377,7 +7573,9 @@
                 inbox: 'inboxScreen',
                 chat: 'chatScreen',
                 settings: 'settingsScreen',
-                guide: 'guideScreen'
+                guide: 'guideScreen',
+                suggestions: 'suggestionsScreen',
+                admin: 'adminScreen'
             };
             const screenId = screenMap[from] || 'creditsScreen';
             const screen = document.getElementById(screenId);
@@ -7396,6 +7594,7 @@
                 }
                 navReturn = null;
                 const menuScreen = document.getElementById('menuScreen');
+                _menuBg.quietUntil = performance.now() + 650;
                 menuScreen.classList.remove('hidden');
                 menuScreen.style.animation = 'none'; void menuScreen.offsetWidth; menuScreen.style.animation = 'scrIn .5s cubic-bezier(.2,.9,.3,1) both';
             }, 430);
@@ -7578,10 +7777,10 @@
             const len = Math.floor(audioContext.sampleRate * 1.4);
             const b = audioContext.createBuffer(1, len, audioContext.sampleRate), d = b.getChannelData(0);
             let lp = 0;
-            for (let i = 0; i < len; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.5; d[i] = lp; }   // slightly soft noise
+            for (let i = 0; i < len; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.25; d[i] = lp * 2.2; }   // slightly soft noise
             return (_windNoise = b);
         }
-        function playWindWhoosh() {
+        function playWindWhoosh() {   // a soft breeze: slow swell, low and airy, gentle fade (not a quick pipe-like release)
             if (!settings.uiSounds || !settings.sfx) return;
             if (!voiceSlot(0.75)) return;
             try {
@@ -7589,23 +7788,26 @@
                 const t = audioContext.currentTime;
                 const src = audioContext.createBufferSource();
                 src.buffer = windNoiseBuffer(); src.loop = true;
-                const bp = audioContext.createBiquadFilter();            // the wind's pitch rises, then falls away
-                bp.type = 'bandpass'; bp.Q.value = 0.9;
-                bp.frequency.setValueAtTime(320, t);
-                bp.frequency.exponentialRampToValueAtTime(2300, t + 0.26);
-                bp.frequency.exponentialRampToValueAtTime(600, t + 0.7);
-                const hp = audioContext.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 160;
+                const lp = audioContext.createBiquadFilter();
+                lp.type = 'lowpass'; lp.Q.value = 0.3;
+                lp.frequency.setValueAtTime(380, t);
+                lp.frequency.linearRampToValueAtTime(900, t + 0.55);
+                lp.frequency.linearRampToValueAtTime(420, t + 1.3);
+                const hp = audioContext.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 90;
+                const lfo = audioContext.createOscillator(), lg = audioContext.createGain();   // slow gusty wobble
+                lfo.frequency.value = 2.2; lg.gain.value = 0.04; lfo.connect(lg);
                 const g = audioContext.createGain();
                 g.gain.setValueAtTime(0.0001, t);
-                g.gain.exponentialRampToValueAtTime(0.5, t + 0.14);
-                g.gain.exponentialRampToValueAtTime(0.0001, t + 0.72);
-                src.connect(bp); bp.connect(hp); hp.connect(g);
-                if (audioContext.createStereoPanner) {                   // sweeps across your ears
+                g.gain.linearRampToValueAtTime(0.2, t + 0.5);
+                g.gain.linearRampToValueAtTime(0.0001, t + 1.35);
+                lg.connect(g.gain);
+                src.connect(lp); lp.connect(hp); hp.connect(g);
+                if (audioContext.createStereoPanner) {
                     const pan = audioContext.createStereoPanner();
-                    pan.pan.setValueAtTime(-0.55, t); pan.pan.linearRampToValueAtTime(0.55, t + 0.7);
+                    pan.pan.setValueAtTime(-0.3, t); pan.pan.linearRampToValueAtTime(0.3, t + 1.3);
                     g.connect(pan); pan.connect(masterGain);
                 } else g.connect(masterGain);
-                src.start(t, Math.random() * 0.6); src.stop(t + 0.75);
+                src.start(t, Math.random() * 0.1); src.stop(t + 1.4); lfo.start(t); lfo.stop(t + 1.4);
             } catch (e) {}
         }
         // the zoom-out animation (scrOut) starts on every menu screen switch
@@ -7664,7 +7866,7 @@
         // shop onward, same as Angry Teacher's flat 100). After that each
         // Mathematician you place costs a flat 330 coins.
         // In-game shop base prices (doubled in v1.0.24). Upgrade and More Teachers prices also rise with every shop reached.
-        const SHOP_PRICES = { upgrade: 300, mega: 600, badui: 200, math: 600, cap: 500, capStep: 200 };
+        const SHOP_PRICES = { medic: 500, upgrade: 300, mega: 600, badui: 200, math: 600, cap: 500, capStep: 200 };
         const BASE_TOWER_CAP = 10;   // max of EACH teacher (More Teachers adds +3 per purchase)
         function getMathUnlockCost() {
             return SHOP_PRICES.math;
@@ -7845,8 +8047,10 @@
             PATH1[PATH1.length - 1].x = newSchoolX;
             PATH2[PATH2.length - 1].x = newSchoolX;
             PATH3[PATH3.length - 1].x = newSchoolX;
-            if (animate) showEventPopup('tri', 'TRI-TRACK unlocked!', 'The track splits into THREE and the map just got bigger', 5200, true);
-            if (animate) startTrackReveal('tri');
+            if (animate) startEventCutscene('tri', () => {
+                showEventPopup('tri', 'TRI-TRACK unlocked!', 'The track splits into THREE and the map just got bigger', 5200, true);
+                startTrackReveal('tri');
+            });
         }
 
         // ===== MAPS =====
@@ -8104,12 +8308,30 @@
         // shop where the kebabs come from. The villain cook grills kebabs, then
         // pounds the counter to cause the rumbling, the camera pulls back and
         // the track pops up tile by tile starting from his shop.
-        const INTRO_FADE_MS = 1500;     // the intro fades in from black
-        const INTRO_SHOP_START = 700;   // the shop pops up once it is mostly faded in
-        const INTRO_SHOP_MS = 450;      // pop-up length
-        const INTRO_COOK_END = 4900;    // villain cooks kebabs until here
-        const INTRO_SHAKE_END = 6900;   // screen shakes for 2 seconds (he causes it)
-        const INTRO_ZOOM_END = 7800;    // camera pulls back, then the track pops up
+        // (let, not const: the shorter event cutscenes - split track, tri-track, boss - reuse the same scene with their own timing)
+        let INTRO_FADE_MS = 1500;     // the intro fades in from black
+        let INTRO_SHOP_START = 700;   // the shop pops up once it is mostly faded in
+        let INTRO_SHOP_MS = 450;      // pop-up length
+        let INTRO_COOK_END = 4900;    // villain cooks kebabs until here
+        let INTRO_SHAKE_END = 6900;   // screen shakes for 2 seconds (he causes it)
+        let INTRO_ZOOM_END = 7800;    // camera pulls back, then the track pops up
+        let _introKind = 'intro', _introAfter = null;
+        const INTRO_EVENTS = {
+            split: { lines: ['Not ONE track...', 'TWO tracks now!', 'Split them up, my kebabs!'] },
+            tri:   { lines: ['Two tracks? Pathetic.', 'THREE tracks now!', 'The school will fall!'] },
+            boss:  { lines: ['You think this is hard?', 'Meet my BOSS KEBAB!', 'GO! CRUSH THEM!'] }
+        };
+        function setIntroTimings(kind) {
+            _introKind = kind;
+            if (kind === 'intro') { INTRO_FADE_MS = 1500; INTRO_SHOP_START = 700; INTRO_SHOP_MS = 450; INTRO_COOK_END = 4900; INTRO_SHAKE_END = 6900; INTRO_ZOOM_END = 7800; }
+            else { INTRO_FADE_MS = 500; INTRO_SHOP_START = 100; INTRO_SHOP_MS = 300; INTRO_COOK_END = 1700; INTRO_SHAKE_END = 3500; INTRO_ZOOM_END = 4300; }
+        }
+        // a short kebab shop cutscene before a big event; `after` runs when it ends (skipped or not)
+        function startEventCutscene(kind, after) {
+            if (settings.skipIntro || game.introActive || !document.getElementById('introOverlay')) { after && after(false); return; }
+            _introAfter = after || null;
+            startIntro(kind);
+        }
         const INTRO_TRACK_FRAMES = 190; // the track builds itself (about 3 s)
         const INTRO_ZOOM = 3;
         const INTRO_SKIP_GRACE_MS = 700;
@@ -8135,13 +8357,14 @@
             } catch (e) {}
         }
 
-        function startIntro() {
+        function startIntro(kind) {
             const ov = document.getElementById('introOverlay');
             if (!ov) return;
+            setIntroTimings(kind || 'intro');
             game.introActive = true;
             cameraOffset = 0;
-            // hold the track back (nothing of it is drawn) until the intro ends
-            game.trackAnim = { kind: 'intro', start: 1e12, thudded: 0, tile: 0 };
+            // hold the track back (nothing of it is drawn) until the intro ends (only the very first intro; events keep the track)
+            if (_introKind === 'intro') game.trackAnim = { kind: 'intro', start: 1e12, thudded: 0, tile: 0 };
             ov.style.transition = 'none';
             ov.style.opacity = '1';
             ov.style.display = 'block';
@@ -8181,8 +8404,9 @@
             cancelAnimationFrame(_introRAF);
             clearTimeout(_introWatchdog);
             const ov = document.getElementById('introOverlay');
-            if (skipped) game.trackAnim = null;
-            else startTrackReveal('intro');
+            if (_introKind === 'intro') { if (skipped) game.trackAnim = null; else startTrackReveal('intro'); }
+            const aft = _introAfter; _introAfter = null; _introKind === 'intro' || setIntroTimings('intro'); _introKind = 'intro';
+            if (aft) { try { aft(skipped); } catch (e) { console.error(e); } }
             if (ov) {
                 ov.style.transition = 'opacity 0.35s ease';
                 ov.style.opacity = '0';
@@ -8405,6 +8629,13 @@
             // villain speech bubbles (tail points at his head)
             const win = (a, b) => ms >= a && ms <= b ? Math.min((ms - a) / 150, (b - ms) / 150, 1) : 0;
             const headX = W / 2 + (30 - camX) * Z, headY = H / 2 + (118 - 13 - camY) * Z; // about where his head is while zoomed
+            if (_introKind !== 'intro' && INTRO_EVENTS[_introKind]) {
+                const L = INTRO_EVENTS[_introKind].lines;
+                introBubble(c, 1040, 110, L[0], win(INTRO_SHOP_START + 450, INTRO_COOK_END), headX + 60, headY - 10);
+                introBubble(c, 1040, 90, L[1], win(INTRO_COOK_END + 100, INTRO_SHAKE_END), headX + 60, headY - 10);
+                introBubble(c, 1040, 110, L[2], win(INTRO_SHAKE_END + 20, INTRO_ZOOM_END), W / 2 + (40 - camX) * Z + 70, H / 2 + (118 - camY) * Z);
+                return;
+            }
             introBubble(c, 1040, 110, 'Cook, my little kebabs... 🍢', win(1700, 3200), headX + 60, headY - 10);
             introBubble(c, 1040, 110, 'Soon you will all march!', win(3400, 4800), headX + 60, headY - 10);
             introBubble(c, 1040, 90, 'MWAHAHAHA! RISE, MY KEBABS!', win(INTRO_COOK_END + 100, INTRO_SHAKE_END), headX + 60, headY - 10);
@@ -8415,8 +8646,8 @@
 
 
         const game = {
-            health: 20,
-            maxHealth: 20,
+            health: 30,
+            maxHealth: 30,
             sentrals: 0,
             wave: 1,
             selectedTower: null,
@@ -8428,6 +8659,7 @@
             waveSpawned: 0,
             frameCount: 0,
             purchasedUpgrades: {},
+            medicHeal: 0,
             upgradesPurchased: 0, // total shop upgrades bought, capped at MAX_SHOP_UPGRADES
             damageMultiplier: 1,
             attackSpeedMultiplier: 1,
@@ -8459,9 +8691,11 @@
         // One permanent buff per teacher, bought once in the main-menu Shop (Upgrades > Teachers) with Positives.
         // They are saved on the account (acc.buffs) and apply in every battle you play while signed in.
         const BUFF_PRICE = 1000;
+        const BUFF_UNLOCK_LEVEL = 15;   // buffs can be bought from this account level
+        const buffLevelOk = a => accLevel(a) >= BUFF_UNLOCK_LEVEL;
         const TEACHER_BUFFS = {
             sheikh: { icon: '📜', name: 'Long Shebab', teacher: 'Wise Sheikh', price: BUFF_PRICE,
-                desc: 'His throws become upright Arabic <b>sentences</b>. Each sentence hits the kebab <b>3 times</b> (3x the damage of a normal throw).' },
+                desc: 'His throws become upright Arabic <b>sentences</b>. Each sentence hits the kebab <b>3 times</b> (3x the damage of a normal throw). His main attack then has a <b>1 second cooldown</b>.' },
             badui:  { icon: '🔥', name: 'Long BOYS!', teacher: 'Angry Teacher', price: BUFF_PRICE,
                 desc: 'Her BOYS! ultimate lasts <b>1.5x longer</b>.' },
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
@@ -8488,15 +8722,18 @@
             updateCurrentAccount(acc => { acc.buffs = Object.assign({}, acc.buffs || {}, { [type]: on ? true : 'off' }); });
             _buffCache.t = -9999;
             if (typeof playSound === 'function') playSound(on ? 880 : 520, 0.08, 'sine');
-            pRenderSlots();
             const d = TEACHER_BUFFS[type];
-            const line = on ? d.name + ' is equipped.' : d.name + ' is switched off. You can equip it again any time.';
-            pNpcSay(line, () => pNpcSchedule(line.length));
+            if (typeof renderAccountScreen === 'function' && document.querySelector('.account-screen') && accountTab === 'buffs') renderAccountScreen();
+            showToast(on ? '✨ ' + d.name + ' equipped' : d.name + ' switched off', 1600);
         }
         function buyTeacherBuff(type) {
             const d = TEACHER_BUFFS[type], a = getCurrentAccount();
             if (!d || !a || pShopState !== 'open') return;
             if (buffOwned(type)) return;
+            if (!buffLevelOk(a)) {
+                const line = 'Teacher buffs unlock at level ' + BUFF_UNLOCK_LEVEL + '. You are level ' + accLevel(a) + ', so keep playing!';
+                pNpcSay(line, () => pNpcSchedule(line.length)); return;
+            }
             if ((a.positives || 0) < d.price) {
                 const line = 'You need ' + d.price + ' Positives for ' + d.name + '. That is a lot, so keep collecting!';
                 pNpcSay(line, () => pNpcSchedule(line.length)); return;
@@ -8724,6 +8961,9 @@
             { id: 'up_health', next: true, title: 'Upgrade: School Health', when: () => gmHasUp('health'),
               target: () => gmEl(document.getElementById('health').closest('.stat-box')),
               text: () => "<b>School Health</b>: your school's max health went up by <b>5</b> and you got 5 back." },
+            { id: 'up_medic', next: true, title: 'Upgrade: Medic', when: () => gmHasUp('medic'),
+              target: () => gmEl(document.getElementById('health').closest('.stat-box')),
+              text: () => "<b>Medic</b>: after every wave you clear, the school heals <b>3 health</b> (up to its max). Buy it twice to heal 6." },
             { id: 'up_mega', next: true, title: 'Upgrade: Mega!', when: () => gmHasUp('damage3.5') || gmHasUp('speed2.5'),
               target: () => gmTowerShape(game.towers[0], 60),
               text: () => "<b>Mega upgrades</b> (they appear at wave 45) are huge: <b>3.5× damage</b> or <b>2.5× attack speed</b>. They stack with the smaller ones." },
@@ -9260,8 +9500,9 @@
             if (pShopTabId === 'upgrades') {
                 const buffCard = k => {
                     const d = TEACHER_BUFFS[k], own = buffOwned(k);
+                    const acc0 = getCurrentAccount(), lockedLvl = !own && !buffLevelOk(acc0);
                     return '<div class="pbuff-card"><div class="pbuff-ico">' + d.icon + '</div><div class="pskin-info"><b>' + d.name + '<small>' + d.teacher + '</small></b><span>' + d.desc + '</span>' +
-                        (own ? (buffEquipped(k) ? '<span class="pskin-own">✓ Equipped</span><button onclick="toggleTeacherBuff(\'' + k + '\')">Unequip</button>' : '<span class="pskin-own" style="color:#aab4d8">Owned (off)</span><button onclick="toggleTeacherBuff(\'' + k + '\')">Equip</button>') : '<button onclick="buyTeacherBuff(\'' + k + '\')">' + d.price + ' 💚 Buy</button>') + '</div></div>';
+                        (own ? '<span class="pskin-own">✓ Owned</span><span style="color:#aab4d8;font-size:11px">Equip it in your profile → Buffs</span>' : (lockedLvl ? '<span class="pskin-own" style="color:#ffb74d">🔒 Unlocks at level ' + BUFF_UNLOCK_LEVEL + '</span>' : '<button onclick="buyTeacherBuff(\'' + k + '\')">' + d.price + ' 💚 Buy</button>')) + '</div></div>';
                 };
                 s1.innerHTML = '<div class="pshop-menu-title">Teacher Buffs</div><div class="pshop-menu-sub">ONE FOR EACH TEACHER</div><div class="pshop-scroll">' + Object.keys(TEACHER_BUFFS).map(buffCard).join('') + '</div>';
                 s2.innerHTML = pBoardHTML('Menu', 'GAME');
@@ -9460,6 +9701,7 @@
             const priceMult = 1 + 0.5 * (shopNumber - 1);
             const upgradeCost = Math.round(SHOP_PRICES.upgrade * priceMult);
             const megaUpgradeCost = Math.round(SHOP_PRICES.mega * priceMult);
+            const medicCost = Math.round(SHOP_PRICES.medic * priceMult);
             const bought = id => upgradeCount(id) + '/' + MAX_PER_UPGRADE + ' bought';
 
             document.getElementById('shopNumberLabel').textContent = 'Shop #' + shopNumber + ' - prices rise every shop';
@@ -9481,6 +9723,11 @@
                 name: '❤️ School Health', desc: '+5 max health (' + game.health + '/' + game.maxHealth + ') · ' + bought('health'), price: upgradeCost,
                 off: !canBuyHealth, priceLabel: !canBuyHealth ? (upgradeMaxed('health') ? 'MAXED' : 'N/A') : null,
                 buy: () => buyUpgrade('health', upgradeCost, 5, 'health')
+            });
+            addMenuRow(upList, {
+                name: '🩺 Medic', desc: 'Heals the school <b>3</b> health every wave · ' + bought('medic'), price: medicCost,
+                off: upgradeMaxed('medic'), priceLabel: upgradeMaxed('medic') ? 'MAXED' : null,
+                buy: () => buyUpgrade('medic', medicCost, 3, 'medic')
             });
             if (game.wave >= 45) {
                 addMenuRow(upList, {
@@ -9585,6 +9832,8 @@
             } else if (type === 'health') {
                 game.maxHealth += multiplier;
                 game.health += multiplier;
+            } else if (type === 'medic') {
+                game.medicHeal = (game.medicHeal || 0) + multiplier;   // 3 per Medic bought, applied each cleared wave
             } else if (type === 'towercap') {
                 // Repeatable: +3 max of each teacher type per purchase
                 game.towerCapBonus += multiplier;
@@ -11149,7 +11398,10 @@
         function spawnBatch(waveNum, offsetFrames) {
             const enemyCount = 5 + waveNum;
             const bossWave = waveNum % 20 === 0;
-            if (bossWave) showEventPopup('boss', 'BOSS KEBAB incoming!', 'Wave ' + waveNum + ': big, slow, tough and it hurts teachers', 5000, true);
+            if (bossWave) {
+                const bossPopup = () => showEventPopup('boss', 'BOSS KEBAB incoming!', 'Wave ' + waveNum + ': big, slow, tough and it hurts teachers', 5000, true);
+                if (game.active && !game.testMode) startEventCutscene('boss', bossPopup); else bossPopup();
+            }
             for (let i = 0; i < enemyCount; i++) {
                 // The boss is the first kebab in a landmark wave's batch
                 const isB = bossWave && i === 0;
@@ -11454,7 +11706,7 @@
             for (let i = game.towers.length - 1; i >= 0; i--) {
                 const tower = game.towers[i];
                 tower.damage = 25 * game.damageMultiplier;
-                tower.fireRate = 30 / game.attackSpeedMultiplier;
+                tower.fireRate = (tower.type === 'sheikh' && hasBuff('sheikh') ? 60 : 30) / game.attackSpeedMultiplier;   // Long Shebab: 1 second cooldown
                 tower.update();
 
                 // Check if tower is on track
@@ -11559,6 +11811,11 @@
                 const wavesCleared = game.mergedWaves;
                 const prevWave = game.wave;
                 game.wave += wavesCleared;
+                if (game.medicHeal > 0 && game.health < game.maxHealth) {   // Medic: heal the school each wave
+                    game.health = Math.min(game.maxHealth, game.health + game.medicHeal * wavesCleared);
+                    setHudText('health', game.health);
+                    showToast('🩺 Medic healed the school +' + (game.medicHeal * wavesCleared), 1800);
+                }
                 achStatMax('bestCleared', game.wave - 1);
                 if (game.wave - 1 >= 10 && !game.schoolHurt && game.health >= game.maxHealth) achUnlock('spotless');
                 for (let k = 0; k < wavesCleared; k++) addXp(15 + 3 * (prevWave + k));
@@ -11587,7 +11844,7 @@
                     game.shopsOpened++;
                     openShop();
                 }
-                if (prevWave < 10 && game.wave >= 10) startTrackReveal('split');
+                if (prevWave < 10 && game.wave >= 10) startEventCutscene('split', () => startTrackReveal('split'));
                 if (!game.triTrackActive && game.wave >= 40) {
                     activateTriTrack(true);
                 }
@@ -13079,6 +13336,8 @@
             const menu = document.getElementById('menuScreen');
             const visible = menu && !menu.classList.contains('hidden') && !document.hidden;
             if (!visible) { MB.lastMs = 0; _menuBg.timer = setTimeout(() => requestAnimationFrame(menuBgLoop), 400); return; }
+            // hold the heavy background drawing while screens are sliding, so the slide stays smooth
+            if (document.querySelector('.fade-out') || performance.now() < (_menuBg.quietUntil || 0)) { MB.lastMs = 0; requestAnimationFrame(menuBgLoop); return; }
             if (settings.menuAnim && !lowFx()) {
                 if (now - _menuBg.last >= 33) { if (!MB.lastMs) MB.lastMs = now; _menuBg.last = now; drawMenuBg(now, true); }
                 requestAnimationFrame(menuBgLoop);
@@ -13173,12 +13432,52 @@
             const banner = document.getElementById('updateBanner');
             banner.classList.add('show');
             document.getElementById('updateNowBtn').onclick = () => {
-                if (registration.waiting) {
-                    updateReloadRequested = true;
-                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                }
                 banner.classList.remove('show');
+                startUpdate(registration);
             };
+        }
+        // Pressing "Update Now" covers the game with a loading screen. It switches to the new version, downloads
+        // it completely (with a progress bar), and only then refreshes the page.
+        function startUpdate(registration) {
+            const ov = document.getElementById('updatingOverlay');
+            const fill = document.getElementById('upFill'), msg = document.getElementById('upMsg');
+            const setP = (pct, text) => { fill.style.width = Math.max(0, Math.min(100, pct)) + '%'; if (text) msg.textContent = text; };
+            ov.classList.add('show');
+            setP(6, 'Preparing the update...');
+            let finished = false;
+            const finish = () => {
+                if (finished) return; finished = true;
+                updateReloadRequested = false;            // we reload ourselves, below
+                setP(100, 'Update loaded! Restarting...');
+                setTimeout(() => window.location.reload(), 700);
+            };
+            const failSafe = setTimeout(finish, 45000);    // never get stuck on this screen
+            const switchWorker = new Promise((resolve) => {
+                if (!(registration && registration.waiting)) { resolve(); return; }
+                const t = setTimeout(resolve, 6000);
+                navigator.serviceWorker.addEventListener('controllerchange', () => { clearTimeout(t); resolve(); }, { once: true });
+                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            });
+            switchWorker.then(async () => {
+                setP(22, 'Downloading the new version...');
+                const res = await fetch(window.location.pathname, { cache: 'reload' });
+                const total = Number(res.headers.get('content-length')) || 0;
+                if (res.body && res.body.getReader) {
+                    const reader = res.body.getReader();
+                    let got = 0;
+                    for (;;) {
+                        const r = await reader.read();
+                        if (r.done) break;
+                        got += r.value.length;
+                        const mb = (got / 1048576).toFixed(1);
+                        setP(total ? 22 + (got / total) * 60 : Math.min(80, 22 + got / 70000), 'Downloading... ' + mb + ' MB');
+                    }
+                } else {
+                    await res.arrayBuffer();
+                }
+                setP(88, 'Almost done...');
+                await Promise.all(['manifest.json', 'icon-192.png', 'icon-512.png'].map(f => fetch(f, { cache: 'reload' }).catch(() => {})));
+            }).catch(() => {}).then(() => { clearTimeout(failSafe); finish(); });
         }
         // ===== END PWA =====
     </script>

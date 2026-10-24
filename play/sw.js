@@ -2,7 +2,7 @@
 // Pages are fetched from the NETWORK first (and always revalidated), so reopening the link
 // gives the newest version as soon as it is published. The cache is only a fallback for when
 // you are offline. Bump CACHE_VERSION on every publish.
-const CACHE_VERSION = 'ugd-v12';
+const CACHE_VERSION = 'ugd-v13';
 const CACHE_NAME = 'unity-defense-remastered-' + CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [

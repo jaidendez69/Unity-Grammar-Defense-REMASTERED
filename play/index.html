@@ -2825,7 +2825,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.25</div>
+    <div id="versionTag">v1.0.26</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -2930,6 +2930,8 @@
                 <div class="update-entry">
                     <div class="update-date">October 24, 2026</div>
                     <ul>
+                        <li>The admin account has an <b>infinite level</b> (all level locks open) and the Admin Panel can add 5, 100 or 500 Positives to the admin</li>
+                        <li>The online friends error now shows the real reason, so a Firebase rules problem is easy to find</li>
                         <li>NEW: a read-only <b>🛡️ Admin Panel</b> for the game's admin (player list and suggestions; it never changes anyone's game)</li>
                         <li>NEW: <b>💡 Suggestions</b> section next to All You Need to Know in the main menu. Write your idea for the game and send it (signed-in players send it to everyone; otherwise it is saved on your device)</li>
                         <li>NEW: <b>🩺 Medic</b> upgrade in the in-game shop (500 🪙 base): the school heals <b>3 health after every wave</b></li>
@@ -4450,7 +4452,10 @@
             const need = level >= LEVEL_CAP ? 0 : xpNeeded(level);
             return { level: level, into: rem, need: need, pct: need ? Math.min(100, rem / need * 100) : 100 };
         }
-        function accLevel(acc) { return acc ? levelInfo(acc.xp || 0).level : 0; }
+        // The admin account (Jaiden, linked to Google) has an infinite level, so every level lock (the Quad, buffs) is open
+        function levelInfoAcc(acc) { return acc && acc.username && acc.username.toLowerCase() === 'jaiden' && acc.cloudUid ? { level: Infinity, into: 0, need: 0, pct: 100 } : levelInfo((acc && acc.xp) || 0); }
+        const lvlText = l => l === Infinity ? '∞' : l;
+        function accLevel(acc) { return acc ? levelInfoAcc(acc).level : 0; }
         let XP_PENDING = 0, XP_RUN = 0;
         function addXp(n) {
             if (!achActive()) return;
@@ -4468,8 +4473,8 @@
             try { playSound(660, 0.12, 'triangle'); setTimeout(() => playSound(880, 0.12, 'triangle'), 110); setTimeout(() => playSound(1180, 0.2, 'triangle'), 220); } catch (e) {}
         }
         function levelBadgeHTML(acc) {
-            const li = levelInfo(acc.xp || 0);
-            return '<span class="lvl-chip"><span class="lvl-num">Lv ' + li.level + '</span><span class="xp-bar"><i style="width:' + li.pct.toFixed(1) + '%"></i></span></span>';
+            const li = levelInfoAcc(acc);
+            return '<span class="lvl-chip"><span class="lvl-num">Lv ' + lvlText(li.level) + '</span><span class="xp-bar"><i style="width:' + li.pct.toFixed(1) + '%"></i></span></span>';
         }
         function updateMenuNudge() {
             const box = document.getElementById('mmNudge');
@@ -4522,7 +4527,7 @@
             const lvl = accLevel(acc);
             const quadOpen = !!(acc && lvl >= QUAD_UNLOCK_LEVEL);      // the same rule in Test Mode: the Quad needs level 25
             document.getElementById('mapSelectSub').textContent = mapSelectMode === 'test' ? 'Test Mode: the Quad is still locked until you reach level ' + QUAD_UNLOCK_LEVEL + (acc ? ' (you are ' + lvl + ').' : '.') :
-                (acc ? 'You are level ' + lvl + '.' : 'Sign in to earn levels and unlock more maps.');
+                (acc ? 'You are level ' + lvlText(lvl) + '.' : 'Sign in to earn levels and unlock more maps.');
             const quadStatus = quadOpen ? '<span class="map-tag">✅ UNLOCKED</span>' :
                 (acc ? '<span class="map-tag lock">🔒 Reach level ' + QUAD_UNLOCK_LEVEL + ' (you are ' + lvl + ')</span>' +
                        '<span class="xp-bar big"><i style="width:' + Math.min(100, lvl / QUAD_UNLOCK_LEVEL * 100) + '%"></i></span>' :
@@ -4814,13 +4819,13 @@
         function drawAvatarCanvases(root) { (root || document).querySelectorAll('canvas[data-avatar]').forEach(cv => drawAvatarCanvas(cv)); }
 
         function bannerHTML(acc, withLevel) {
-            const look = getLook(acc), bg = PROFILE_BGS[look.bg], li = levelInfo(acc.xp || 0);
+            const look = getLook(acc), bg = PROFILE_BGS[look.bg], li = levelInfoAcc(acc);
             let em = '';
             for (let i = 0; i < 16; i++) em += '<span class="bn-emoji" style="left:' + ((i * 37 + 8) % 96) + '%;top:' + ((i * 53 + 10) % 80) + '%;animation-delay:-' + (i * 0.7).toFixed(1) + 's;font-size:' + (16 + (i % 4) * 6) + 'px">' + bg.e + '</span>';
             return '<div class="prof-banner" style="--bn-a:' + bg.a + ';--bn-b:' + bg.b + '">' + em +
                 '<canvas width="208" height="268" data-avatar="1"></canvas>' +
                 '<div class="bn-text"><div class="bn-name">' + escapeHtml(acc.username) + eaBadgeHTML(acc) + '</div><div class="bn-sub">' + TEACHER_LABEL[look.avatar] + ' · ' + bg.name + '</div>' +
-                '<span class="lvl-chip"><span class="lvl-num">Lv ' + li.level + '</span><span class="xp-bar"><i style="width:' + li.pct.toFixed(1) + '%"></i></span></span></div></div>';
+                '<span class="lvl-chip"><span class="lvl-num">Lv ' + lvlText(li.level) + '</span><span class="xp-bar"><i style="width:' + li.pct.toFixed(1) + '%"></i></span></span></div></div>';
         }
         function setLook(key, val) {
             updateCurrentAccount(a => { a.look = Object.assign({}, a.look || {}); a.look[key] = val; });
@@ -5041,10 +5046,10 @@
                 } else if (accountTab === 'custom') {
                     body = customizeHTML(acc);
                 } else {
-                    const li = levelInfo(acc.xp || 0);
+                    const li = levelInfoAcc(acc);
                     body = `
                     <div class="lvl-card">
-                        <div class="lvl-top"><span>⭐ Level ${li.level}</span><span>${li.need ? li.into + ' / ' + li.need + ' XP' : 'MAX'}</span></div>
+                        <div class="lvl-top"><span>⭐ Level ${lvlText(li.level)}</span><span>${li.need ? li.into + ' / ' + li.need + ' XP' : 'MAX'}</span></div>
                         <div class="xp-bar big"><i style="width:${li.pct.toFixed(1)}%"></i></div>
                         <small>${li.level >= QUAD_UNLOCK_LEVEL ? '⚽ The Quad map is unlocked!' : 'Reach level ' + QUAD_UNLOCK_LEVEL + ' to unlock the Quad (' + (QUAD_UNLOCK_LEVEL - li.level) + ' to go).'} Earn XP from kebabs and cleared waves.</small>
                     </div>
@@ -6229,7 +6234,7 @@
         }
         function cloudFriendError(err) {
             if (err && /permission|insufficient/i.test((err.code || '') + ' ' + (err.message || '')))
-                return 'Online friends are not switched on yet (the game owner needs to add the Firebase rules).';
+                return 'Online friends are blocked by the Firebase rules (' + ((err.code || '') + ' ' + String(err.message || '').slice(0, 90)).trim() + '). The game owner needs to check the rules are published.';
             return 'Could not reach the online friends service. Check your internet and try again.';
         }
         function cloudLinkOf(acc, name) {
@@ -7191,11 +7196,20 @@
                 _adm.sugs = []; snap.forEach(d => _adm.sugs.push(d.data())); adminRender();
             }).catch(() => { _adm.sugs = []; adminRender(); });
         }
+        function adminAddPositives(n) {
+            if (!isAdminAccount()) return;
+            updateCurrentAccount(a => { a.positives = (a.positives || 0) + n; });
+            try { if (typeof playMoneySound === 'function') playMoneySound(); } catch (e) {}
+            showToast('💚 +' + n + ' Positives added to you', 1800);
+            adminRender();
+        }
         function adminSet(k, v) { _adm[k] = v; adminRender(); }
         function adminRender() {
             const el = document.getElementById('adminBody'); if (!el) return;
             const fmt = ms => ms ? new Date(ms).toLocaleString() : '-';
-            let h = _adm.err ? '<div style="color:#ffb74d;font-weight:700;margin:8px 0">' + escapeHtml(_adm.err) + '</div>' : '';
+            const me = getCurrentAccount();
+            let h = '<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:10px 14px;margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><b>💚 Your Positives: ' + ((me && me.positives) || 0) + '</b>' + [5, 100, 500].map(n => '<button class="acc-tab on" onclick="adminAddPositives(' + n + ')">+' + n + '</button>').join('') + '</div>';
+            h += _adm.err ? '<div style="color:#ffb74d;font-weight:700;margin:8px 0">' + escapeHtml(_adm.err) + '</div>' : '';
             if (_adm.tab === 'sugs') {
                 if (!_adm.sugs) { el.innerHTML = h + '<div>Loading...</div>'; return; }
                 el.innerHTML = h + '<div style="color:#9fb3c8">' + _adm.sugs.length + ' suggestions</div>' + (_adm.sugs.map(r => '<div class="sug-item">' + escapeHtml(r.text || '') + '<small>' + escapeHtml(r.name || 'Guest') + ' · ' + fmt(adminTs(r.createdAt)) + '</small></div>').join('') || '<div style="color:#9fb3c8;margin-top:8px">None yet.</div>');
@@ -8731,7 +8745,7 @@
             if (!d || !a || pShopState !== 'open') return;
             if (buffOwned(type)) return;
             if (!buffLevelOk(a)) {
-                const line = 'Teacher buffs unlock at level ' + BUFF_UNLOCK_LEVEL + '. You are level ' + accLevel(a) + ', so keep playing!';
+                const line = 'Teacher buffs unlock at level ' + BUFF_UNLOCK_LEVEL + '. You are level ' + lvlText(accLevel(a)) + ', so keep playing!';
                 pNpcSay(line, () => pNpcSchedule(line.length)); return;
             }
             if ((a.positives || 0) < d.price) {
@@ -11868,7 +11882,7 @@
                 document.getElementById('finalcoins').textContent = game.sentrals;
                 try { achSave(); } catch (e) {}
                 const goX = document.getElementById('goXp'), goS = document.getElementById('goSignin');
-                if (getCurrentAccount() && !game.testMode && !game.devMode) { goX.style.display = 'block'; goX.textContent = '⭐ +' + XP_RUN + ' XP this battle  ·  Level ' + accLevel(getCurrentAccount()); }
+                if (getCurrentAccount() && !game.testMode && !game.devMode) { goX.style.display = 'block'; goX.textContent = '⭐ +' + XP_RUN + ' XP this battle  ·  Level ' + lvlText(accLevel(getCurrentAccount())); }
                 else if (!getCurrentAccount() && !game.testMode && !game.devMode) goS.style.display = 'block';
             }
 

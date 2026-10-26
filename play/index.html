@@ -782,43 +782,56 @@
 
         /* CHAT SCREEN */
         .chat-thread {
-            max-height: 320px;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.04);
-            border: 2px solid #64FF64;
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-            text-align: left;
+            max-height: 340px; overflow-y: auto; scroll-behavior: smooth;
+            background: radial-gradient(ellipse at top, rgba(100,255,100,0.07), rgba(0,0,0,0.25) 70%);
+            border: 2px solid #64FF64; border-radius: 16px;
+            box-shadow: inset 0 0 22px rgba(0,0,0,0.35), 0 0 14px rgba(100,255,100,0.15);
+            padding: 14px 12px; margin-bottom: 14px; text-align: left;
+            display: flex; flex-direction: column; gap: 3px;
         }
-
+        .chat-thread::-webkit-scrollbar { width: 8px; }
+        .chat-thread::-webkit-scrollbar-thumb { background: rgba(100,255,100,0.45); border-radius: 8px; }
+        .chat-row { display: flex; align-items: flex-end; gap: 7px; animation: chatPop 0.28s cubic-bezier(.2,1.4,.4,1) backwards; }
+        .chat-row.mine { flex-direction: row-reverse; }
+        .chat-row.gap { margin-top: 9px; }
+        @keyframes chatPop { from { opacity: 0; transform: translateY(8px) scale(0.92); } to { opacity: 1; transform: none; } }
+        .chat-av {
+            width: 28px; height: 28px; border-radius: 50%; flex: 0 0 28px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px; color: #111; border: 2px solid #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        }
+        .chat-av.ghost { visibility: hidden; }
         .chat-bubble {
-            max-width: 75%;
-            padding: 8px 14px;
-            border-radius: 14px;
-            margin-bottom: 8px;
-            font-size: 13px;
-            word-wrap: break-word;
+            max-width: 72%; padding: 8px 13px; border-radius: 18px;
+            font-size: 14px; line-height: 1.35; word-wrap: break-word; overflow-wrap: anywhere;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35); position: relative;
         }
-
         .chat-bubble.mine {
-            background: linear-gradient(135deg, #FF1493, #FF69B4);
-            color: white;
-            margin-left: auto;
+            background: linear-gradient(135deg, #FF1493, #FF69B4 90%); color: #fff;
+            border-bottom-right-radius: 5px; text-shadow: 0 1px 1px rgba(0,0,0,0.25);
         }
-
         .chat-bubble.theirs {
-            background: rgba(100, 255, 100, 0.15);
-            color: white;
+            background: linear-gradient(135deg, rgba(100,255,100,0.28), rgba(40,160,80,0.22));
+            border: 1px solid rgba(100,255,100,0.5); color: #fff; border-bottom-left-radius: 5px;
         }
-
-        .chat-bubble-time {
-            display: block;
-            font-size: 9px;
-            opacity: 0.7;
-            margin-top: 3px;
+        .chat-bubble-time { display: block; font-size: 10px; opacity: 0.65; margin-top: 3px; text-align: right; }
+        .chat-day {
+            align-self: center; margin: 8px 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            color: #64FF64; background: rgba(0,0,0,0.35); border: 1px solid rgba(100,255,100,0.4);
+            padding: 2px 12px; border-radius: 20px; text-transform: uppercase;
         }
-
+        .chat-empty { text-align: center; padding: 30px 10px; color: #bff7bf; }
+        .chat-empty .big { font-size: 38px; display: block; margin-bottom: 6px; animation: chatWave 1.6s ease-in-out infinite; transform-origin: 70% 70%; }
+        @keyframes chatWave { 0%,100% { transform: rotate(0); } 25% { transform: rotate(18deg); } 75% { transform: rotate(-12deg); } }
+        .chat-head { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
+        .chat-head .chat-av { width: 38px; height: 38px; flex-basis: 38px; font-size: 18px; }
+        .chat-head h2 { margin: 0; }
+        .chat-fr { display: flex; align-items: center; gap: 12px; }
+        .chat-fr .prev { display: block; font-size: 11px; opacity: 0.7; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-fr .friend-row-name { display: block; }
+        .chat-input-row .account-input { border-radius: 22px; }
+        .chat-send { border-radius: 22px !important; }
         .chat-input-row {
             display: flex;
             gap: 8px;
@@ -1227,7 +1240,12 @@
         .sug-corner-btn { right: 22px; bottom: 78px; background: linear-gradient(135deg, #7CF3C0, #2FB5E8); color: #04202a; }
         .sug-box { width: 100%; min-height: 110px; resize: vertical; padding: 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; font: 600 15px system-ui, sans-serif; box-sizing: border-box; }
         .sug-item { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); border-radius: 12px; padding: 10px 14px; margin: 8px 0; text-align: left; line-height: 1.4; }
+        .sug-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .sug-reply { margin-top: 8px; padding: 8px 12px; border-left: 4px solid #FFD700; background: rgba(255,215,0,.1); border-radius: 8px; color: #fff4c2; }
+        .sug-reply b { display: block; color: #FFD700; font-size: 12px; margin-bottom: 2px; }
         .sug-item small { display: block; color: #9fb3c8; margin-top: 4px; }
+        .guide-corner-btn, .sug-corner-btn { animation: mmUp 0.7s 0.62s ease-out backwards; }
+        .sug-corner-btn { animation-delay: 0.7s; }
         .guide-corner-btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 24px rgba(0,0,0,.55); }
         .theme-halloween .guide-corner-btn { background: linear-gradient(135deg, #FF8A1F, #B34700); color: #fff; border-color: #FFB347; }
         .theme-candy .guide-corner-btn { background: linear-gradient(135deg, #FF9EC9, #C77DFF); color: #3a1730; }
@@ -2825,7 +2843,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.27</div>
+    <div id="versionTag">v1.0.28</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -2854,7 +2872,7 @@
             <button class="side-corner-btn shop-corner-btn hidden" id="shopCornerBtn" onclick="gateSignIn('the Shop', openPlayerShop)">🛍️ Shop</button>
         </div>
         <div class="mm-main">
-            <div class="mm-kicker">🎓 GRAMMAR TOWER DEFENSE</div>
+            <div class="mm-kicker">🎓 SHEBABS VS KEBABS</div>
             <h1 class="mm-title"><span>UNITY</span><span>DEFENSE</span></h1>
             <div class="mm-ribbon">REMASTERED</div>
             <button class="mm-play" onclick="playGame()"><b>▶ PLAY</b><small>Defend the school from the kebabs</small></button>
@@ -2928,6 +2946,27 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
+                    <div class="update-date">October 26, 2026</div>
+                    <ul>
+                        <li><b>Suggestions</b>: you can now <b>edit</b> and <b>delete</b> your own suggestions, and the admin can <b>reply</b> to them (replies show in gold under the suggestion) and delete any</li>
+                        <li><b>Accessories now fit every teacher</b>: glasses sit on each teacher's eyes (and cover the Wise Sheikh's sunglasses), hats replace the Sheikh's white cap and sit on each head, and neck items fit each body</li>
+                        <li><b>Chat redesigned</b>: livelier bubbles that pop in, name circles, date dividers, times, a friends list with the last message, and a friendlier empty chat</li>
+                        <li>All You Need to Know: the Chat page was updated</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
+                    <div class="update-date">October 25, 2026</div>
+                    <ul>
+                        <li>The <b>TestAccount1</b> tester account now has <b>level 677,777</b> and a huge Positives balance that tops itself up</li>
+                        <li>The <b>Quad grandstand</b> was redrawn: no fans, <b>3 big concrete stands</b> with three steps each, small concrete stairs on their sides, "UNITY DEFENSE REMASTERED" painted on the bottom step and a <b>black gate</b> along the front</li>
+                        <li>The Quad pitch now has <b>real soccer markings</b>: penalty areas, goal areas, penalty spots and arcs, centre circle, goals and corner flags</li>
+                        <li>All You Need to Know: the Quad, Angry Teacher, Teacher Buffs, kebab and Maps pages were updated</li>
+                        <li>Kebabs now gain <b>30 HP per wave</b> on the School Grounds (was 25)</li>
+                        <li>The main menu title now says <b>SHEBABS VS KEBABS</b>, and the 📖 / 💡 buttons slide in with the rest of the menu</li>
+                        <li>The Angry Teacher's <b>Whistle is now her buff</b>: unequipped she uses <b>BOYS!</b>, equipped she uses the Whistle (the buff is renamed Whistle)</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
                     <div class="update-date">October 24, 2026</div>
                     <ul>
                         <li>The admin account has an <b>infinite level</b> (all level locks open) and the Admin Panel can add 5, 100 or 500 Positives to the admin</li>
@@ -2969,7 +3008,7 @@
                         <li>NEW: a <b>← BACK</b> button now stays in the top-left corner of the Profile/Login, Inbox, Chat, Updates, Credits and Settings screens, so you no longer have to scroll to the bottom to leave. The Back button at the bottom still works</li>
                         <li>NEW: <b>Teacher Buffs!</b> One permanent buff for each teacher, bought once in the main menu <b>Shop → Upgrades → Teachers</b> for <b>1000 💚 Positives</b> each (they cost a lot). They are saved on your account and work in every battle while you are signed in</li>
                         <li><b>📜 Long Shebab</b> (Wise Sheikh): his throws are Arabic <b>sentences</b> instead of one letter, and each one hits the kebab 3 times (3x damage)</li>
-                        <li><b>📣 Long Whistle</b> (Angry Teacher): her Whistle ultimate lasts <b>1.5x longer</b> (3 seconds instead of 2)</li>
+                        <li><b>📣 Whistle</b> (Angry Teacher): replaces her BOYS! ultimate with a whistle that blasts the 3 kebabs nearest the school</li>
                         <li><b>🎯 Area Strike</b> (Mathematician): replaces Algebra Swarm. It locks onto <b>3 kebabs</b>, scans their area with a ring, then strikes for <b>30% of their health</b> (it is still a 50/50 with Beam Pull)</li>
                         <li>All You Need to Know: the three teacher pages, Ultimates, All Teachers at a Glance and the Shop pages now cover the buffs</li>
                         <li>NEW: <b>🎁 Daily Rewards!</b> Signed-in players can claim free 💚 Positives once a day from the new <b>🎁 Daily</b> button at the top right of the main menu (a red ! shows when your reward is ready)</li>
@@ -4139,7 +4178,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-10-24';
+        const LAST_UPDATE_DATE = '2026-10-26';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4222,8 +4261,12 @@
             const username = getCurrentUsername();
             if (!username) return null;
             const accounts = getAccounts();
-            return accounts[username.toLowerCase()] || null;
+            const acc = accounts[username.toLowerCase()] || null;
+            if (acc && PERK_ACCOUNTS[acc.username.toLowerCase()] && PERK_ACCOUNTS[acc.username.toLowerCase()].positives) acc.positives = Math.max(acc.positives || 0, PERK_ACCOUNTS[acc.username.toLowerCase()].positives);   // test account: Positives are topped up every time, so they never run out
+            return acc;
         }
+        // Special test accounts (by username): a fixed level and Positives that are topped up to a huge number
+        var PERK_ACCOUNTS = { testaccount1: { level: 677777, positives: 999999999 } };
 
         function updateCurrentAccount(mutatorFn) {
             const username = getCurrentUsername();
@@ -4400,7 +4443,7 @@
             { id: 'spotless',  name: 'Spotless',           desc: 'Clear wave 10 without your school losing any health', flag: true, pos: 10 },
             { id: 'triple',    name: 'Triple Threat',      desc: 'Use all three teachers\' ultimates within 5 seconds', flag: true, pos: 9 },
             { id: 'shebab8',   name: 'Shebab Blast',       desc: 'Hit 8 kebabs with a single SHEBAB', flag: true, pos: 6 },
-            { id: 'boys5',     name: 'Crowd Control',      desc: 'Hit 5 different kebabs with a single Whistle', flag: true, pos: 8 },
+            { id: 'boys5',     name: 'Crowd Control',      desc: 'Hit 5 different kebabs with a single BOYS! (or Whistle)', flag: true, pos: 8 },
             { id: 'scan3',     name: 'Triple Scan',        desc: 'Hit 3 or more kebabs with one Area Strike (needs the Area Strike buff)', flag: true, pos: 8 },
             { id: 'longkill',  name: 'Long Story',         desc: 'Finish off a kebab with the 2nd or 3rd hit of a Long Shebab sentence (needs the Long Shebab buff)', flag: true, pos: 5 },
             // 2 that give skins
@@ -4456,8 +4499,12 @@
             return { level: level, into: rem, need: need, pct: need ? Math.min(100, rem / need * 100) : 100 };
         }
         // The admin account (Jaiden, linked to Google) has an infinite level, so every level lock (the Quad, buffs) is open
-        function levelInfoAcc(acc) { return acc && acc.username && acc.username.toLowerCase() === 'jaiden' && acc.cloudUid ? { level: Infinity, into: 0, need: 0, pct: 100 } : levelInfo((acc && acc.xp) || 0); }
-        const lvlText = l => l === Infinity ? '∞' : l;
+        function levelInfoAcc(acc) {
+            const perk = acc && acc.username && PERK_ACCOUNTS[acc.username.toLowerCase()];
+            if (perk && perk.level) return { level: perk.level, into: 0, need: 0, pct: 100 };
+            return acc && acc.username && acc.username.toLowerCase() === 'jaiden' && acc.cloudUid ? { level: Infinity, into: 0, need: 0, pct: 100 } : levelInfo((acc && acc.xp) || 0);
+        }
+        const lvlText = l => l === Infinity ? '∞' : (l >= 1000 ? Number(l).toLocaleString('en-US') : l);
         function accLevel(acc) { return acc ? levelInfoAcc(acc).level : 0; }
         let XP_PENDING = 0, XP_RUN = 0;
         function addXp(n) {
@@ -4699,6 +4746,7 @@
                 const k = Math.min(cv.width / 80, cv.height / 110);
                 c.save(); c.scale(k, k);
                 const t = new Tower(1, 1, type); t.x = cv.width / k / 2 - 2; t.y = cv.height / k * 0.64; t.age = 99; t.bobOffset = 0;
+                t.hideCap = !!(look && look.hat);
                 drawTowersLayer([t], 0, 0);
                 if (look) drawCosmetics(c, t.x, t.y, type, look);
                 c.restore();
@@ -4742,72 +4790,99 @@
         function cosOwned(key) { const a = getCurrentAccount(); return !!(a && (a.items || []).includes(key)); }
         function bgOwned(id) { return id === 'hall' || cosOwned('bg:' + id); }
 
-        // x,y = tower position (the preview/game coordinates); the head is at y - 26
+        // Where each teacher's head, eyes and neck are, so every accessory fits that character.
+        // All numbers are relative to the body centre (x, y). hatTop = top of the head/hair where a hat sits,
+        // hatK = hat size for this head, eyeY/eyeDX/gK = where the glasses go (eye height, lens spacing, size),
+        // neckY/nK = where the neck accessory sits and how big, skin = face colour (to cover Sheikh's own sunglasses)
+        const COS_GEOM = {
+            sheikh: { hatTop: -35, hatK: 1.12, eyeY: -16.6, eyeDX: 6.5, gK: 1.0, neckY: 9.5, nK: 1.05, skin: '#C08850', coverSunglasses: true },
+            badui:  { hatTop: -44, hatK: 1.32, eyeY: -27,   eyeDX: 5.2, gK: 0.95, neckY: -7,  nK: 1.0,  skin: '#E0923E' },
+            math:   { hatTop: -47, hatK: 1.08, eyeY: -30,   eyeDX: 5.8, gK: 1.0, neckY: -3.5, nK: 1.2,  skin: '#A0672D' }
+        };
         function drawCosmetics(c, x, y, type, look) {
-            const hy = y - 26, R = type === 'badui' ? 19 : 14;
-            const top = hy - (type === 'badui' ? 19 : (type === 'math' ? 15 : 16));    // top of the head
+            const G = COS_GEOM[type] || COS_GEOM.sheikh;
             c.save();
             c.lineJoin = 'round'; c.lineCap = 'round'; c.strokeStyle = '#000'; c.lineWidth = 1.3;
-            const eyeY = hy - 1;
-            switch (look.glasses) {
-                case 'round':
-                    c.fillStyle = 'rgba(190,225,255,0.4)'; c.strokeStyle = '#222'; c.lineWidth = 1.8;
-                    [-5.5, 5.5].forEach(dx => { c.beginPath(); c.arc(x + dx, eyeY, 4.6, 0, Math.PI * 2); c.fill(); c.stroke(); });
-                    c.beginPath(); c.moveTo(x - 1, eyeY); c.lineTo(x + 1, eyeY); c.stroke(); break;
-                case 'shades':
-                    c.fillStyle = '#0d0d0d';
-                    [[-10.5], [1.6]].forEach(([dx]) => { c.beginPath(); c.roundRect ? c.roundRect(x + dx, eyeY - 3.6, 9, 7, 2.5) : c.rect(x + dx, eyeY - 3.6, 9, 7); c.fill(); c.stroke(); });
-                    c.fillStyle = 'rgba(255,255,255,0.35)'; c.fillRect(x - 9, eyeY - 2.6, 3, 1.6); c.fillRect(x + 3, eyeY - 2.6, 3, 1.6);
-                    c.beginPath(); c.moveTo(x - 1.5, eyeY - 1); c.lineTo(x + 1.6, eyeY - 1); c.stroke(); break;
-                case 'heart':
-                    c.fillStyle = '#FF4FA3';
-                    [-5.8, 5.8].forEach(dx => { const hx = x + dx; c.beginPath(); c.moveTo(hx, eyeY + 4.8); c.bezierCurveTo(hx - 8, eyeY - 1, hx - 4.5, eyeY - 6.5, hx, eyeY - 2); c.bezierCurveTo(hx + 4.5, eyeY - 6.5, hx + 8, eyeY - 1, hx, eyeY + 4.8); c.fill(); c.stroke(); });
-                    break;
+            // ---- glasses: centred on this teacher's eyes (Sheikh's own sunglasses are covered first)
+            if (look.glasses) {
+                c.save(); c.translate(x, y + G.eyeY); c.scale(G.gK, G.gK);
+                if (G.coverSunglasses) {
+                    c.fillStyle = G.skin; c.strokeStyle = G.skin; c.lineWidth = 1.2;
+                    c.beginPath(); c.rect(-12.4, -4.6, 24.8, 9.2); c.fill(); c.stroke();
+                    c.strokeStyle = '#000'; c.lineWidth = 1.3;
+                }
+                const d = G.eyeDX;
+                switch (look.glasses) {
+                    case 'round':
+                        c.fillStyle = 'rgba(205,232,255,0.55)'; c.strokeStyle = '#222'; c.lineWidth = 1.8;
+                        [-d, d].forEach(dx => { c.beginPath(); c.arc(dx, 0, 4.4, 0, Math.PI * 2); c.fill(); c.stroke(); });
+                        c.beginPath(); c.moveTo(-d + 4.4, -0.5); c.lineTo(d - 4.4, -0.5); c.moveTo(-d - 4.4, -0.5); c.lineTo(-d - 7, -1.5); c.moveTo(d + 4.4, -0.5); c.lineTo(d + 7, -1.5); c.stroke(); break;
+                    case 'shades':
+                        c.fillStyle = '#0d0d0d';
+                        [-d, d].forEach(dx => { c.beginPath(); c.roundRect ? c.roundRect(dx - 4.8, -3.6, 9.6, 7.2, 2.6) : c.rect(dx - 4.8, -3.6, 9.6, 7.2); c.fill(); c.stroke(); });
+                        c.fillStyle = 'rgba(255,255,255,0.35)'; c.fillRect(-d - 3.4, -2.6, 3, 1.5); c.fillRect(d - 3.4, -2.6, 3, 1.5);
+                        c.beginPath(); c.moveTo(-d + 4.8, -1.5); c.lineTo(d - 4.8, -1.5); c.moveTo(-d - 4.8, -1.5); c.lineTo(-d - 7, -2.2); c.moveTo(d + 4.8, -1.5); c.lineTo(d + 7, -2.2); c.stroke(); break;
+                    case 'heart':
+                        c.fillStyle = '#FF4FA3';
+                        [-d, d].forEach(dx => { c.beginPath(); c.moveTo(dx, 4.8); c.bezierCurveTo(dx - 8, -1, dx - 4.5, -6.5, dx, -2); c.bezierCurveTo(dx + 4.5, -6.5, dx + 8, -1, dx, 4.8); c.closePath(); c.fill(); c.stroke(); });
+                        c.beginPath(); c.moveTo(-d + 3, -2.5); c.lineTo(d - 3, -2.5); c.stroke(); break;
+                }
+                c.restore();
             }
-            const ny = y - 9;
-            switch (look.neck) {
-                case 'bowtie':
-                    c.fillStyle = '#E53935';
-                    c.beginPath(); c.moveTo(x, ny); c.lineTo(x - 9, ny - 5); c.lineTo(x - 9, ny + 5); c.closePath(); c.fill(); c.stroke();
-                    c.beginPath(); c.moveTo(x, ny); c.lineTo(x + 9, ny - 5); c.lineTo(x + 9, ny + 5); c.closePath(); c.fill(); c.stroke();
-                    c.fillStyle = '#B71C1C'; c.beginPath(); c.arc(x, ny, 2.6, 0, Math.PI * 2); c.fill(); c.stroke(); break;
-                case 'scarf':
-                    c.fillStyle = '#E53935'; c.beginPath(); c.ellipse(x, ny, 13, 4.6, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-                    c.fillStyle = '#fff'; [-7, 0, 7].forEach(dx => c.fillRect(x + dx - 1.2, ny - 3.6, 2.4, 7));
-                    c.fillStyle = '#E53935'; c.beginPath(); c.rect(x + 5, ny + 2, 6, 14); c.fill(); c.stroke();
-                    c.fillStyle = '#fff'; c.fillRect(x + 5.4, ny + 7, 5.2, 2.4); break;
-                case 'medal':
-                    c.lineWidth = 2.2; c.strokeStyle = '#1E88E5'; c.beginPath(); c.moveTo(x - 7, ny - 4); c.lineTo(x, ny + 9); c.stroke();
-                    c.strokeStyle = '#E53935'; c.beginPath(); c.moveTo(x + 7, ny - 4); c.lineTo(x, ny + 9); c.stroke();
-                    c.lineWidth = 1.3; c.strokeStyle = '#000'; c.fillStyle = '#FFD21F'; c.beginPath(); c.arc(x, ny + 11, 4.6, 0, Math.PI * 2); c.fill(); c.stroke();
-                    c.fillStyle = '#E8A800'; c.beginPath(); c.arc(x, ny + 11, 2, 0, Math.PI * 2); c.fill(); break;
+            // ---- neck: sits where this teacher's neck/chest is, sized to their body
+            if (look.neck) {
+                c.save(); c.translate(x, y + G.neckY); c.scale(G.nK, G.nK);
+                switch (look.neck) {
+                    case 'bowtie':
+                        c.fillStyle = '#E53935';
+                        c.beginPath(); c.moveTo(0, 0); c.lineTo(-9, -5); c.lineTo(-9, 5); c.closePath(); c.fill(); c.stroke();
+                        c.beginPath(); c.moveTo(0, 0); c.lineTo(9, -5); c.lineTo(9, 5); c.closePath(); c.fill(); c.stroke();
+                        c.fillStyle = '#B71C1C'; c.beginPath(); c.arc(0, 0, 2.6, 0, Math.PI * 2); c.fill(); c.stroke(); break;
+                    case 'scarf':
+                        c.fillStyle = '#E53935'; c.beginPath(); c.ellipse(0, 0, 13, 4.6, 0, 0, Math.PI * 2); c.fill(); c.stroke();
+                        c.fillStyle = '#fff'; [-7, 0, 7].forEach(dx => c.fillRect(dx - 1.2, -3.6, 2.4, 7));
+                        c.fillStyle = '#E53935'; c.beginPath(); c.rect(5, 2, 6, 14); c.fill(); c.stroke();
+                        c.fillStyle = '#fff'; c.fillRect(5.4, 7, 5.2, 2.4); break;
+                    case 'medal':
+                        c.lineWidth = 2.2; c.strokeStyle = '#1E88E5'; c.beginPath(); c.moveTo(-7, -4); c.lineTo(0, 9); c.stroke();
+                        c.strokeStyle = '#E53935'; c.beginPath(); c.moveTo(7, -4); c.lineTo(0, 9); c.stroke();
+                        c.lineWidth = 1.3; c.strokeStyle = '#000'; c.fillStyle = '#FFD21F'; c.beginPath(); c.arc(0, 11, 4.6, 0, Math.PI * 2); c.fill(); c.stroke();
+                        c.fillStyle = '#E8A800'; c.beginPath(); c.arc(0, 11, 2, 0, Math.PI * 2); c.fill(); break;
+                }
+                c.restore();
             }
-            switch (look.hat) {
-                case 'party':
-                    c.fillStyle = '#FF4FA3'; c.beginPath(); c.moveTo(x - 9, top + 4); c.lineTo(x + 9, top + 4); c.lineTo(x + 1, top - 22); c.closePath(); c.fill(); c.stroke();
-                    c.fillStyle = '#FFD21F'; [[-3, -2], [3, -9], [-1, -14]].forEach(([dx, dy]) => { c.beginPath(); c.arc(x + dx, top + dy, 1.7, 0, Math.PI * 2); c.fill(); });
-                    c.beginPath(); c.arc(x + 1, top - 23, 3.2, 0, Math.PI * 2); c.fill(); c.stroke(); break;
-                case 'beanie':
-                    c.fillStyle = '#2BB8A6'; c.beginPath(); c.arc(x, top + 6, 12, Math.PI, 0); c.closePath(); c.fill(); c.stroke();
-                    c.fillStyle = '#1E8E80'; c.fillRect(x - 12.5, top + 5, 25, 5.5); c.strokeRect(x - 12.5, top + 5, 25, 5.5);
-                    c.fillStyle = '#fff'; c.beginPath(); c.arc(x, top - 6.5, 3.4, 0, Math.PI * 2); c.fill(); c.stroke(); break;
-                case 'cap':
-                    c.fillStyle = '#E53935'; c.beginPath(); c.arc(x, top + 7, 12.5, Math.PI, 0); c.closePath(); c.fill(); c.stroke();
-                    c.beginPath(); c.ellipse(x + 9, top + 7.5, 11, 3.2, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-                    c.fillStyle = '#fff'; c.beginPath(); c.arc(x - 1, top + 1, 2.2, 0, Math.PI * 2); c.fill(); break;
-                case 'tophat':
-                    c.fillStyle = '#1b1b1b'; c.fillRect(x - 8, top - 16, 16, 20); c.strokeRect(x - 8, top - 16, 16, 20);
-                    c.fillStyle = '#C62828'; c.fillRect(x - 8, top - 1, 16, 4.5); c.strokeRect(x - 8, top - 1, 16, 4.5);
-                    c.fillStyle = '#1b1b1b'; c.beginPath(); c.ellipse(x, top + 4.5, 14, 3.4, 0, 0, Math.PI * 2); c.fill(); c.stroke(); break;
-                case 'grad':
-                    c.fillStyle = '#222'; c.fillRect(x - 8, top + 1, 16, 7); c.strokeRect(x - 8, top + 1, 16, 7);
-                    c.beginPath(); c.moveTo(x - 17, top - 1); c.lineTo(x, top - 8); c.lineTo(x + 17, top - 1); c.lineTo(x, top + 5); c.closePath(); c.fill(); c.stroke();
-                    c.strokeStyle = '#FFD21F'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(x, top - 1); c.lineTo(x + 14, top - 1); c.lineTo(x + 14, top + 9); c.stroke();
-                    c.fillStyle = '#FFD21F'; c.beginPath(); c.arc(x + 14, top + 10, 1.8, 0, Math.PI * 2); c.fill(); break;
-                case 'crown':
-                    c.fillStyle = '#FFD21F'; c.beginPath(); c.moveTo(x - 11, top + 5); c.lineTo(x - 12, top - 9); c.lineTo(x - 6, top - 2); c.lineTo(x, top - 12); c.lineTo(x + 6, top - 2); c.lineTo(x + 12, top - 9); c.lineTo(x + 11, top + 5); c.closePath(); c.fill(); c.stroke();
-                    c.fillStyle = '#E53935'; c.beginPath(); c.arc(x, top, 2, 0, Math.PI * 2); c.fill();
-                    c.fillStyle = '#1E88E5'; c.beginPath(); c.arc(x - 7, top + 1, 1.5, 0, Math.PI * 2); c.arc(x + 7, top + 1, 1.5, 0, Math.PI * 2); c.fill(); break;
+            // ---- hats: drawn from the top of this teacher's head/hair, scaled to the head (a hat replaces Sheikh's own cap)
+            if (look.hat) {
+                c.save(); c.translate(x, y + G.hatTop); c.scale(G.hatK, G.hatK);
+                const top = 0, X = 0;
+                switch (look.hat) {
+                    case 'party':
+                        c.fillStyle = '#FF4FA3'; c.beginPath(); c.moveTo(X - 9, top + 4); c.lineTo(X + 9, top + 4); c.lineTo(X + 1, top - 22); c.closePath(); c.fill(); c.stroke();
+                        c.fillStyle = '#FFD21F'; [[-3, -2], [3, -9], [-1, -14]].forEach(([dx, dy]) => { c.beginPath(); c.arc(X + dx, top + dy, 1.7, 0, Math.PI * 2); c.fill(); });
+                        c.beginPath(); c.arc(X + 1, top - 23, 3.2, 0, Math.PI * 2); c.fill(); c.stroke(); break;
+                    case 'beanie':
+                        c.fillStyle = '#2BB8A6'; c.beginPath(); c.arc(X, top + 6, 12, Math.PI, 0); c.closePath(); c.fill(); c.stroke();
+                        c.fillStyle = '#1E8E80'; c.fillRect(X - 12.5, top + 5, 25, 5.5); c.strokeRect(X - 12.5, top + 5, 25, 5.5);
+                        c.fillStyle = '#fff'; c.beginPath(); c.arc(X, top - 6.5, 3.4, 0, Math.PI * 2); c.fill(); c.stroke(); break;
+                    case 'cap':
+                        c.fillStyle = '#E53935'; c.beginPath(); c.arc(X, top + 7, 12.5, Math.PI, 0); c.closePath(); c.fill(); c.stroke();
+                        c.beginPath(); c.ellipse(X + 9, top + 7.5, 11, 3.2, 0, 0, Math.PI * 2); c.fill(); c.stroke();
+                        c.fillStyle = '#fff'; c.beginPath(); c.arc(X - 1, top + 1, 2.2, 0, Math.PI * 2); c.fill(); break;
+                    case 'tophat':
+                        c.fillStyle = '#1b1b1b'; c.fillRect(X - 8, top - 16, 16, 20); c.strokeRect(X - 8, top - 16, 16, 20);
+                        c.fillStyle = '#C62828'; c.fillRect(X - 8, top - 1, 16, 4.5); c.strokeRect(X - 8, top - 1, 16, 4.5);
+                        c.fillStyle = '#1b1b1b'; c.beginPath(); c.ellipse(X, top + 4.5, 14, 3.4, 0, 0, Math.PI * 2); c.fill(); c.stroke(); break;
+                    case 'grad':
+                        c.fillStyle = '#222'; c.fillRect(X - 8, top + 1, 16, 7); c.strokeRect(X - 8, top + 1, 16, 7);
+                        c.beginPath(); c.moveTo(X - 17, top - 1); c.lineTo(X, top - 8); c.lineTo(X + 17, top - 1); c.lineTo(X, top + 5); c.closePath(); c.fill(); c.stroke();
+                        c.strokeStyle = '#FFD21F'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(X, top - 1); c.lineTo(X + 14, top - 1); c.lineTo(X + 14, top + 9); c.stroke();
+                        c.fillStyle = '#FFD21F'; c.beginPath(); c.arc(X + 14, top + 10, 1.8, 0, Math.PI * 2); c.fill(); break;
+                    case 'crown':
+                        c.fillStyle = '#FFD21F'; c.beginPath(); c.moveTo(X - 11, top + 5); c.lineTo(X - 12, top - 9); c.lineTo(X - 6, top - 2); c.lineTo(X, top - 12); c.lineTo(X + 6, top - 2); c.lineTo(X + 12, top - 9); c.lineTo(X + 11, top + 5); c.closePath(); c.fill(); c.stroke();
+                        c.fillStyle = '#E53935'; c.beginPath(); c.arc(X, top, 2, 0, Math.PI * 2); c.fill();
+                        c.fillStyle = '#1E88E5'; c.beginPath(); c.arc(X - 7, top + 1, 1.5, 0, Math.PI * 2); c.arc(X + 7, top + 1, 1.5, 0, Math.PI * 2); c.fill(); break;
+                }
+                c.restore();
             }
             c.restore();
         }
@@ -6138,17 +6213,22 @@
             }
 
             const friends = acc.friends || [];
+            const avColor = n => { let h = 0; for (const ch of String(n).toLowerCase()) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h},75%,65%)`; };
+            const avHtml = (n, ghost) => `<span class="chat-av${ghost ? ' ghost' : ''}" style="background:${avColor(n)}">${escapeHtml(String(n).charAt(0).toUpperCase())}</span>`;
 
             if (!currentChatFriend) {
                 let html = '<h2>💬 Chat</h2>';
                 if (friends.length === 0) {
-                    html += '<div class="inbox-empty-note">Add friends from your Inbox to start chatting</div>';
+                    html += '<div class="chat-empty"><span class="big">👋</span>Add friends from your Inbox to start chatting</div>';
                 } else {
                     friends.forEach(name => {
                         const safe = name.replace(/'/g, "\\'");
+                        const conv = getConversation(acc.username, name);
+                        const last = conv.length ? conv[conv.length - 1] : null;
+                        const prev = last ? ((last.from.toLowerCase() === acc.username.toLowerCase() ? 'You: ' : '') + last.text) : 'No messages yet';
                         html += `
                             <div class="friend-row">
-                                <span class="friend-row-name">${escapeHtml(name)}</span>
+                                <div class="chat-fr">${avHtml(name)}<div><span class="friend-row-name">${escapeHtml(name)}</span><span class="prev">${escapeHtml(prev)}</span></div></div>
                                 <button class="friend-action-btn chat-with" onclick="openChatWith('${safe}')">Open Chat</button>
                             </div>`;
                     });
@@ -6161,25 +6241,38 @@
             const messages = getConversation(acc.username, currentChatFriend);
             let msgHtml = '';
             if (messages.length === 0) {
-                msgHtml = '<div class="inbox-empty-note">No messages yet - say hi!</div>';
+                msgHtml = `<div class="chat-empty"><span class="big">👋</span>No messages yet - say hi to ${escapeHtml(currentChatFriend)}!</div>`;
             } else {
-                messages.forEach(m => {
+                let lastDay = '', lastFrom = '', lastT = 0;
+                const today = new Date().toDateString(), yest = new Date(Date.now() - 864e5).toDateString();
+                messages.forEach((m, i) => {
+                    const d = new Date(m.timestamp);
+                    const ds = d.toDateString();
+                    if (ds !== lastDay) {
+                        msgHtml += `<div class="chat-day">${ds === today ? 'Today' : ds === yest ? 'Yesterday' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>`;
+                        lastDay = ds; lastFrom = '';
+                    }
                     const mine = m.from.toLowerCase() === acc.username.toLowerCase();
+                    const newGroup = m.from !== lastFrom;
+                    const nxt = messages[i + 1];
+                    const lastOfGroup = !nxt || nxt.from !== m.from || new Date(nxt.timestamp).toDateString() !== ds;
+                    lastFrom = m.from;
+                    const tm = isNaN(d) ? '' : d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
                     msgHtml += `
-                        <div class="chat-bubble ${mine ? 'mine' : 'theirs'}">
-                            ${escapeHtml(m.text)}
-                            <span class="chat-bubble-time">${formatAccountDate(m.timestamp)}</span>
+                        <div class="chat-row ${mine ? 'mine' : 'theirs'}${newGroup ? ' gap' : ''}">
+                            ${mine ? '' : avHtml(currentChatFriend, !lastOfGroup)}
+                            <div class="chat-bubble ${mine ? 'mine' : 'theirs'}">${escapeHtml(m.text)}<span class="chat-bubble-time">${tm}</span></div>
                         </div>`;
                 });
             }
 
             content.innerHTML = `
-                <h2>💬 ${escapeHtml(currentChatFriend)}</h2>
+                <div class="chat-head">${avHtml(currentChatFriend)}<h2>${escapeHtml(currentChatFriend)}</h2></div>
                 <button class="chat-back-link" onclick="backToFriendsList()">← All Friends</button>
                 <div class="chat-thread" id="chatThread">${msgHtml}</div>
                 <div class="chat-input-row">
                     <input type="text" class="account-input" id="chatMessageInput" placeholder="Type a message..." maxlength="200">
-                    <button class="account-submit-btn" onclick="sendCurrentChatMessage()" style="width:auto;">Send</button>
+                    <button class="account-submit-btn chat-send" onclick="sendCurrentChatMessage()" style="width:auto;">Send ➤</button>
                 </div>
                 <button class="back-btn" onclick="backToMenu('chat')" style="margin-top:14px;">Back to Menu</button>
             `;
@@ -6420,8 +6513,8 @@
                     ['Health', '10', '8', '125'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles'],
                     ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2× damage', 'None. "Shhhh!" every 10 s: 50 damage and knockback to 3 kebabs'],
-                    ['Ultimate', '🔥 SHEBAB: 100 damage blast around him', '📣 Whistle: blasts the 3 kebabs nearest the school', 'Random: 📐 Algebra Swarm or 📏 Beam Pull'],
-                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Long Whistle: ultimate lasts 1.5x longer', '🎯 Area Strike: replaces Algebra Swarm'],
+                    ['Ultimate', '🔥 SHEBAB: 100 damage blast around him', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull'],
+                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm'],
                     ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits']
                 ]) +
@@ -6473,16 +6566,17 @@
                     'Several Angry Teachers each have their own marked kebab, and marks do <b>not</b> stack (a kebab is only ever 2×).',
                     'Angry Teachers <b>never fire at the same moment</b>: each one waits for her turn, at least <b>2.5 seconds</b> after the last one, so you see every Enter press and every mark on its own. Each one picks her time slot first and only types in the <b>last 3 seconds</b> before it, so nobody sits typing for ages.'
                 ]) +
-                '<h4>📣 Ultimate: Whistle!</h4>' +
+                '<h4>🔥 Ultimate: BOYS!</h4>' +
                 gList([
                     'It <b>only charges when she marks a kebab</b> with Negative: each mark fills <b>20%</b>, so <b>5 marks</b> make it ready. It does not charge over time.',
-                    'When glowing, click her. Her head swells and shakes and she blows a <b>whistle</b> for <b>2 seconds</b>: about <b>5 times a second</b> the sound waves hit the <b>3 kebabs closest to the school</b> (the ones about to get through), <b>25 damage</b> each time (more with Damage Boost, and 2x on a kebab marked with Negative).',
-                    'Her range does not matter: the whistle reaches the nearest-to-school kebabs from anywhere on the map, so it is a great last line of defence.'
+                    'When glowing, click her. Her head swells and shakes and <b>6 pink circles</b> spin around her at about 1.25 tiles for <b>2 seconds</b>.',
+                    'Any kebab that touches a circle takes rapid damage every frame, so it is brutal against a crowd walking past her.'
                 ]) +
-                '<h4>📣 Buff: Long Whistle (1000 💚)</h4>' +
+                '<h4>📣 Buff: Whistle (1000 💚)</h4>' +
                 gList([
-                    'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + '. Signed-in players only.',
-                    'Her Whistle ultimate lasts <b>1.5x longer</b>: <b>3 seconds</b> instead of 2 (her head stays swollen the whole time).'
+                    'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + ', from <b>level 15</b>. Signed-in players only. Equip it in your profile → ✨ Buffs.',
+                    '<b>Not equipped = BOYS!. Equipped = Whistle.</b> The Whistle <b>replaces</b> BOYS!.',
+                    'She blows a <b>whistle</b> for <b>2 seconds</b>: about <b>5 times a second</b> the sound waves hit the <b>3 kebabs closest to the school</b> (the ones about to get through), <b>25 damage</b> each time (more with Damage Boost, and 2x on a kebab marked with Negative). Her range does not matter.'
                 ]) +
                 gTip('Pair her with Wise Sheikh and Mathematician. Marking only does something when other teachers deal the damage. Her marks are one of the biggest damage boosts in the game.') },
 
@@ -6540,15 +6634,15 @@
                 ]) },
 
             { id: 'ults', group: 'teachers', icon: '⚡', title: 'Ultimates (all of them)', html: () =>
-                gTbl(['', 'SHEBAB', 'Whistle', 'Algebra Swarm / Beam Pull'], [
+                gTbl(['', 'SHEBAB', 'BOYS! (Whistle with the buff)', 'Algebra Swarm / Beam Pull'], [
                     ['Teacher', 'Wise Sheikh', 'Angry Teacher', 'Mathematician'],
                     ['Charges by', 'Killing blows, +20% each', 'Marking a kebab, +20% each', 'Time (~17 s)'],
-                    ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds (3 with Long Whistle)', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
+                    ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
                     ['Damage', '100 to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 35% current HP each. Area Strike: 30% current HP. Beam: 10 per second'],
                     ['Scales with damage upgrades?', 'Yes', 'Yes', 'Swarm and Area Strike: no. Beam: yes'],
                     ['Hits Negative-marked kebabs for', '2×', '2×', '2× (swarm = 70%, Area Strike = 60%)']
                 ]) +
-                '<p>With the <b>teacher buffs</b> (' + gLink('teacherbuffs', 'see Teacher Buffs') + ') Whistle lasts 3 seconds and the Mathematician\'s Algebra Swarm becomes Area Strike.</p>' +
+                '<p>With the <b>teacher buffs</b> (' + gLink('teacherbuffs', 'see Teacher Buffs') + ') the Angry Teacher\'s BOYS! becomes the Whistle and the Mathematician\'s Algebra Swarm becomes Area Strike.</p>' +
                 gList([
                     'When a teacher\'s charge is full they get a <b>glowing ring</b>. Click them to fire.',
                     'The charge bar shows under a teacher only while it is charging.',
@@ -6590,7 +6684,7 @@
                     gTbl(['Wave', 'Kebabs', 'Health each', 'Speed'], rows) +
                     '<h4>Health</h4>' +
                     gList([
-                        'Wave 1 kebabs have <b>100 HP</b>. Every wave adds a flat <b>25 HP</b>, and that never speeds up or slows down (wave 10 = 325 HP, wave 50 = 1,325 HP, wave 100 = 2,575 HP). <b>On the Quad map it is 35 HP per wave</b> instead.',
+                        'Wave 1 kebabs have <b>100 HP</b>. Every wave adds a flat <b>30 HP</b>, and that never speeds up or slows down (wave 10 = 370 HP, wave 50 = 1,570 HP, wave 100 = 3,070 HP). <b>On the Quad map it is 35 HP per wave</b> instead.',
                         'There is <b>no maximum</b>: kebabs keep getting tougher forever.',
                         'The top bar shows the current <b>Kebab HP</b> (and <b>Kebab Speed</b> next to it).'
                     ]) +
@@ -6805,6 +6899,7 @@
                 gList([
                     'Type your idea (up to <b>500 letters</b>) and press <b>Send suggestion</b>.',
                     'If you are <b>signed in with Google linked</b>, your suggestion is sent online and you can see the latest ones from everyone.',
+                    'Your own suggestions have <b>✏️ Edit</b> and <b>🗑 Delete</b> buttons. When the game owner answers, a gold <b>👑 Admin reply</b> appears under your suggestion.',
                     'If not, it is only <b>saved on your device</b>. Link Google in your profile to send it for real.',
                     'You can only send one every few seconds, so make each one count.'
                 ]) },
@@ -6918,7 +7013,7 @@
                 gList([
                     'Open your <b>account menu</b> (press your name, or Sign Up) and use the <b>📥 Inbox</b> and <b>💬 Chat</b> buttons along the top of it. You need to be signed in.',
                     'In the Inbox you can <b>send friend requests</b> by username and <b>accept or decline</b> the ones you get. A red number shows how many are waiting.',
-                    'In Chat you can message your friends.',
+                    'In Chat you can message your friends. Chats show coloured name circles, date dividers, times, and your friends list shows the last message.',
                     '🌐 <b>Friends on other devices</b>: <b>link your Google account</b> (Profile &gt; Link Google Account). Then type a friend\'s username in the Inbox, just like Roblox. They get your request, press Accept, and you are friends on every device. Chat works across devices too. <b>You must link a Google account to add friends</b>; until you do, the Add a Friend box is locked.',
                     '🌐 <b>Online Mode</b> (playing together) is <b>coming soon</b>.'
                 ]) },
@@ -6964,8 +7059,8 @@
             { id: 'maps', group: 'waves', icon: '🗺️', title: 'Maps & The Quad', html: () =>
                 '<p>Pressing <b>▶ PLAY</b> opens the map select with three cards.</p>' +
                 gTbl(['Map', 'How to get it', 'What is different'], [
-                    ['🏫 The School Grounds', 'Always open', 'The classic map: winding tracks, split track at wave 10, tri-track at wave 40. Kebabs gain 25 HP per wave.'],
-                    ['⚽ The Quad', 'Reach <b>level ' + QUAD_UNLOCK_LEVEL + '</b> (signed in)', 'A darker, evening soccer field with a <b>grandstand full of fans</b> along the top. Kebabs run along the <b>painted lines</b>. They gain <b>35 HP per wave</b>. Two new kebabs: Soccer (wave 5) and OZ Tag (wave 10).'],
+                    ['🏫 The School Grounds', 'Always open', 'The classic map: winding tracks, split track at wave 10, tri-track at wave 40. Kebabs gain 30 HP per wave.'],
+                    ['⚽ The Quad', 'Reach <b>level ' + QUAD_UNLOCK_LEVEL + '</b> (signed in)', 'A darker, evening soccer field with a <b>concrete grandstand</b> along the top (3 big stands, small side stairs, a black gate) and a pitch with <b>real markings</b>. Kebabs run along the <b>painted lines</b>. They gain <b>35 HP per wave</b>. Two new kebabs: Soccer (wave 5) and OZ Tag (wave 10).'],
                     ['🚧 Coming Soon', 'Not out yet', 'A new map is on the way.']
                 ]) +
                 '<h4>The Quad rules</h4>' +
@@ -6973,7 +7068,8 @@
                     'The Quad uses the <b>same wave milestones</b>: the second line of the field opens at <b>wave 10</b> and the third at <b>wave 40</b> (the field gets longer, just like the tri-track).',
                     'Kebabs start at 100 HP on wave 1, then gain 35 HP every wave (wave 10 = 415 HP).',
                     'You choose a <b>free teacher</b> before the battle: <b>Mathematician</b> or <b>Angry Teacher</b>. They are unlocked from the start and the <b>first one you place is free</b>. You still have Wise Sheikh. The one you did not pick can still be hired in the shop as normal.',
-                    'The grandstand runs along the very top of the map and is partly cut off by the edge of the screen. It is only scenery.',
+                    'The grandstand runs along the very top of the map: <b>3 big concrete stands</b> (three steps each, small concrete stairs on their sides, "UNITY DEFENSE REMASTERED" painted on the bottom step) with a <b>black gate</b> in front that nobody can pass. It is only scenery, and there are no fans.',
+                    'The pitch uses real soccer proportions: penalty areas, goal areas, penalty spots and arcs, a centre circle, goals and corner flags.',
                     'Quad battles save and continue just like the normal map.',
                     'Test Mode follows the same rule: the Quad stays <b>locked until you reach level ' + QUAD_UNLOCK_LEVEL + '</b>. Sign in and level up to try it there.',
                     gLink('newkebabs', 'Soccer and OZ Tag kebabs') + ' only appear on the Quad.'
@@ -7196,7 +7292,7 @@
                 _adm.players = []; snap.forEach(d => { const v = d.data(); v._id = d.id; _adm.players.push(v); }); adminRender();
             }).catch(e => { _adm.err = 'Could not load players (' + (e && e.code || 'error') + '). Publish the updated firestore.rules.txt in the Firebase console.'; _adm.players = []; adminRender(); });
             db.collection('suggestions').orderBy('createdAt', 'desc').limit(200).get().then(snap => {
-                _adm.sugs = []; snap.forEach(d => _adm.sugs.push(d.data())); adminRender();
+                _adm.sugs = []; snap.forEach(d => { const v = d.data(); v._id = d.id; _adm.sugs.push(v); }); adminRender();
             }).catch(() => { _adm.sugs = []; adminRender(); });
         }
         function adminAddPositives(n) {
@@ -7215,7 +7311,8 @@
             h += _adm.err ? '<div style="color:#ffb74d;font-weight:700;margin:8px 0">' + escapeHtml(_adm.err) + '</div>' : '';
             if (_adm.tab === 'sugs') {
                 if (!_adm.sugs) { el.innerHTML = h + '<div>Loading...</div>'; return; }
-                el.innerHTML = h + '<div style="color:#9fb3c8">' + _adm.sugs.length + ' suggestions</div>' + (_adm.sugs.map(r => '<div class="sug-item">' + escapeHtml(r.text || '') + '<small>' + escapeHtml(r.name || 'Guest') + ' · ' + fmt(adminTs(r.createdAt)) + '</small></div>').join('') || '<div style="color:#9fb3c8;margin-top:8px">None yet.</div>');
+                _sugRows = _adm.sugs.map(r => ({ key: 'C' + r._id, id: r._id, text: r.text || '', name: (r.name || 'Guest') + ' · ' + fmt(adminTs(r.createdAt)), reply: r.reply || '', edited: r.edited, mine: false }));
+                el.innerHTML = h + '<div style="color:#9fb3c8">' + _adm.sugs.length + ' suggestions</div>' + (_sugRows.map((r, i) => sugRowHtml(r, i, true)).join('') || '<div style="color:#9fb3c8;margin-top:8px">None yet.</div>');
                 return;
             }
             if (!_adm.players) { el.innerHTML = h + '<div>Loading...</div>'; return; }
@@ -7263,19 +7360,66 @@
                 renderSuggestions();
             }, 430);
         }
+        // Rows shown on the Suggestions screen: {key, id (cloud doc id), text, name, reply, mine, local, idx}
+        let _sugRows = [], _sugEdit = '', _sugReplyOpen = '';
+        function sugRowHtml(r, i, adminView) {
+            const adm = isAdminAccount();
+            let h = '<div class="sug-item">';
+            if (_sugEdit === r.key) {
+                h += '<textarea class="sug-box" id="sugEditBox" maxlength="500" style="min-height:70px">' + escapeHtml(r.text) + '</textarea><div class="sug-actions"><button class="acc-tab on" onclick="sugSaveEdit(' + i + ')">Save</button><button class="acc-tab" onclick="sugEditStart(\'\')">Cancel</button></div>';
+            } else {
+                h += escapeHtml(r.text);
+                h += '<small>' + escapeHtml(r.name || 'Guest') + (r.local ? ' · saved on this device' : '') + (r.edited ? ' · edited' : '') + '</small>';
+            }
+            if (r.reply) h += '<div class="sug-reply"><b>👑 Admin reply</b>' + escapeHtml(r.reply) + '</div>';
+            if (_sugReplyOpen === r.key) {
+                h += '<textarea class="sug-box" id="sugReplyBox" maxlength="500" style="min-height:60px" placeholder="Write a reply...">' + escapeHtml(r.reply || '') + '</textarea><div class="sug-actions"><button class="acc-tab on" onclick="sugSendReply(' + i + ')">Send reply</button>' + (r.reply ? '<button class="acc-tab" onclick="sugSendReply(' + i + ',true)">Remove reply</button>' : '') + '<button class="acc-tab" onclick="sugReplyStart(\'\')">Cancel</button></div>';
+            } else if (_sugEdit !== r.key) {
+                const bits = [];
+                if (r.mine && !adminView) { bits.push('<button class="acc-tab" onclick="sugEditStart(\'' + r.key + '\')">✏️ Edit</button>'); }
+                if (r.mine || adm) { bits.push('<button class="acc-tab" onclick="sugDelete(' + i + ')">🗑 Delete</button>'); }
+                if (adm && !r.local) { bits.push('<button class="acc-tab" onclick="sugReplyStart(\'' + r.key + '\')">💬 ' + (r.reply ? 'Edit reply' : 'Reply') + '</button>'); }
+                if (bits.length) h += '<div class="sug-actions">' + bits.join('') + '</div>';
+            }
+            return h + '</div>';
+        }
+        function sugDraw() {
+            if (document.getElementById('adminScreen') && !document.getElementById('adminScreen').classList.contains('hidden') && _adm.tab === 'sugs') { adminRender(); return; }
+            const list = document.getElementById('sugList'); if (!list) return;
+            list.innerHTML = _sugRows.length ? _sugRows.map((r, i) => sugRowHtml(r, i)).join('') : '<div style="color:#9fb3c8">No suggestions yet. Be the first!</div>';
+        }
+        function sugEditStart(k) { _sugEdit = k; _sugReplyOpen = ''; sugDraw(); }
+        function sugReplyStart(k) { _sugReplyOpen = k; _sugEdit = ''; sugDraw(); }
+        function sugMsgShow(t, bad) { const m = document.getElementById('sugMsg'); if (m) { m.style.color = bad ? '#ffb74d' : '#7CF3C0'; m.textContent = t; } }
+        function sugSaveEdit(i) {
+            const r = _sugRows[i]; if (!r) return;
+            const text = ((document.getElementById('sugEditBox') || {}).value || '').trim().slice(0, 500);
+            if (text.length < 5) { sugMsgShow('Write a little more first (at least 5 letters).', true); return; }
+            if (r.local) { const a = sugLocal(); if (a[r.idx]) { a[r.idx].text = text; a[r.idx].edited = true; try { localStorage.setItem('ugd_suggestions', JSON.stringify(a)); } catch (e) {} } _sugEdit = ''; renderSuggestions(); sugMsgShow('✅ Suggestion updated.'); return; }
+            firebase.firestore().collection('suggestions').doc(r.id).update({ text: text, edited: true }).then(() => { _sugEdit = ''; renderSuggestions(); sugMsgShow('✅ Suggestion updated.'); }).catch(() => sugMsgShow('Could not edit (check the Firebase rules were updated).', true));
+        }
+        function sugDelete(i) {
+            const r = _sugRows[i]; if (!r) return;
+            if (r.local) { const a = sugLocal(); a.splice(r.idx, 1); try { localStorage.setItem('ugd_suggestions', JSON.stringify(a)); } catch (e) {} renderSuggestions(); sugMsgShow('🗑 Suggestion deleted.'); return; }
+            firebase.firestore().collection('suggestions').doc(r.id).delete().then(() => { renderSuggestions(); if (typeof adminLoad === 'function' && _adm.tab === 'sugs') adminLoad(); sugMsgShow('🗑 Suggestion deleted.'); }).catch(() => sugMsgShow('Could not delete (check the Firebase rules were updated).', true));
+        }
+        function sugSendReply(i, remove) {
+            const r = _sugRows[i]; if (!r || !isAdminAccount()) return;
+            const text = remove ? '' : ((document.getElementById('sugReplyBox') || {}).value || '').trim().slice(0, 500);
+            if (!remove && !text) { sugMsgShow('Write a reply first.', true); return; }
+            const upd = remove ? { reply: firebase.firestore.FieldValue.delete(), repliedAt: firebase.firestore.FieldValue.delete() } : { reply: text, repliedAt: firebase.firestore.FieldValue.serverTimestamp() };
+            firebase.firestore().collection('suggestions').doc(r.id).update(upd).then(() => { _sugReplyOpen = ''; renderSuggestions(); if (_adm.tab === 'sugs' && !document.getElementById('adminScreen').classList.contains('hidden')) adminLoad(); sugMsgShow(remove ? 'Reply removed.' : '✅ Reply sent.'); }).catch(() => sugMsgShow('Could not reply (publish the updated firestore.rules.txt).', true));
+        }
         function renderSuggestions() {
-            const list = document.getElementById('sugList');
-            const draw = rows => {
-                list.innerHTML = rows.length ? rows.map(r => '<div class="sug-item">' + escapeHtml(r.text) + '<small>' + escapeHtml(r.name || 'Guest') + (r.local ? ' · saved on this device' : '') + '</small></div>').join('') : '<div style="color:#9fb3c8">No suggestions yet. Be the first!</div>';
-            };
-            const local = sugLocal().slice().reverse().map(r => ({ text: r.text, name: r.name, local: true }));
-            draw(local);
+            const acc = getCurrentAccount();
+            const local = sugLocal().map((r, idx) => ({ key: 'L' + idx, text: r.text, name: r.name, local: true, idx: idx, mine: true, edited: r.edited })).reverse();
+            _sugRows = local; sugDraw();
             const u = sugCloudUser();
             if (u) {
                 try {
                     firebase.firestore().collection('suggestions').orderBy('createdAt', 'desc').limit(30).get().then(snap => {
-                        const rows = []; snap.forEach(d => { const v = d.data(); rows.push({ text: v.text || '', name: v.name }); });
-                        draw(rows.concat(local));
+                        const rows = []; snap.forEach(d => { const v = d.data(); rows.push({ key: 'C' + d.id, id: d.id, text: v.text || '', name: v.name, reply: v.reply || '', edited: v.edited, mine: v.uid === u.uid }); });
+                        _sugRows = rows.concat(local); sugDraw();
                     }).catch(() => {});
                 } catch (e) {}
             }
@@ -7848,8 +7992,8 @@
         // Arabic alphabet letters used for Wise Sheikh's thrown projectiles
         const ARABIC_LETTERS = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'];
 
-        // Health added per wave: a flat +25 every wave, forever.
-        const KEBAB_HEALTH_PER_WAVE = 25;
+        // Health added per wave: a flat +30 every wave, forever.
+        const KEBAB_HEALTH_PER_WAVE = 30;
         const QUAD_HEALTH_PER_WAVE = 35;   // the Quad's kebabs gain 35 HP per wave
         function kebabHealthStep(wave) {
             return (typeof game !== 'undefined' && game.mapId === 'quad') ? QUAD_HEALTH_PER_WAVE : KEBAB_HEALTH_PER_WAVE;
@@ -8108,71 +8252,113 @@
             bgKey = '';   // redraw the cached background
         }
 
-        // Soccer-field markings drawn under the tracks on the Quad
+        // Soccer-field markings drawn under the tracks on the Quad. They use the real proportions of a pitch
+        // (68 m wide): penalty area 40.3 x 16.5 m, goal area 18.3 x 5.5 m, penalty spot 11 m, centre circle and
+        // penalty arcs 9.15 m, goals 7.3 m wide, small corner arcs.
         function drawPitchMarkings(c, off) {
             const G = GRID_SIZE, cx = col => col * G + G / 2 - off, cyr = row => row * LANE_HEIGHT + LANE_HEIGHT / 2;
-            const L = cx(1), R = cx(WORLD_COLS - 2), Tp = cyr(0), Bt = cyr(ROWS - 1), mid = (Tp + Bt) / 2, hx = cx(17);
+            const L = cx(1), R = cx(WORLD_COLS - 2), Tp = cyr(0), Bt = cyr(ROWS - 1), mid = (Tp + Bt) / 2, hx = (L + R) / 2;
+            const m = (Bt - Tp) / 68;                                   // pixels per metre
+            const penD = 16.5 * m, penW = 40.32 * m, goalD = 5.5 * m, goalW = 18.32 * m, spot = 11 * m, rad = 9.15 * m, gW = 7.32 * m;
             c.save();
-            c.strokeStyle = 'rgba(255,255,255,0.9)'; c.lineWidth = 5; c.lineJoin = 'round'; c.lineCap = 'round';
-            c.beginPath(); c.rect(L, Tp, R - L, Bt - Tp); c.stroke();                       // touchlines + goal lines
-            c.beginPath(); c.moveTo(hx, Tp); c.lineTo(hx, Bt); c.stroke();                   // halfway line
-            c.beginPath(); c.arc(hx, mid, 100, 0, Math.PI * 2); c.stroke();                 // centre circle
-            c.fillStyle = 'rgba(255,255,255,0.9)';
-            c.beginPath(); c.arc(hx, mid, 7, 0, Math.PI * 2); c.fill();                      // centre spot
-            const bx = cyr(1), by = cyr(4);
-            c.strokeRect(L, bx, cx(5) - L, by - bx);                                         // left penalty box
-            c.strokeRect(L, cyr(2), cx(2) - L, cyr(3) - cyr(2));                             // left six-yard box
-            c.strokeRect(cx(WORLD_COLS - 7), bx, R - cx(WORLD_COLS - 7), by - bx);           // right penalty box
-            c.strokeRect(cx(WORLD_COLS - 4), cyr(2), R - cx(WORLD_COLS - 4), cyr(3) - cyr(2)); // right six-yard box
-            c.beginPath(); c.arc(cx(3), mid, 6, 0, Math.PI * 2); c.fill();                   // penalty spots
-            c.beginPath(); c.arc(cx(WORLD_COLS - 5), mid, 6, 0, Math.PI * 2); c.fill();
-            c.lineWidth = 4;
-            c.beginPath(); c.arc(cx(3), mid, 150, -0.36, 0.36); c.stroke();                  // penalty arcs
-            c.beginPath(); c.arc(cx(WORLD_COLS - 5), mid, 150, Math.PI - 0.36, Math.PI + 0.36); c.stroke();
-            [[L, Tp, 0], [R, Tp, 1], [R, Bt, 2], [L, Bt, 3]].forEach(([x, y, k]) => {        // corner arcs
-                c.beginPath(); c.arc(x, y, 22, k * Math.PI / 2, k * Math.PI / 2 + Math.PI / 2); c.stroke();
+            c.strokeStyle = 'rgba(255,255,255,0.92)'; c.fillStyle = 'rgba(255,255,255,0.92)'; c.lineWidth = 3.5; c.lineJoin = 'miter'; c.lineCap = 'butt';
+            c.strokeRect(L, Tp, R - L, Bt - Tp);                                              // touchlines + goal lines
+            c.beginPath(); c.moveTo(hx, Tp); c.lineTo(hx, Bt); c.stroke();                    // halfway line
+            c.beginPath(); c.arc(hx, mid, rad, 0, Math.PI * 2); c.stroke();                   // centre circle
+            c.beginPath(); c.arc(hx, mid, 4, 0, Math.PI * 2); c.fill();                       // centre spot
+            for (const side of [-1, 1]) {                                                     // -1 = left goal, 1 = right goal
+                const gx = side < 0 ? L : R, d = -side;                                       // d points into the pitch
+                c.strokeRect(side < 0 ? gx : gx - penD, mid - penW / 2, penD, penW);          // penalty area
+                c.strokeRect(side < 0 ? gx : gx - goalD, mid - goalW / 2, goalD, goalW);      // goal area (six-yard box)
+                c.beginPath(); c.arc(gx + d * spot, mid, 3.5, 0, Math.PI * 2); c.fill();      // penalty spot
+                const a0 = Math.acos((penD - spot) / rad);                                    // the "D": the arc outside the box
+                c.beginPath();
+                if (side < 0) c.arc(gx + spot, mid, rad, -a0, a0); else c.arc(gx - spot, mid, rad, Math.PI - a0, Math.PI + a0);
+                c.stroke();
+                // the goal: two posts and a net behind the goal line
+                const gd = 2.4 * m, gy0 = mid - gW / 2;
+                c.save(); c.lineWidth = 3;
+                c.fillStyle = 'rgba(255,255,255,0.18)';
+                const nx = side < 0 ? gx - gd : gx; c.fillRect(nx, gy0, gd, gW);
+                c.strokeRect(nx, gy0, gd, gW);
+                c.lineWidth = 1; c.strokeStyle = 'rgba(255,255,255,0.35)';
+                for (let k = 1; k < 6; k++) { c.beginPath(); c.moveTo(nx, gy0 + gW * k / 6); c.lineTo(nx + gd, gy0 + gW * k / 6); c.stroke(); }
+                c.restore();
+            }
+            [[L, Tp, 0], [R, Tp, 1], [R, Bt, 2], [L, Bt, 3]].forEach(([x, y, k]) => {          // corner arcs (1 m, drawn a little bigger so you can see them)
+                c.beginPath(); c.arc(x, y, 12, k * Math.PI / 2, k * Math.PI / 2 + Math.PI / 2); c.stroke();
+            });
+            // corner flags
+            [[L, Tp], [R, Tp], [R, Bt], [L, Bt]].forEach(([x, y]) => {
+                c.strokeStyle = '#d8d8d8'; c.lineWidth = 2; c.beginPath(); c.moveTo(x, y); c.lineTo(x, y - 14); c.stroke();
+                c.fillStyle = '#e53935'; c.beginPath(); c.moveTo(x, y - 14); c.lineTo(x + 9, y - 11); c.lineTo(x, y - 8); c.closePath(); c.fill();
             });
             c.restore();
         }
-        // A grandstand full of fans along the top of the Quad. It runs along the very top of the map
-        // and is cut off by the edge of the screen, so only its lower tiers show.
+        // The grandstand along the top of the Quad (no fans, just concrete): THREE big rectangular stands of three
+        // concrete steps each, small concrete staircases on the sides of every stand, "UNITY DEFENSE REMASTERED" painted on
+        // the bottom step, and a black gate along the front that nobody can go past.
         function drawGrandstand(c, off, vw) {
-            const SEAT = 14;
-            const seatCols = ['#c62828', '#c62828', '#d8d8e0', '#1e4fb3', '#1e4fb3', '#e0b020'];
-            const skins = ['#f1c9a0', '#d9a273', '#a9714a', '#7a4a2c', '#f6d9bd'];
-            const shirts = ['#e53935', '#1e88e5', '#fdd835', '#43a047', '#ffffff', '#8e24aa', '#fb8c00'];
-            const hash = (a, b) => (((a * 73856093) ^ (b * 19349663)) >>> 0);
+            const X0 = GRID_SIZE + 32, X1 = WORLD_WIDTH - GRID_SIZE - 8;      // from the kebab shop to the school
+            const ST = 26, N = 3, SW = (X1 - X0 - (N + 1) * ST) / N;           // stair width, section width
+            const T1 = 0, TH = 12, T3 = 2 * TH, T3H = 16, GY = T3 + T3H;        // step tops, bottom step height, gate top
             c.save();
-            c.beginPath(); c.rect(0, 0, vw, 40); c.clip();
-            c.fillStyle = '#0d0f14'; c.fillRect(0, 0, vw, 8);                      // roof shadow (cut off by the frame)
-            const first = Math.floor(off / SEAT) - 1, last = Math.ceil((off + vw) / SEAT) + 1;
-            for (let tier = 0; tier < 3; tier++) {
-                const top = 6 + tier * 8;
-                c.fillStyle = '#2f333d'; c.fillRect(0, top, vw, 8);                // concrete step
-                for (let i = first; i <= last; i++) {
-                    const sx = i * SEAT - off;
-                    c.fillStyle = seatCols[(i + tier * 2) % seatCols.length];
-                    c.fillRect(sx + 1, top + 5, SEAT - 2, 3);                      // seat
-                    const h = hash(i, tier + 1);
-                    if (h % 6 !== 0) {                                             // some seats are empty
-                        c.fillStyle = shirts[(h >> 3) % shirts.length];
-                        c.fillRect(sx + 4, top + 3, 6, 5);                         // body
-                        c.fillStyle = skins[(h >> 7) % skins.length];
-                        c.beginPath(); c.arc(sx + 7, top + 2, 2.6, 0, Math.PI * 2); c.fill();   // head
-                    }
-                }
-                c.fillStyle = 'rgba(0,0,0,0.35)'; c.fillRect(0, top + 7, vw, 1);
+            c.beginPath(); c.rect(0, 0, vw, GY + 14); c.clip();
+            const vis = (x, w) => x + w - off > -4 && x - off < vw + 4;
+            for (let n = 0; n < N; n++) {
+                const x = X0 + ST + n * (SW + ST);
+                if (!vis(x, SW)) continue;
+                const sx = x - off;
+                // three big concrete steps (a tread on top, a darker riser below it)
+                [[T1, TH, '#8d909b'], [TH, TH, '#a6a9b3'], [T3, T3H, '#c9ccd4']].forEach(([y, h, col], i) => {
+                    c.fillStyle = col; c.fillRect(sx, y, SW, h);
+                    c.fillStyle = 'rgba(255,255,255,0.28)'; c.fillRect(sx, y, SW, 1.5);           // lit edge of the tread
+                    c.fillStyle = 'rgba(30,32,40,0.55)'; c.fillRect(sx, y + h - 3, SW, 3);        // riser shadow
+                    c.fillStyle = 'rgba(0,0,0,0.12)';                                              // expansion joints
+                    for (let jx = x - (x % 120) ; jx < x + SW; jx += 120) if (jx > x) c.fillRect(jx - off, y, 1, h - 2.5);
+                });
+                c.strokeStyle = '#4b4e57'; c.lineWidth = 1.2; c.strokeRect(sx + 0.5, 0.5, SW - 1, GY - 1);
+                // painted name on the bottom step
+                c.fillStyle = '#16306b'; c.font = 'bold 11px Arial'; c.textAlign = 'center'; c.textBaseline = 'middle';
+                if (c.letterSpacing !== undefined) c.letterSpacing = '3px';
+                c.fillText('UNITY DEFENSE REMASTERED', sx + SW / 2, T3 + T3H / 2 - 2.5);
+                if (c.letterSpacing !== undefined) c.letterSpacing = '0px';
             }
-            c.fillStyle = '#222630';                                               // aisles
-            for (let i = Math.floor(off / 112) - 1; i <= Math.ceil((off + vw) / 112) + 1; i++) c.fillRect(i * 112 - off, 6, 3, 24);
-            c.fillStyle = '#0f2a5c'; c.fillRect(0, 30, vw, 7);                     // advertising board along the front
-            c.fillStyle = '#ffffff'; c.fillRect(0, 30, vw, 1);
-            c.fillStyle = '#FFD21F'; c.font = 'bold 6px Arial'; c.textAlign = 'center'; c.textBaseline = 'middle';
-            for (let i = Math.floor(off / 150) - 1; i <= Math.ceil((off + vw) / 150) + 1; i++) c.fillText('UNITY DEFENSE', i * 150 + 75 - off, 34);
+            // little concrete staircases on both sides of every stand
+            for (let n = 0; n <= N; n++) {
+                const x = X0 + n * (SW + ST);
+                if (!vis(x, ST)) continue;
+                const sx = x - off;
+                c.fillStyle = '#5c5f68'; c.fillRect(sx, 0, ST, GY);                                  // stairwell
+                for (let k = 0; k < 6; k++) {                                                        // narrow steps going up
+                    const y = GY - (k + 1) * (GY / 6);
+                    c.fillStyle = k % 2 ? '#8a8d96' : '#9da0a9'; c.fillRect(sx + 4, y, ST - 8, GY / 6 - 0.5);
+                }
+                c.fillStyle = '#2b2d33'; c.fillRect(sx, 0, 3, GY); c.fillRect(sx + ST - 3, 0, 3, GY);  // side rails
+            }
+            // black gate along the front: top + bottom rail, bars, tall posts and a locked double gate in the middle of every stand
+            const GH = 14;
+            c.fillStyle = 'rgba(4,4,7,0.72)'; c.fillRect(0, GY, vw, GH);                              // the gate is solid black behind its bars
+            c.fillStyle = '#08080a';
+            c.fillRect(0, GY, vw, 2.5); c.fillRect(0, GY + GH - 2.5, vw, 2.5);
+            for (let bx = Math.floor((off) / 6) * 6; bx < off + vw + 6; bx += 6) c.fillRect(bx - off, GY, 1.6, GH);
+            for (let n = 0; n < N; n++) {
+                const gx = X0 + ST + n * (SW + ST) + SW / 2 - off;
+                if (gx < -60 || gx > vw + 60) continue;
+                c.fillStyle = '#08080a'; c.fillRect(gx - 24, GY - 3, 48, GH + 3);                   // gate frame
+                c.fillStyle = '#26272d'; c.fillRect(gx - 22, GY - 1, 21, GH - 1); c.fillRect(gx + 1, GY - 1, 21, GH - 1);
+                c.fillStyle = '#08080a'; for (let k = -20; k < 22; k += 4) c.fillRect(gx + k, GY - 1, 1.4, GH - 1);
+                c.fillStyle = '#d4a017'; c.fillRect(gx - 2.5, GY + 5, 5, 5);                         // padlock
+                c.strokeStyle = '#d4a017'; c.lineWidth = 1.2; c.beginPath(); c.arc(gx, GY + 5, 2, Math.PI, 0); c.stroke();
+            }
+            for (let px = Math.floor(off / 150) * 150; px < off + vw + 150; px += 150) {            // tall posts with pointed tops
+                c.fillStyle = '#08080a'; c.fillRect(px - off - 2, GY - 2, 4, GH + 2);
+                c.beginPath(); c.moveTo(px - off - 3, GY - 2); c.lineTo(px - off, GY - 4.5); c.lineTo(px - off + 3, GY - 2); c.closePath(); c.fill();
+            }
             c.restore();
-            const g = c.createLinearGradient(0, 37, 0, 62);                        // the stand shades the pitch below it
-            g.addColorStop(0, 'rgba(0,0,0,0.38)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-            c.fillStyle = g; c.fillRect(0, 37, vw, 25);
+            const g = c.createLinearGradient(0, GY + 12, 0, GY + 36);                               // the stand shades the pitch below it
+            g.addColorStop(0, 'rgba(0,0,0,0.34)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+            c.fillStyle = g; c.fillRect(0, GY + 12, vw, 24);
         }
         // ===== END MAPS =====
 
@@ -8715,8 +8901,8 @@
         const TEACHER_BUFFS = {
             sheikh: { icon: '📜', name: 'Long Shebab', teacher: 'Wise Sheikh', price: BUFF_PRICE,
                 desc: 'His throws become upright Arabic <b>sentences</b>. Each sentence hits the kebab <b>3 times</b> (3x the damage of a normal throw). His main attack then has a <b>1 second cooldown</b>.' },
-            badui:  { icon: '🔥', name: 'Long Whistle', teacher: 'Angry Teacher', price: BUFF_PRICE,
-                desc: 'Her Whistle ultimate lasts <b>1.5x longer</b>.' },
+            badui:  { icon: '🔥', name: 'Whistle', teacher: 'Angry Teacher', price: BUFF_PRICE,
+                desc: 'Replaces <b>BOYS!</b>: she blows a whistle that blasts the <b>3 kebabs nearest the school</b>.' },
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
                 desc: 'Replaces <b>Algebra Swarm</b>. Locks onto 3 kebabs, scans their area, then strikes for <b>30%</b> of their health.' }
         };
@@ -8965,7 +9151,7 @@
             // --- new teachers ---
             { id: 'badui', next: true, title: 'New teacher: Angry Teacher', when: () => document.getElementById('baduiBtn').style.display !== 'none',
               target: () => gmEl('#baduiBtn'),
-              text: () => "<b>Angry Teacher</b> has no attack of her own. She writes <b>Negative</b> on a kebab every 5 seconds, so it takes <b>2× damage</b> from everyone else. Her ultimate, the <b>Whistle</b>, blasts the kebabs closest to the school, and it only charges when she <b>marks</b> a kebab. Put her near your Wise Sheikhs." },
+              text: () => "<b>Angry Teacher</b> has no attack of her own. She writes <b>Negative</b> on a kebab every 5 seconds, so it takes <b>2× damage</b> from everyone else. Her ultimate, <b>BOYS!</b> (the <b>Whistle</b> with her buff), and it only charges when she <b>marks</b> a kebab. Put her near your Wise Sheikhs." },
             { id: 'math', next: true, title: 'New teacher: Mathematician', when: () => game.mathUnlocked && document.getElementById('mathBtn').style.display !== 'none',
               target: () => gmEl('#mathBtn'),
               text: () => "The <b>Mathematician</b> is tough (125 HP). Every 10 seconds he shushes <b>3 kebabs</b>: they get blown back and take bonus damage. His ultimate is random: <b>Algebra Swarm</b> or <b>Beam Pull</b>. Each one you place costs <b>" + getMathCost() + " 🪙</b>." },
@@ -8997,7 +9183,7 @@
               target: () => gmTowerShape(game.towers.find(t => t.shebabCharge >= t.shebabMax), 56),
               text: () => {
                   const t = game.towers.find(x => x.shebabCharge >= x.shebabMax);
-                  const nm = t ? (t.type === 'badui' ? 'Whistle' : t.type === 'math' ? (hasBuff('math') ? 'Area Strike' : 'a random ultimate') : 'SHEBAB') : 'their ultimate';
+                  const nm = t ? (t.type === 'badui' ? (hasBuff('badui') ? 'Whistle' : 'BOYS!') : t.type === 'math' ? (hasBuff('math') ? 'Area Strike' : 'a random ultimate') : 'SHEBAB') : 'their ultimate';
                   return "A <b>glowing</b> teacher has their ultimate ready. <b>Click them</b> to unleash <b>" + nm + "</b>! It charges again as they fight.";
               } },
             { id: 'heal', next: true, title: 'Heal your teachers', when: () => !game.waveInProgress && game.towers.some(t => t.hp < t.maxHp * 0.9),
@@ -10719,20 +10905,26 @@
                 achStat('ultimates');
                 achOnUltimate(this.type);
                 if (this.type === 'sheikh') this.shakeTimer = 50;
-                const boysLife = (this.type === 'badui' && hasBuff('badui')) ? 180 : 120; // Long Whistle buff: 1.5x longer
+                const boysLife = 120;
                 if (this.type === 'badui') this.shakeTimer = boysLife; // head swells and shakes during her ultimate
                 playSound(1200, 0.3, 'sine');
 
                 if (this.type === 'badui') {
                     this.boysHit = new Set();
-                    this.whistle = { life: boysLife, next: 0 };   // she blows a whistle that hits the kebabs nearest the school
+                    if (hasBuff('badui')) {
+                        this.whistle = { life: boysLife, next: 0 };   // Whistle buff: she blows a whistle that hits the kebabs nearest the school
+                    } else {
+                        for (let i = 0; i < 6; i++) {                  // BOYS!: 6 spinning pink circles
+                            this.ultimateCircles.push({ angle: (Math.PI * 2 / 6) * i, radius: 100, life: boysLife, maxLife: boysLife, size: 28 });
+                        }
+                    }
 
                     game.particles.push({
                         type: 'text',
                         owner: 'badui',
                         x: this.x,
                         y: this.y - 80,
-                        text: '📣 WHISTLE! 📣',
+                        text: hasBuff('badui') ? '📣 WHISTLE! 📣' : '🔥 BOYS! 🔥',
                         life: 60,
                         size: 24
                     });
@@ -12688,6 +12880,7 @@
                     ctx.fill();
                     ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.stroke();
 
+                    if (!tower.hideCap) {   // (a hat from the shop replaces his white cap)
                     // white cap: rounded dome with a band and a little top button
                     ctx.fillStyle = '#FFFFFF';
                     ctx.beginPath();
@@ -12704,6 +12897,7 @@
                     ctx.stroke();
                     ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#000000'; ctx.lineWidth = 1.5;
                     ctx.beginPath(); ctx.arc(x, y - 39.5, 2.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                    }
 
                     ctx.fillStyle = '#434343'; ctx.strokeStyle = '#000000'; ctx.lineWidth = 1.6;
                     for (const lx of [x - 10.8, x + 2.2]) {

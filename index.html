@@ -12,8 +12,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--display);o
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
 .shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,.45) 0%,rgba(0,0,0,.12) 60%,rgba(0,0,0,.4) 100%);pointer-events:none}
 .main{position:relative;z-index:2;width:min(560px,94vw);display:flex;flex-direction:column;align-items:center;text-align:center}
-.kicker{font-size:13px;font-weight:800;letter-spacing:3px;color:var(--gold);text-shadow:0 2px 6px #000}
-h1{margin:4px 0 0;line-height:.92;font-weight:900;font-size:clamp(54px,11vw,96px);letter-spacing:2px;color:var(--title);text-wrap:balance;animation:bob 5s ease-in-out infinite;
+h1{margin:0;line-height:.92;font-weight:900;font-size:clamp(54px,11vw,96px);letter-spacing:2px;color:var(--title);text-wrap:balance;animation:bob 5s ease-in-out infinite;
  text-shadow:4px 4px 0 #000,-4px -4px 0 #000,4px -4px 0 #000,-4px 4px 0 #000,0 5px 0 #000,0 10px 0 #8a5a00,0 18px 30px rgba(0,0,0,.65)}
 h1 span{display:block}h1 span+span{color:#fff}
 .ribbon{margin-top:14px;padding:5px 26px;font-weight:900;letter-spacing:6px;font-size:15px;color:#1b1200;background:linear-gradient(135deg,var(--gold),#fff2a8);border:3px solid #000;border-radius:6px;transform:rotate(-2deg);box-shadow:0 5px 0 rgba(0,0,0,.5)}
@@ -36,7 +35,6 @@ h1 span{display:block}h1 span+span{color:#fff}
   <video id="scene" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="menu-battle.webm" type="video/webm"><source src="menu-battle.mp4" type="video/mp4"></video>
   <div class="shade"></div>
   <div class="main">
-    <div class="kicker">EARLY ACCESS</div>
     <h1><span>UNITY</span><span>DEFENSE</span></h1>
     <div class="ribbon">REMASTERED</div>
     <a class="play" id="downloadBtn" href="https://raw.githubusercontent.com/jaidendez69/Unity-Grammar-Defense-REMASTERED/main/releases/UnityDefense-Setup-latest.exe"><b>DOWNLOAD</b><small>For Windows &middot; Free &middot; v1.0.31</small></a>

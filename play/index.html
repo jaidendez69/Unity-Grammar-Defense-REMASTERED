@@ -831,6 +831,10 @@
         .chat-fr .prev { display: block; font-size: 11px; opacity: 0.7; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .chat-fr .friend-row-name { display: block; }
         .friend-action-btn.prof { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: #fff; }
+        .pres-dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:#6b7a8c; margin-right:6px; vertical-align:middle; box-shadow:0 0 0 2px rgba(0,0,0,.25); }
+        .pres-dot.on { background:#64FF64; box-shadow:0 0 8px rgba(100,255,100,.9); }
+        .pres-txt { font-size:11px; font-weight:800; color:#8da2b8; margin-left:4px; }
+        .pres-txt.on { color:#64FF64; }
         .fp-status { text-align: center; font-weight: 800; margin: 10px 0 6px; color: #9fb3c8; }
         .fp-status.on { color: #64FF64; text-shadow: 0 0 10px rgba(100,255,100,.6); }
         .chat-input-row .account-input { border-radius: 22px; }
@@ -2966,7 +2970,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.31</div>
+    <div id="versionTag">v1.0.32 Alpha</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3005,7 +3009,7 @@
                 <button class="mm-card" onclick="onlineWipGate()"><span class="mm-ic">🌐</span><span><b>Online Mode</b><span class="mm-desc">Team Up or VS a friend</span></span><span class="soon-badge wip-badge">WIP</span></button>
                 <button class="mm-card" onclick="showUpdates()"><span class="mm-ic">📜</span><span><b>Updates</b><span class="last-update-date" id="lastUpdateDate"></span></span></button>
             </div>
-            <div class="mm-foot"><button class="mm-link" onclick="showCredits()">🎬 Credits</button><button class="mm-link" onclick="showDisclaimers()">⚠️ Disclaimers</button></div>
+            <div class="mm-foot"><button class="mm-link" onclick="showCredits()">🎬 Credits</button><button class="mm-link" onclick="welcomeOpen()">👋 Welcome Guide</button><button class="mm-link" onclick="showDisclaimers()">⚠️ Disclaimer</button></div>
             <div class="mm-quitrow"><button class="mm-quit" onclick="quitApp()">⏻ Quit</button></div>
         </div>
         <button class="guide-corner-btn" onclick="openGuide()">📖 All You Need to Know</button>
@@ -3038,7 +3042,7 @@
     <div id="eventPopups"></div>
     <div class="wave-clear-banner" id="waveClearBanner"></div>
     <div class="pause-overlay" id="pauseOverlay">
-        <h1>⏸ Paused</h1>
+        <h1 id="pauseTitle">⏸ Paused</h1>
         <button onclick="togglePause()">▶ Resume</button>
         <button class="pause-quit" onclick="quitGame()">✕ Quit</button>
     </div>
@@ -3086,8 +3090,24 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
+                    <div class="update-date">November 5, 2026</div>
+                    <ul>
+                        <li><b>Early Access disclaimer removed</b>: the "Disclaimer #1 · Early Access" note is gone from the pop-up, the main menu link and the guide. The <b>"made with AI"</b> disclaimer stays (the menu link is now <b>⚠️ Disclaimer</b>), and older accounts keep their gold EARLY ACCESS badge.</li>
+                        <li><b>New: Welcome Guide</b>: the first time you open the game, a short slideshow with pictures explains the things new players ask about: <b>accounts</b> (and linking Google), <b>Positives and the main menu Shop</b>, <b>🎁 daily rewards</b>, the <b>shop that opens in battle</b>, <b>levels and maps</b>, <b>friends and Online Mode</b>, and where to find help. Use the arrows to move through it, <b>Skip guide</b> to close it any time.</li>
+                        <li><b>Replay the Welcome Guide</b> any time with <b>👋 Welcome Guide</b> at the bottom of the main menu, or the <b>Replay</b> button in Settings.</li>
+                        <li><b>Guides updated</b>: All You Need to Know has a new <b>Welcome Guide</b> page, and the Start Here, Main Menu, Settings, Versions and Disclaimer pages were updated.</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
                     <div class="update-date">November 4, 2026</div>
                     <ul>
+                        <li><b>Friends online status</b>: the <b>👥 Friends</b> list now shows a <b>green dot = online</b> or <b>grey dot = offline</b> next to every friend (it updates about every minute). Profiles show "Online now" or when they were last seen.</li>
+                        <li><b>Online pause</b>: in Online Mode you can press <b>⏸ Pause</b> (or P) to <b>request a pause</b>. Your friend gets Accept / Decline. An accepted pause lasts up to <b>30 seconds</b> and then resumes by itself (either of you can resume sooner). Against the bot it is instant.</li>
+                        <li><b>Online Skip Wave</b>: <b>⏭ Skip Wave</b> in Team Up is now a request too. Your friend has <b>30 seconds</b> to accept.</li>
+                        <li><b>Teachers in the first shop</b>: on the School Grounds and the Quad you can now hire <b>any teacher</b> (Mathematician, Angry Teacher or Arabic Expert) from the <b>first shop</b> at wave 15. You still buy one thing per shop.</li>
+                        <li><b>New upgrade: 👆 Click Power</b>: clicking a kebab hurts more each time you buy it (1 → 5 → 9 → 13 damage, up to 3 times).</li>
+                        <li><b>Admin characters</b>: the Admin screen has a new card to <b>Equip / Unequip</b> admin characters like Tuff Sheikh.</li>
+                        <li><b>Guides updated</b>: the All You Need to Know guide and the Guide Mode tips now cover all of the above.</li>
                         <li><b>Tuff Sheikh update</b>: he no longer shows in the main menu background (admin characters never will), and the admin can now use him <b>everywhere</b>: normal map, Quad, Test Mode and Online Mode (Team Up and VS). He is always free.</li>
                         <li><b>New admin character: Tuff Sheikh</b> (only the admin account can place him): Wise Sheikh with glowing red eyes. He does not attack, his red ultimate fills by itself, and when you click it he shouts <b>SHEBABBBB</b> and for 5 seconds lasers shoot out of his eyes that follow your mouse and one-shot everything. He is free to place (max 3) and works in every mode, including Online Mode.</li>
                         <li><b>New skin: Modern</b> for the Mathematician (150 💚): a blue shirt with a folded collar and white buttons. Find it in the shop's Skins tab (Sporty, Modern &amp; Special board).</li>
@@ -3880,6 +3900,8 @@
                     <label class="switch"><input type="checkbox" id="set_showFps" onchange="onSettingChange('showFps', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Keep running in the background<small>The game keeps going when you switch tabs or minimise.</small></div>
                     <label class="switch"><input type="checkbox" id="set_bgPlay" onchange="onSettingChange('bgPlay', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Welcome guide<small>The short slideshow about accounts, the shops, daily rewards, levels and friends. It shows the first time you open the game.</small></div>
+                    <button class="back-btn" style="padding:8px 16px;font-size:14px;margin:0" onclick="welcomeOpen()">👋 Replay</button></div>
             </div>
             <div class="settings-buttons">
                 <button class="back-btn" onclick="resetSettings()">Reset to defaults</button>
@@ -4090,13 +4112,7 @@
         <div class="confirm-content">
             <h2>⚠️ Before You Play</h2>
             <div class="disc-card">
-                <h3>Disclaimer #1 · Early Access</h3>
-                <p>This game isn't released yet, which means you are either an admin or a player with <b>EARLY ACCESS</b>. The game will sometimes be unbalanced or bugged because it's in its testing/updating phase before being released.</p>
-                <p>So if you run into something unfair, bugged or weird, it's because the admin is testing new features and updates. Don't worry, once the game is released it should be free of bugs and glitches. Thank you for understanding!</p>
-                <p class="disc-sign">- Admin Jaiden</p>
-            </div>
-            <div class="disc-card">
-                <h3>Disclaimer #2 · Made with AI</h3>
+                <h3>Disclaimer · Made with AI</h3>
                 <p>This is a <b>vibe coded</b> game, which means it was made with AI.</p>
             </div>
             <div class="confirm-buttons">
@@ -4494,7 +4510,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-04';
+        const LAST_UPDATE_DATE = '2026-11-05';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -6589,10 +6605,10 @@
                 const li = levelInfoAcc(prof);
                 const done = Object.keys((prof.ach && prof.ach.done) || {}).length;
                 const t = prof.updatedAt && prof.updatedAt.toDate ? prof.updatedAt.toDate().getTime() : (prof.lastOnline ? new Date(prof.lastOnline).getTime() : 0);
-                const active = t && Date.now() - t < 10 * 60 * 1000;
+                const ls = prof.lastSeen && prof.lastSeen.toDate ? prof.lastSeen.toDate().getTime() : 0; const tt = Math.max(t || 0, ls); const active = tt && Date.now() - tt < PRES_WINDOW;
                 const row = (l, val) => '<div class="account-stat-row"><span class="account-stat-label">' + l + '</span><span class="account-stat-value">' + val + '</span></div>';
                 body = bannerHTML(prof) +
-                    '<div class="fp-status ' + (active ? 'on' : '') + '">' + (active ? '🟢 Online now' : (t ? '⚪ Last seen ' + escapeHtml(formatAccountDate(new Date(t).toISOString())) : '⚪ Offline')) + '</div>' +
+                    '<div class="fp-status ' + (active ? 'on' : '') + '">' + (active ? '🟢 Online now' : (tt ? '⚪ Last seen ' + escapeHtml(formatAccountDate(new Date(tt).toISOString())) : '⚪ Offline')) + '</div>' +
                     row('⭐ Level', lvlText(li.level)) + row('🌊 Best wave', prof.bestWave || 0) + row('💚 Positives', Number(prof.positives || 0).toLocaleString('en-US')) +
                     row('🏆 Achievements', done) + row('🎽 Skins', (prof.skins || []).length) + row('✨ Buffs', Object.keys(prof.buffs || {}).length);
             } else body = friendProfileErr ? '<div class="inbox-empty-note">' + escapeHtml(friendProfileErr) + '</div>' : '<div class="chat-empty"><span class="big">⏳</span>Loading profile...</div>';
@@ -6603,6 +6619,43 @@
             if (v) { const cv = content.querySelector('canvas[data-avatar]'); if (cv) drawAvatarCanvas(cv, Object.assign({ username: name, skins: [], look: {}, equipped: {} }, v)); }
         }
 
+        // ---- friends online/offline status ----
+        // Signed-in (cloud) accounts write players/{uid}.lastSeen every minute while the game is open; friends
+        // count as Online when that is under 2.5 minutes old. Friends on this device use their local lastOnline.
+        const PRES_WINDOW = 150000;
+        let _pres = {}, _presBusy = 0;
+        function presenceBeat() {
+            try {
+                const u = cloudSocialUser(); if (!u || document.hidden) return;
+                firebase.firestore().collection('players').doc(u.uid).set({ lastSeen: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }).catch(() => {});
+            } catch (e) {}
+        }
+        setInterval(presenceBeat, 60000); setTimeout(presenceBeat, 6000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) presenceBeat(); });
+        function presenceOf(acc, name) {
+            const k = String(name).toLowerCase(), p = _pres[k];
+            if (p) return Date.now() - p.t < PRES_WINDOW;
+            const loc = getAccounts()[k];
+            if (loc && !cloudLinkOf(acc, name) && loc.lastOnline) return Date.now() - new Date(loc.lastOnline).getTime() < PRES_WINDOW;
+            return false;
+        }
+        function presenceRefresh(acc) {
+            try {
+                const u = cloudSocialUser(); if (!u || Date.now() - _presBusy < 20000) return;
+                const jobs = (acc.friends || []).map(n => ({ n: String(n).toLowerCase(), l: cloudLinkOf(acc, n) })).filter(x => x.l && x.l.uid);
+                if (!jobs.length) return;
+                _presBusy = Date.now();
+                const db = firebase.firestore();
+                Promise.all(jobs.map(j => db.collection('players').doc(j.l.uid).get().then(d => {
+                    if (!d.exists) return; const v = d.data();
+                    const ts = x => x && x.toDate ? x.toDate().getTime() : 0;
+                    _pres[j.n] = { t: Math.max(ts(v.lastSeen), ts(v.updatedAt)) };
+                }).catch(() => {}))).then(() => {
+                    const cs = document.getElementById('chatScreen');
+                    if (cs && !cs.classList.contains('hidden') && !currentChatFriend && !friendProfileName) { _presBusy = Date.now(); renderChatScreen(); }
+                });
+            } catch (e) {}
+        }
         function renderChatScreen() {
             const acc = getCurrentAccount();
             const content = document.getElementById('chatContent');
@@ -6623,6 +6676,7 @@
             if (friendProfileName && !currentChatFriend) { renderFriendProfile(content, acc); return; }
 
             if (!currentChatFriend) {
+                presenceRefresh(acc);
                 let html = '<h2>👥 Friends</h2><div class="account-tagline">Chat with your friends or look at their profiles</div>';
                 if (friends.length === 0) {
                     html += '<div class="chat-empty"><span class="big">👋</span>No friends yet. Add some from your Inbox!</div>';
@@ -6634,7 +6688,7 @@
                         const prev = last ? ((last.from.toLowerCase() === acc.username.toLowerCase() ? 'You: ' : '') + last.text) : 'No messages yet';
                         html += `
                             <div class="friend-row">
-                                <div class="chat-fr">${avHtml(name)}<div><span class="friend-row-name">${escapeHtml(name)}</span><span class="prev">${escapeHtml(prev)}</span></div></div>
+                                <div class="chat-fr">${avHtml(name)}<div><span class="friend-row-name"><span class="pres-dot ${presenceOf(acc, name) ? 'on' : ''}"></span>${escapeHtml(name)}<span class="pres-txt ${presenceOf(acc, name) ? 'on' : ''}">${presenceOf(acc, name) ? 'Online' : 'Offline'}</span></span><span class="prev">${escapeHtml(prev)}</span></div></div>
                                 <div class="friend-row-buttons"><button class="friend-action-btn chat-with" onclick="openChatWith('${safe}')">💬 Chat</button><button class="friend-action-btn prof" onclick="openFriendProfile('${safe}')">👤 Profile</button></div>
                             </div>`;
                     });
@@ -6869,9 +6923,29 @@
                     'You start with <b>0 coins</b> (🪙, the money), but your <b>first 2 Wise Sheikhs are free</b>, so place them right away.',
                     'Press <b>▶ Wave 1</b> to send the first wave. After that, each wave starts by itself <b>10 seconds</b> after the last one is cleared (or press the wave button to go sooner).',
                     'Every kebab you defeat gives you <b>15 coins</b> (a boss gives <b>60</b>). Spend them on more teachers, then on shop upgrades.',
-                    'Every <b>15 waves</b> a shop opens. At <b>wave 10</b> the track splits in two and at <b>wave 40</b> it splits in three.'
+                    'Every <b>15 waves</b> a shop opens. At <b>wave 10</b> the track splits in two and at <b>wave 40</b> it splits in three.',
+                    'First time here? The <b>👋 Welcome Guide</b> slideshow pops up on your first visit and explains accounts, the shops, daily rewards and more (see the ' + gLink('welcome', 'Welcome Guide') + ' page).'
                 ]) +
                 gTip('Not sure what something does? Use the search box above, or tap the <b>🤖 Ask me!</b> button in the bottom right and ask Helper Bot a question in your own words.') },
+
+            { id: 'welcome', group: 'basics', icon: '👋', title: 'Welcome Guide (first time)', html: () =>
+                '<p>The first time you open the game on a device, a short <b>slideshow</b> pops up and explains what new players ask about most. It has <b>8 slides</b>, each with a picture and a few lines.</p>' +
+                gTbl(['Slide', 'What it covers'], [
+                    ['1. Teachers vs Kebabs', 'The goal of the game and how to start with <b>▶ PLAY</b>.'],
+                    ['2. Make an account', 'Why to sign up (levels, Positives, achievements, skins, saved battles, friends) and to <b>link Google</b>. See ' + gLink('account', 'Accounts') + '.'],
+                    ['3. Positives and the Shop', 'Earning 💚 (1 per kebab) and what the ' + gLink('menushop', 'main menu Shop') + ' sells: skins, accessories, backgrounds and ' + gLink('teacherbuffs', 'teacher buffs') + ' (level ' + BUFF_UNLOCK_LEVEL + ').'],
+                    ['4. Daily rewards', 'The 🎁 ' + gLink('daily', 'Daily Reward') + ' and the 7-day streak.'],
+                    ['5. The shop in battle', 'The cafe ' + gLink('shop', 'shop') + ' that opens every 15 waves, coins, and the one purchase per shop rule.'],
+                    ['6. Levels and maps', gLink('levels', 'XP and levels') + ', School Grounds and ' + gLink('maps', 'The Quad') + ' (level ' + QUAD_UNLOCK_LEVEL + ').'],
+                    ['7. Friends and Online Mode', gLink('social', 'Friends') + ' (online dots) and ' + gLink('online', 'Online Mode') + ' (Team Up and VS, work in progress).'],
+                    ['8. Help is always here', 'This guide, 💡 ' + gLink('suggestions', 'Suggestions') + ' and ' + gLink('guidemode', 'Guide Mode') + '.']
+                ]) +
+                gList([
+                    'Use the <b>◀ ▶</b> arrows to move through the slides. On the last slide the arrow turns into a <b>✅</b> that finishes the guide. <b>Skip guide</b> (top right) closes it at any time.',
+                    'It shows <b>once per device</b>. On a brand new device the ' + gLink('early', 'made with AI disclaimer') + ' comes first, then the guide follows.',
+                    '<b>Replay it any time</b> with <b>👋 Welcome Guide</b> at the bottom of the main menu, or the <b>Replay</b> button in ' + gLink('settings', 'Settings') + '.',
+                    'This is different from ' + gLink('guidemode', 'Guide Mode') + ', which points things out inside a battle while you play.'
+                ]) },
 
             { id: 'controls', group: 'basics', icon: '🖱️', title: 'Controls', html: () =>
                 gTbl(['Action', 'How'], [
@@ -6881,11 +6955,11 @@
                     ['Scroll the map', 'Use the <b>mouse wheel</b>, the <b>A / D</b> keys (or the arrow keys), or click the arrows on the edges.'],
                     ['Remove a teacher', '<b>Right-click</b> them and confirm. You do <b>not</b> get the coins back.'],
                     ['See a teacher\'s range', '<b>Hover</b> the mouse over them. A shaded circle shows how far they reach.'],
-                    ['Hit a kebab yourself', '<b>Left-click</b> a kebab for 1 damage (3 if it is marked with Negative).'],
+                    ['Hit a kebab yourself', '<b>Left-click</b> a kebab for <b>1 damage</b> (more with the <b>👆 Click Power</b> shop upgrade: up to 13). Marked with Negative = 2.5× damage.'],
                     ['Look at the other side of the map', 'Click the <b>arrows</b> on the left or right edge of the map.'],
-                    ['Pause', 'The <b>⏸ Pause</b> button, or press <b>P</b> or <b>Esc</b>.'],
+                    ['Pause', 'The <b>⏸ Pause</b> button, or press <b>P</b> or <b>Esc</b>. <b>Online</b>: it sends your friend a <b>pause request</b> (an accepted pause lasts up to 30 seconds, then resumes by itself).'],
                     ['Start the next wave early', 'Press the <b>▶ Wave</b> button.'],
-                    ['Combine waves', 'Press <b>⏭ Skip Wave</b> (see ' + gLink('skip', 'Skip Wave') + ').'],
+                    ['Combine waves', 'Press <b>⏭ Skip Wave</b> (see ' + gLink('skip', 'Skip Wave') + '). <b>Online Team Up</b>: your friend has to accept it first.'],
                     ['Quit', 'The <b>✕ Quit</b> button. If you are signed in you can save your battle first.']
                 ]) },
 
@@ -6916,7 +6990,7 @@
             // ---------------------------------------------------------- TEACHERS
             { id: 'compare', group: 'teachers', icon: '📋', title: 'All Teachers at a Glance', html: () =>
                 gTbl(['', '🧑‍🏫 Wise Sheikh', '👩‍🏫 Angry Teacher', '📐 Mathematician', '🪑 Arabic Expert'], [
-                    ['How you get them', 'Available from the start', 'Hire in the shop (2nd shop, wave 30; on The Quad from wave 15 if you did not pick her) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (1st shop, wave 15) for ' + SHOP_PRICES.math + ' 🪙', 'Hire in the shop (3rd shop, wave 45; on The Quad from wave 30) for ' + SHOP_PRICES.arabic + ' 🪙'],
+                    ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
                     ['Cost to place', 'First 2 free, then 100 + 4 per wave (max 250)', '230 + 5 per wave (no max)', '330 🪙 each (flat)', '350 🪙 each (flat)'],
                     ['Health', '10', '8', '125', '12'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles', '2 tiles (no throwing)'],
@@ -6962,7 +7036,7 @@
                 gStats([['Health', '8'], ['Attack', 'None'], ['Ability cooldown', '5 s'], ['Marks', '1 kebab'], ['Damage on marked', '2.5×']]) +
                 '<h4>How to get her</h4>' +
                 gList([
-                    'Hire her in the shop for a flat <b>' + SHOP_PRICES.badui + ' 🪙</b> (she is available from the <b>second shop at wave 30</b>; on The Quad, if you picked the Mathematician, she is in the first shop). Hiring only unlocks her. You can place up to <b>5</b> Angry Teachers.',
+                    'Hire her in the shop for a flat <b>' + SHOP_PRICES.badui + ' 🪙</b> (she is available from the <b>first shop at wave 15</b>). Hiring only unlocks her. You can place up to <b>5</b> Angry Teachers.',
                     'Then each one you place costs <b>230 🪙 + 5 per wave</b> with no cap. Right now: <b>' + getBaduiCost() + ' 🪙</b>.'
                 ]) +
                 '<h4>Negative</h4>' +
@@ -6992,7 +7066,7 @@
                 gStats([['Health', '125 (tankiest)'], ['Attack', 'None'], ['Shhhh cooldown', '6 s'], ['Shh damage', '100 (4× Sheikh)'], ['Knockback', '70 px over 2 s']]) +
                 '<h4>How to get him</h4>' +
                 gList([
-                    'He appears in the shop <b>from wave 15</b> (the <b>first</b> shop; on The Quad, if you picked the Angry Teacher, he is in the first shop). Until then the row is locked and the shop teacher says he is "still marking papers".',
+                    'He appears in the shop <b>from wave 15</b> (the <b>first</b> shop; you can pick any teacher there). Until then the row is locked and the shop teacher says he is "still marking papers".',
                     'Hiring costs a flat <b>' + SHOP_PRICES.math + ' 🪙</b> once. After that <b>each Mathematician you place costs a flat 330 🪙</b> (no price rise per wave).'
                 ]) +
                 '<h4>Shhhh!</h4>' +
@@ -7025,7 +7099,7 @@
                     'Stuck kebabs <b>cannot move for 3 seconds</b>. A stuck hitter kebab cannot hit anyone either. He does no damage himself, so <b>your other teachers get 3 free seconds</b> to attack them.',
                     '<b>Boss kebabs are too big to sit down</b>, so they ignore it.',
                     'He has <b>no ultimate</b> and does not throw anything.',
-                    'How to get him: hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (third shop at wave 45; on The Quad from the second shop at wave 30). Then each one you place costs a flat <b>350 🪙</b>. You can place up to <b>7</b>.'
+                    'How to get him: hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (available from the <b>first shop at wave 15</b>). Then each one you place costs a flat <b>350 🪙</b>. You can place up to <b>7</b>.'
                 ]) +
                 gTip('Place him next to your Wise Sheikhs near a corner where kebabs are about to escape.') },
 
@@ -7037,7 +7111,8 @@
                     'His <b>red ultimate fills up by itself</b> over time (about 14 seconds). When he glows, <b>click him</b>.',
                     'He shouts <b>SHEBABBBB</b> and for <b>5 seconds</b> two <b>lasers shoot out of his eyes and follow your mouse</b>.',
                     'Anything a laser touches is <b>one-shot</b>, including boss kebabs.',
-                    'After the 5 seconds his ultimate starts filling again.'
+                    'After the 5 seconds his ultimate starts filling again.',
+                    '<b>Equip / Unequip</b>: in the <b>🛡️ Admin</b> screen there is an <b>Admin characters</b> card with an <b>Equip</b> / <b>Unequip</b> button for each admin character. Unequipped characters disappear from the teacher panel everywhere until you equip them again (ones already on the map stay).'
                 ]) +
                 gTip('Move your mouse slowly across the track to sweep kebabs off the map.') },
 
@@ -7167,9 +7242,8 @@
                     ['15, 30, 45, 60...', '🛍️ A shop opens (every 15 waves).'],
                     ['15', '📐 Mathematician can be hired (first shop).'],
                     ['20, 40, 60...', '👹 Boss kebab.'],
-                    ['30', '👩‍🏫 Angry Teacher can be hired (second shop).'],
-                    ['45', '🪑 Arabic Expert can be hired (third shop).'],
-                    ['40', '🛤️ The track splits into THREE. The map gets bigger.'],
+                    ['15', '👩‍🏫 Angry Teacher and 🪑 Arabic Expert can also be hired (you pick which one to hire first, one purchase per shop).'],
+                                        ['40', '🛤️ The track splits into THREE. The map gets bigger.'],
                     ['45', '💥 Mega Damage and ⚡⚡ Lightning Speed unlock in the shop.']
                 ]) },
 
@@ -7242,7 +7316,7 @@
                     '<b>You can only make ONE purchase per shop.</b> The shop closes by itself right after you buy something (with a money sound and a goodbye line). Choose wisely!',
                     'You can also press <b>Close Shop</b> to leave without buying. The next wave\'s countdown pauses while the shop is open.',
                     'Prices rise <b>50% of the base price</b> with every shop you reach (see the table below).',
-                    'You can buy <b>each upgrade at most twice</b>. Rows show "0/2 bought", and read <b>MAXED</b> when finished.',
+                    'You can buy <b>each upgrade at most twice</b> (<b>👆 Click Power</b> up to 3 times). Rows show "0/2 bought", and read <b>MAXED</b> when finished.',
                     'Click a row to buy it. Rows you can\'t afford shake and the shop teacher tells you; locked rows (🔒) show when they unlock.'
                 ]) },
 
@@ -7250,6 +7324,7 @@
                 gTbl(['Upgrade', 'Effect', 'Base price', 'Limit'], [
                     ['💪 Damage Boost', '<b>1.5×</b> damage for every attack', SHOP_PRICES.upgrade + ' 🪙', '2'],
                     ['⚡ Attack Speed', 'Wise Sheikh throws <b>1.5× faster</b>', SHOP_PRICES.upgrade + ' 🪙', '2'],
+                    ['👆 Click Power', 'Clicking a kebab with the mouse hurts <b>+4 more</b> each time (1 → 5 → 9 → 13)', SHOP_PRICES.upgrade + ' 🪙', '3'],
                     ['❤️ School Health', '<b>+5 max health</b> and +5 health now. Only while the school is hurt', SHOP_PRICES.upgrade + ' 🪙', '2'],
                     ['🩺 Medic', 'Heals the school <b>3 health every wave</b> you clear', SHOP_PRICES.medic + ' 🪙', '2'],
                     ['💥 Mega Damage', '<b>3.5×</b> damage (appears at wave 45)', SHOP_PRICES.mega + ' 🪙', '2'],
@@ -7275,9 +7350,9 @@
 
             { id: 'shopteachers', group: 'shop', icon: '👩‍🏫', title: 'Teachers Menu', html: () =>
                 gTbl(['Item', 'What it does', 'Price'], [
-                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (second shop, wave 30+; on The Quad from wave 15 if you did not pick her)', SHOP_PRICES.badui + ' 🪙 (flat)'],
+                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (wave 15+, any shop)', SHOP_PRICES.badui + ' 🪙 (flat)'],
                     ['📐 Mathematician', 'Unlocks Mathematician (first shop, wave 15+). Each one you place then costs 330 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
-                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (wave 45+, or wave 30+ on The Quad). Each one you place then costs 350 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
+                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (wave 15+, any shop). Each one you place then costs 350 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
                     ['🏫 More Teachers', '<b>+3 max Wise Sheikhs</b> (' + BASE_TOWER_CAP + ' → ' + (BASE_TOWER_CAP + 3) + ' → ' + (BASE_TOWER_CAP + 6) + ')', SHOP_PRICES.cap + ' 🪙 the first time, ' + (SHOP_PRICES.cap + SHOP_PRICES.capStep) + ' 🪙 the second (× shop multiplier)']
                 ]) +
                 gList([
@@ -7367,7 +7442,7 @@
                     '<b>▶ PLAY</b> opens the <b>map select</b> (School Grounds, The Quad, and a Coming Soon card), then starts a real game with the kebab shop intro unless you skip it. Under the button is your <b>level and XP bar</b> (or a "Sign in" button if you are signed out). See ' + gLink('maps', 'Maps') + ' and ' + gLink('levels', 'Levels & XP') + '.',
                     '<b>🧪 Test Mode</b>: sandbox with infinite coins. Inside it is a <b>🛠 Developer Mode</b> switch that restarts into the separate Developer Mode: a normal game with time controls (speed, pause, step, rewind).',
                     '<b>🌐 Online Mode</b> has a <b>WIP</b> tag (work in progress): a message tells you it may have bugs before you go in. <b>📜 Updates</b> is the update log, and under it is the <b>Last updated</b> date, which turns <b>red</b> on the day of an update.',
-                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b> and <b>Disclaimers</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
+                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b>, <b>👋 Welcome Guide</b> (replays the first-time slideshow) and <b>Disclaimer</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
                     'On the longer screens (Profile / Log In, Inbox, Chat, Updates, Credits and Settings) a <b>← BACK</b> button stays in the <b>top-left corner</b>, so you never have to scroll down to leave. The Back button at the bottom still works too. Opening Settings, Inbox or Chat from your account menu and pressing Back returns you to the account menu.',
                     'Bottom right: <b>📖 All You Need to Know</b> (this guide) and <b>💡 Suggestions</b> (' + gLink('suggestions', 'send your ideas') + ').',
                     'Switching between menu screens uses a smooth fade and slide.'
@@ -7410,6 +7485,7 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
+                    ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
                 gList(['Settings are <b>remembered</b> on this device. <b>Reset to defaults</b> restores everything.', 'You can open Settings from the main menu (the ⚙️ button in the top right).']) },
@@ -7446,25 +7522,24 @@
                     'If you press <b>✕ Quit</b> while signed in you can <b>save the battle</b>. Next time you press <b>Play</b> you are asked whether to <b>continue</b> or start fresh. The save includes your wave, school health, coins, upgrades, hired teachers and every teacher placed (with their health).',
                     '<b>Google sign-in in the desktop app:</b> pressing a Google button opens your <b>normal web browser</b> with a small sign-in page. Press <b>Continue with Google</b> there, then come back to the game. It can take a moment, and you have about 3 minutes.',
                     'Google sign-in does <b>not</b> work if you open the game as a plain file on your computer. Use the desktop app or the game\'s website. If sign-in fails, the message shown tells you why (for example the browser was closed or you are offline).',
-                    'Accounts made before <b>Nov 3, 2026</b> (during Early Access) have a gold <b>EARLY ACCESS</b> badge next to their name. New accounts do not get it. See the ' + gLink('early', 'Early Access & Disclaimers') + ' page.',
+                    'Accounts made before <b>Nov 3, 2026</b> (during Early Access) have a gold <b>EARLY ACCESS</b> badge next to their name. New accounts do not get it. See the ' + gLink('early', 'Disclaimer & Early Access Badge') + ' page.',
                     'Test Mode never saves. Its Developer Mode switch restarts into the separate Developer Mode (time controls, saves on this device). See the Developer Mode page.',
                     'Starting a new game discards the old save. If you <b>lose</b> a battle its save is cleared too, so the next Play starts fresh.',
                     'Guests and Test Mode do not save.',
                     '<b>Why sign in?</b> Levels and XP, Positives (1 per kebab), achievements, skins, accessories, profile backgrounds, the Quad map, saving a battle, friends and chat.'
                 ]) },
 
-            { id: 'early', group: 'more', icon: '⚠️', title: 'Early Access & Disclaimers', html: () =>
-                '<h4>Disclaimer #1: Early Access</h4>' +
-                '<p>This game isn\'t released yet, which means you are either an admin or a player with <b>EARLY ACCESS</b>. The game will sometimes be unbalanced or bugged because it\'s in its testing/updating phase before being released.</p>' +
-                '<p>So if you run into something unfair, bugged or weird, it\'s because the admin is testing new features and updates. Don\'t worry, once the game is released it should be free of bugs and glitches. Thank you for understanding! - Admin Jaiden</p>' +
-                '<h4>Disclaimer #2: Made with AI</h4>' +
+            { id: 'early', group: 'more', icon: '⚠️', title: 'Disclaimer & Early Access Badge', html: () =>
+                '<h4>Disclaimer: Made with AI</h4>' +
                 '<p>This is a <b>vibe coded</b> game, which means it was made with AI.</p>' +
+                gList([
+                    'It pops up the first time you open the game on a device (the ' + gLink('welcome', 'Welcome Guide') + ' follows it). You can read it again any time with <b>⚠️ Disclaimer</b> at the bottom of the main menu.'
+                ]) +
                 '<h4>The EARLY ACCESS badge</h4>' +
                 gList([
                     'Every account made during Early Access (before <b>Nov 3, 2026</b>) has a gold <b>EARLY ACCESS</b> badge next to its name (in your profile and on the account button in the menu). Accounts made from Nov 3, 2026 on do not get the badge.',
                     'The badge is saved on the account and follows it to other devices when it is linked to Google.',
-                    'Accounts made after that day do not have the badge, and it cannot be bought or earned later.',
-                    'You can read both disclaimers again any time with <b>⚠️ Disclaimers</b> at the bottom of the main menu.'
+                    'Accounts made after that day do not have the badge, and it cannot be bought or earned later.'
                 ]) },
 
             { id: 'social', group: 'more', icon: '💬', title: 'Friends & Inbox', html: () =>
@@ -7473,6 +7548,7 @@
                     'In the Inbox you can <b>send friend requests</b> by username and <b>accept or decline</b> the ones you get. A red number shows how many are waiting.',
                     '<b>👥 Friends</b> lists everyone you are friends with and the last message you sent. Press <b>💬 Chat</b> to message a friend (coloured name circles, date dividers and times), or <b>👤 Profile</b> to see their <b>online profile</b>: their character, level, best wave, Positives, achievements, skins, buffs and whether they are online right now. Friend profiles need a linked Google account.',
                     '🌐 <b>Friends on other devices</b>: <b>link your Google account</b> (Profile &gt; Link Google Account). Then type a friend\'s username in the Inbox, just like Roblox. They get your request, press Accept, and you are friends on every device. Chat works across devices too. <b>You must link a Google account to add friends</b>; until you do, the Add a Friend box is locked.',
+                    '🟢 <b>Online / Offline status</b>: every friend in the <b>👥 Friends</b> list has a dot, <b>green = online right now</b> (playing with the game open) and <b>grey = offline</b>. Their profile shows "Online now" or when they were last seen. It updates about every minute, and friends on other devices need to be signed in with Google.',
                     '🌐 <b>Online Mode</b> (playing together) is a <b>work in progress (WIP)</b>: it works, but expect bugs.'
                 ]) },
 
@@ -7522,7 +7598,7 @@
                 ]) +
                 '<h4>The Quad rules</h4>' +
                 gList([
-                    'You start with your <b>free pick</b>. The teacher you did <b>not</b> pick can be hired in the <b>first shop</b> (wave 15), and the <b>Arabic Expert</b> in the second shop (wave 30).',
+                    'You start with your <b>free pick</b>. The teachers you did <b>not</b> pick (and the <b>Arabic Expert</b>) can all be hired from the <b>first shop</b> (wave 15). You can only buy one thing per shop, so choose your next teacher.',
                     'The Quad uses the <b>same wave milestones</b>: the second line of the field opens at <b>wave 10</b> and the third at <b>wave 40</b> (the field gets longer, just like the tri-track).',
                     'Kebabs start at 100 HP on wave 1, then gain 25 HP every wave (wave 10 = 325 HP).',
                     'You choose a <b>free teacher</b> before the battle: <b>Mathematician</b> or <b>Angry Teacher</b>. They are unlocked from the start and the <b>first one you place is free</b>. You still have Wise Sheikh. The one you did not pick can still be hired in the shop as normal.',
@@ -7586,13 +7662,13 @@
                     'The player who invites is the <b>host</b> (Player 1, blue). The game runs on the host\'s device and the friend sees it live, so if the host quits the match ends for both.',
                     'Every teacher has a <b>coloured ring</b> under it: blue for Player 1, red for Player 2.',
                     'The map is bigger than normal. Use the <b>◀ ▶ arrows</b>, <b>A / D</b> or the <b>← →</b> keys to scroll (in VS you can also click the <b>mini-map</b>).',
-                    'There is no pause online. Press <b>✕ Quit</b> to leave; your friend is told you left.',
+                    '<b>Pause and Skip Wave need your friend to agree.</b> Press <b>⏸ Pause</b> (or P) to send a request; your friend gets Accept / Decline for 30 seconds. An accepted pause lasts up to <b>30 seconds</b>, then the game resumes by itself (either of you can press Resume sooner, and there is a short cooldown before the next pause). Skip Wave works the same way in Team Up. Against a bot they are granted instantly. Press <b>✕ Quit</b> to leave; your friend is told you left.',
                     '<b>No friend around?</b> Pick a mode and press <b>🤖 Play against a Bot</b>. In VS the bot is your opponent; in Team Up it is your teammate (Player 2). Choose <b>Easy, Normal or Hard</b>. Bot matches need no Google account or friends.'
                 ]) + gLink('teamup', 'Team Up') + ' · ' + gLink('vsmode', 'VS') },
             { id: 'teamup', group: 'more', icon: '🤝', title: 'Online: Team Up', html: () =>
                 '<p>Two players, one school. Defend together against the kebabs on <b>two School Grounds maps stacked on top of each other</b>. Each map has its own kebab shop on the left and its own school on the right, and they all share one school health bar.</p>' +
                 gList([
-                    'Coins, the school and the shop are <b>shared</b>. Either player can place teachers, use ultimates, start the next wave or press Skip Wave.',
+                    'Coins, the school and the shop are <b>shared</b>. Either player can place teachers, use ultimates and start the next wave. <b>⏸ Pause</b> and <b>⏭ Skip Wave</b> are <b>requests</b>: your friend sees Accept / Decline for 30 seconds. A pause lasts up to <b>30 seconds</b> and then resumes by itself (either of you can resume sooner; after a pause there is a short cooldown).',
                     'Everything is drawn <b>zoomed out</b> so both maps fit. Press the <b>◀ ▶ arrow</b> (or <b>A / D</b>, or the arrow keys) once to flip to the other side of both maps.',
                     'The tracks grow like the normal game: <b>one track</b>, the <b>split track at wave 10</b> and the <b>tri-track at wave 40</b>, with the same cutscenes. Kebabs walk on both maps.',
                     'You each get <b>2 free Wise Sheikhs</b> at the start (4 in total).',
@@ -7612,6 +7688,7 @@
                 gList([
                     'Press <b>📖 How to play</b> under VS in the Online Mode screen for a picture slideshow. It ends by offering <b>Guide Mode for VS</b> (also in Settings).',
                     '<b>Send Teachers</b> (right panel): a <b>Scout Sheikh</b> (60 coins, fast), an <b>Angry Rusher</b> (120, tougher) or a <b>Math Tank</b> (260, slow and huge). They walk along your track to the other school, fighting the teachers you meet on the way. Pick the Top or Bottom track first.',
+                    '<b>⏸ Pause</b> is a request here too: your friend accepts it (30 seconds at most, then it resumes by itself).',
                     'Only one player can send at a time: it switches every <b>20 seconds</b> and a random player goes first. You can place teachers and buy upgrades any time.',
                     '<b>Place Teachers</b> on the two grass rows between the tracks, in <b>your half</b> only. They shoot the other player\'s units that walk past. Sent teachers also attack your teachers while walking.',
                     'You earn <b>8 coins a second</b>, plus half the cost back for every enemy unit your teachers defeat.',
@@ -7650,7 +7727,7 @@
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (WIP) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
                     '<b>🎬 Credits</b>: made by Jaiden Maximiliano Hernandez.',
-                    '<b>⚠️ Disclaimers</b>: the Early Access and "made with AI" notes. They also pop up the first time you open the game.',
+                    '<b>⚠️ Disclaimer</b>: the "made with AI" note. It also pops up the first time you open the game, followed by the ' + gLink('welcome', 'Welcome Guide') + '.',
                     'In the <b>browser version</b>, when a new version is out a pink bar says <b>A new version is available!</b>. Press <b>Update Now</b> and a loading screen with a progress bar shows while the new version downloads, then the page refreshes by itself. Simply reopening the link also loads the newest version.',
                     'The game also runs as a <b>desktop app</b> for Windows, which updates itself.'
                 ]) },
@@ -7665,7 +7742,7 @@
                 ]) +
                 '<h4>Mid game (waves 15-39)</h4>' +
                 gList([
-                    'At the first shop, hire the <b>Mathematician</b>. At shop 2 get the <b>Angry Teacher</b>: her 2.5× marks amplify everything. At shop 3 hire the <b>Arabic Expert</b> to freeze leaders.',
+                    'Every teacher is hireable from the first shop, so pick the one your defence needs: the <b>Angry Teacher</b> (her 2.5× marks amplify everything), the <b>Mathematician</b> or the <b>Arabic Expert</b> (freezes leaders).',
                     'Put Mathematician close to the track to knock back leaders, and keep Angry Teacher safely off to the side.',
                     'Keep teachers 3 tiles or more from where a boss will walk (the boss hurts everyone within 2.5 tiles).',
                     'Use <b>Damage Boost</b> and <b>Attack Speed</b> early. Grab <b>More Teachers</b> once you are at the cap.'
@@ -7689,7 +7766,7 @@
                     ['Why can\'t I place a teacher?', 'Not enough coins, you reached the cap (' + BASE_TOWER_CAP + ' of that type), or the tile is already taken.'],
                     ['Why can\'t I heal?', 'You can only heal <b>between waves</b>.'],
                     ['Why did the shop close after one buy?', 'You only get one purchase per shop.'],
-                    ['Where is Angry Teacher / Mathematician?', 'Hire them in the shop: Mathematician from the first shop (wave 15), Angry Teacher from the second (wave 30), Arabic Expert from the third (wave 45). On The Quad the teacher you did not pick is in the first shop and the Arabic Expert in the second.'],
+                    ['Where is Angry Teacher / Mathematician?', 'Hire them in the shop. From the very first shop (wave 15) you can unlock any of them (Mathematician, Angry Teacher, Arabic Expert), but you can only buy one thing per shop visit.'],
                     ['Why does my kebab have a red Negative label?', 'Angry Teacher marked it: it takes 2.5× damage.'],
                     ['Can I get my coins back for a removed teacher?', 'No.'],
                                         ['Can I skip the cutscenes?', 'Yes: click or press any key while one plays, or turn on <b>Skip intro animation</b> in Settings so they never play.'],
@@ -7805,12 +7882,23 @@
             showToast('💚 +' + n + ' Positives added to you', 1800);
             adminRender();
         }
+        const ADMIN_CHARS = [{ id: 'tuff', name: 'Tuff Sheikh', icon: '🔴', desc: 'Free, max 3. Passive ultimate: SHEBABBBB eye lasers.' }];
+        function adminEquipped(id) { const a = getCurrentAccount(); return !(a && a.adminEquip && a.adminEquip[id] === false); }
+        function adminToggleChar(id) {
+            if (!isAdminAccount()) return;
+            const on = adminEquipped(id);
+            updateCurrentAccount(a => { a.adminEquip = a.adminEquip || {}; a.adminEquip[id] = !on; });
+            game._admCheck = undefined;
+            showToast((on ? 'Unequipped ' : 'Equipped ') + (ADMIN_CHARS.find(c => c.id === id) || {}).name, 1600);
+            adminRender();
+        }
         function adminSet(k, v) { _adm[k] = v; adminRender(); }
         function adminRender() {
             const el = document.getElementById('adminBody'); if (!el) return;
             const fmt = ms => ms ? new Date(ms).toLocaleString() : '-';
             const me = getCurrentAccount();
             let h = '<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:10px 14px;margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><b>💚 Your Positives: ' + ((me && me.positives) || 0) + '</b>' + [5, 100, 500].map(n => '<button class="acc-tab on" onclick="adminAddPositives(' + n + ')">+' + n + '</button>').join('') + '</div>';
+            h += '<div style="background:rgba(255,255,255,.08);border-radius:12px;padding:10px 14px;margin-bottom:10px"><b>🛡️ Admin characters</b><div style="color:#9fb3c8;font-size:12px;margin:2px 0 8px">Equipped characters show up in your tower bar in every mode. Unequip to hide them.</div>' + ADMIN_CHARS.map(c => { const on = adminEquipped(c.id); return '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0"><span style="font-size:22px">' + c.icon + '</span><div style="flex:1;min-width:140px"><b>' + c.name + '</b><div style="color:#9fb3c8;font-size:12px">' + c.desc + '</div></div><button class="friend-action-btn ' + (on ? 'decline' : 'accept') + '" onclick="adminToggleChar(\'' + c.id + '\')">' + (on ? 'Unequip' : 'Equip') + '</button></div>'; }).join('') + '</div>';
             h += _adm.err ? '<div style="color:#ffb74d;font-weight:700;margin:8px 0">' + escapeHtml(_adm.err) + '</div>' : '';
             if (_adm.tab === 'sugs') {
                 if (!_adm.sugs) { el.innerHTML = h + '<div>Loading...</div>'; return; }
@@ -8680,7 +8768,7 @@
         }
 
         function togglePause() {
-            if (NET.active) return;
+            if (NET.active) { netPauseButton(); return; }
             if (!game.active || game.gameOver) return;
             game.paused = !game.paused;
             document.getElementById('pauseOverlay').classList.toggle('show', game.paused);
@@ -8698,7 +8786,7 @@
         // Merges the next wave into the one about to start (or the one
         // already running). Pressing again keeps stacking more waves in.
         function skipWave() {
-            if (isGuest()) { netAct({ t: 'skip' }); return; }
+            if (NET.active && !NET.bot && !NET.skipOk) { netRequest('skip'); return; }
             if (game.gameOver) return;
             if (game.mergedWaves >= MAX_MERGED_WAVES) {
                 showToast('⚠️ You can only combine up to ' + MAX_MERGED_WAVES + ' waves!');
@@ -9917,12 +10005,33 @@
         function closeDisclaimers() {
             document.getElementById('disclaimerModal').classList.remove('show');
             try { localStorage.setItem(DISCLAIMER_KEY, DISCLAIMER_VERSION); } catch (e) {}
+            maybeShowWelcome();   // first visit: the Welcome Guide follows the disclaimer
         }
         function maybeShowDisclaimers() {
             let seen = null;
             try { seen = localStorage.getItem(DISCLAIMER_KEY); } catch (e) {}
             if (seen !== DISCLAIMER_VERSION) showDisclaimers();
+            else maybeShowWelcome();
         }
+        // ===== WELCOME GUIDE =====
+        // A short slideshow (the same look as the Online Mode "How to play") shown the first time the game is opened on a
+        // device: accounts, Positives + the menu Shop, daily rewards, the in-battle shop, levels + maps, friends, help.
+        // Replay any time: "Welcome Guide" at the bottom of the main menu, or the Replay button in Settings.
+        const WELCOME_KEY = 'ugd_welcome_seen';
+        function welcomeOpen() { howOpen('welcome'); }
+        function welcomeMarkSeen() { try { localStorage.setItem(WELCOME_KEY, '1'); } catch (e) {} }
+        function maybeShowWelcome() {
+            let seen = null;
+            try { seen = localStorage.getItem(WELCOME_KEY); } catch (e) {}
+            if (seen === '1') return;
+            setTimeout(() => {
+                const menu = document.getElementById('menuScreen'), disc = document.getElementById('disclaimerModal');
+                if (!menu || menu.classList.contains('hidden')) return;            // only on the main menu
+                if (disc && disc.classList.contains('show')) return;               // the disclaimer goes first
+                welcomeOpen();
+            }, 800);
+        }
+        // ===== END WELCOME GUIDE =====
         // Accounts made while the game is in early access carry a badge next to their name.
         function eaBadgeHTML(acc, small) {
             return acc && acc.earlyAccess ? '<span class="ea-badge' + (small ? ' sm' : '') + '" title="This account was made during Early Access">EARLY ACCESS</span>' : '';
@@ -10039,7 +10148,7 @@
               target: () => gmTowerShape(game.towers[0], 60),
               text: () => "Teachers <b>attack automatically</b> anything that comes in range. Hover over a teacher to see their range circle. You can place up to <b>" + BASE_TOWER_CAP + " of each teacher</b>." },
             { id: 'controls', next: true, after: 'range', title: 'Controls', target: () => gmEl('#pauseBtn'),
-              text: () => "<b>Pause</b> here (or press <b>P</b> / <b>Esc</b>).<br>• <b>Left-click</b> a hurt teacher <b>between waves</b> to heal 5%.<br>• <b>Right-click</b> a teacher to remove them (no refund).<br>• When a teacher <b>glows</b>, click them for their <b>ultimate</b>!<br>• <b>Hold Alt and click</b> a teacher to <b>heal</b> them without using their ultimate." },
+              text: () => "<b>Pause</b> here (or press <b>P</b> / <b>Esc</b>).<br>• <b>Left-click</b> a hurt teacher <b>between waves</b> to heal 5%.<br>• <b>Right-click</b> a teacher to remove them (no refund).<br>• When a teacher <b>glows</b>, click them for their <b>ultimate</b>!<br>• <b>Hold Alt and click</b> a teacher to <b>heal</b> them without using their ultimate.<br>• <b>Left-click a kebab</b> to hit it yourself (buy <b>👆 Click Power</b> in the shop to hit harder)." },
             { id: 'skipwave', next: true, after: 'controls', title: 'Skip Wave', target: () => gmEl('#skipWaveBtn'),
               text: () => "<b>Skip Wave</b> merges the next wave into this one for a bigger fight and an earlier shop. Only use it when your defence is strong." },
             { id: 'start', after: 'skipwave', title: 'Start the first wave', done: () => game.waveInProgress || game.wave > 1,
@@ -10048,9 +10157,9 @@
 
             // --- the shop ---
             { id: 'shop1', shop: true, next: true, title: 'The shop', target: () => gmEl('#shopUpgradeList', 4),
-              text: () => "A shop opens <b>every 15 waves</b>. This board has <b>upgrades</b>: more damage, faster attacks and school health. You can make <b>ONE purchase</b> per shop, then it closes, so choose wisely." },
+              text: () => "A shop opens <b>every 15 waves</b>. This board has <b>upgrades</b>: more damage, faster attacks, school health and <b>👆 Click Power</b> (your mouse clicks on kebabs hit harder). You can make <b>ONE purchase</b> per shop, then it closes, so choose wisely." },
             { id: 'shop2', shop: true, next: true, after: 'shop1', title: 'Hire teachers', target: () => gmEl('#shopTeacherList', 4),
-              text: () => "This board <b>hires new teachers</b> (Mathematician first, then the Angry Teacher, then the Arabic Expert) and <b>More Teachers</b>, which raises the max Wise Sheikhs by <b>+3</b>." },
+              text: () => "This board <b>hires new teachers</b> (<b>you can hire any of them from the very first shop</b>: Mathematician, Angry Teacher or Arabic Expert) and <b>More Teachers</b>, which raises the max Wise Sheikhs by <b>+3</b>." },
             { id: 'shop3', shop: true, next: true, after: 'shop2', title: 'Prices & coins', target: () => gmBoxes(['#shopNumberLabel', '#shopBalance'], 10),
               text: () => "Your coins are shown here. Prices go <b>up every shop</b> you reach. Rows you can't afford shake, and the shop teacher tells you." },
 
@@ -10066,6 +10175,9 @@
               text: () => "The <b>Mathematician</b> is tough (125 HP). Every 6 seconds he shushes <b>3 kebabs</b>: they get blown back and take bonus damage. His ultimate is random: <b>Algebra Swarm</b> or <b>Beam Pull</b>. Each one you place costs <b>" + getMathCost() + " 🪙</b>." },
 
             // --- new upgrades (explained once you own them) ---
+            { id: 'up_click', next: true, title: 'Upgrade: Click Power', when: () => gmHasUp('click'),
+              target: () => gmEl(canvas, 0),
+              text: () => "<b>Click Power</b>: clicking a kebab with your mouse now hurts <b>" + clickDamage() + "</b> instead of 1. You can buy it up to <b>3</b> times (1 → 5 → 9 → 13). Marked kebabs take 2.5× more." },
             { id: 'up_damage', next: true, title: 'Upgrade: Damage Boost', when: () => gmHasUp('damage1.5'),
               target: () => gmTowerShape(game.towers[0], 60),
               text: () => "<b>Damage Boost</b>: every attack from every teacher now deals <b>1.5×</b> damage. Damage upgrades multiply together." },
@@ -10143,7 +10255,11 @@
               text: () => NET.bot
                   ? "Type in the <b>chat box</b> to give the bot orders: <i>save coins</i>, <i>spend coins</i>, <i>top map</i>, <i>bottom map</i>, <i>near the school</i>, <i>sheikh</i>, <i>angry</i>, <i>math</i> or <i>use ults</i>. The quick buttons do the same."
                   : "Use the <b>chat box</b> to talk to your friend while you play. The quick buttons send short messages with one click." },
-            { id: 'tu_botlog', next: true, after: 'tu_chat', title: 'The bot\'s moves', when: () => !!NET.bot, target: () => gmEl('#npLog', 4),
+            { id: 'tu_pause', next: true, after: 'tu_chat', title: 'Pause & skip requests', target: () => gmEl('#pauseBtn'),
+              text: () => NET.bot
+                  ? "<b>⏸ Pause</b> and <b>⏭ Skip Wave</b> work instantly against the bot. A pause lasts up to <b>30 seconds</b>, then the game resumes by itself."
+                  : "<b>⏸ Pause</b> and <b>⏭ Skip Wave</b> send your friend a <b>request</b> (they have 30s to Accept or Decline). An accepted pause lasts up to <b>30 seconds</b> and then resumes by itself; either of you can resume sooner." },
+            { id: 'tu_botlog', next: true, after: 'tu_pause', title: 'The bot\'s moves', when: () => !!NET.bot, target: () => gmEl('#npLog', 4),
               text: () => "Every move the bot makes shows up in this <b>list</b> with the coins it spent. It spends the <b>shared coins</b>, so watch your counter." },
             { id: 'tu_start', after: 'tu_botlog', title: 'Start the first wave', done: () => game.waveInProgress || game.wave > 1, target: () => gmEl('#waveBtn'),
               text: () => "Ready? <b>Either of you</b> can press this to send <b>wave " + game.wave + "</b>." },
@@ -10501,7 +10617,77 @@
                 });
             }
         };
-        const HOW_DEF = () => ({
+        Object.assign(HOW_PICS, {
+            w_hello(c) {
+                hGrass(c, 0, 0, 340, 190); hPath(c, hZig(20, 150, 20, 330), HOWC.path, 16);
+                hEm(c, '🥙', 22, 65, 28); hEm(c, '🏫', 320, 65, 28);
+                [[62, 112], [165, 88], [272, 112]].forEach(p => { hRing(c, p[0], p[1], HOWC.blue); hEm(c, '🧙', p[0], p[1], 26); });
+                hEm(c, '🍢', 62, 65, 22); hEm(c, '🍢', 150, 125, 22); hEm(c, '🍢', 262, 65, 22);
+                hRound(c, 60, 4, 220, 22, 8, 'rgba(0,0,0,.72)', HOWC.gold); hTxt(c, 'Teachers vs Kebabs!', 170, 15, 13, HOWC.gold);
+                hRound(c, 105, 162, 130, 24, 10, 'rgba(0,0,0,.72)', '#fff'); hTxt(c, '▶ PLAY to start', 170, 174, 12, '#fff');
+            },
+            w_acct(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#10161f');
+                hRound(c, 168, 10, 162, 28, 12, '#FF1493', HOWC.gold); hTxt(c, '👤 Sign Up / Log In', 249, 24, 12, '#fff');
+                hTxt(c, 'top right of the menu', 12, 24, 11, '#cfd8e6', 'left'); hTxt(c, '➜', 150, 24, 14, HOWC.gold);
+                hRound(c, 20, 52, 300, 126, 14, 'rgba(255,255,255,.07)', HOWC.blue);
+                c.fillStyle = HOWC.blue; c.beginPath(); c.arc(66, 92, 26, 0, 7); c.fill(); hEm(c, '🧙', 66, 92, 30);
+                hTxt(c, 'YourName', 106, 78, 16, '#fff', 'left'); hTxt(c, '⭐ Level 1  ·  ☁️ Synced with Google', 106, 98, 11, HOWC.gold, 'left');
+                hRound(c, 106, 108, 150, 8, 4, 'rgba(255,255,255,.2)'); hRound(c, 106, 108, 60, 8, 4, '#64FF64');
+                hTxt(c, '💚 Positives  ·  🏆 Achievements  ·  🎽 Skins', 170, 142, 11, '#cfd8e6'); hTxt(c, '💾 Saved battles  ·  👥 Friends  ·  ⭐ Levels', 170, 160, 11, '#cfd8e6');
+            },
+            w_pos(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#0f1d3a');
+                for (let i = 0; i < 10; i++) { c.fillStyle = i % 2 ? '#fff' : '#e53935'; c.fillRect(20 + i * 30, 8, 30, 22); }
+                hRound(c, 125, 38, 90, 26, 8, '#16295a', HOWC.gold); hTxt(c, 'UDR', 170, 51, 17, HOWC.gold);
+                [['🎽', 'Skins'], ['🎩', 'Style'], ['✨', 'Buffs']].forEach((sh, i) => { const x = 28 + i * 100; hRound(c, x, 74, 84, 70, 10, 'rgba(255,255,255,.08)', HOWC.blue); hEm(c, sh[0], x + 42, 100, 30); hTxt(c, sh[1], x + 42, 132, 12, '#fff'); });
+                hRound(c, 100, 154, 140, 28, 12, 'rgba(0,0,0,.6)', '#64FF64'); hTxt(c, '💚 Positives', 170, 168, 13, '#64FF64');
+            },
+            w_daily(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#10161f');
+                hTxt(c, '🎁 Daily Reward  ·  🔥 streak', 170, 16, 14, HOWC.gold);
+                DAILY_REWARDS.forEach((r, i) => { const x = 8 + i * 46, last = i === 6; hRound(c, x, 34, 42, 70, 8, last ? 'rgba(255,215,0,.25)' : 'rgba(255,255,255,.1)', last ? HOWC.gold : HOWC.blue); hTxt(c, 'Day ' + (i + 1), x + 21, 48, 10, '#cfd8e6'); hEm(c, last ? '⭐' : '💚', x + 21, 70, 20); hTxt(c, String(r), x + 21, 92, 13, last ? HOWC.gold : '#64FF64'); });
+                hRound(c, 105, 118, 130, 34, 14, '#FF1493', HOWC.gold); hTxt(c, '🎁 Claim', 170, 135, 15, '#fff');
+                hTxt(c, 'once a day  ·  miss a day = back to Day 1', 170, 172, 11, '#cfd8e6');
+            },
+            w_shop(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#2a1d12');
+                hRound(c, 60, 8, 220, 26, 8, '#3a2a14', HOWC.gold); hTxt(c, 'UPGRADES + TEACHERS', 170, 21, 13, HOWC.gold);
+                [['Upgrades', ['💪 Damage Boost', '⚡ Attack Speed', '🏫 School Health']], ['Teachers', ['📐 Mathematician', '👩‍🏫 Angry Teacher', '🪑 Arabic Expert']]].forEach((b, i) => {
+                    const x = 14 + i * 164; hRound(c, x, 42, 148, 92, 10, '#4a3318', '#c9a063'); hTxt(c, b[0], x + 74, 55, 12, HOWC.gold);
+                    b[1].forEach((l, k) => hTxt(c, l, x + 10, 76 + k * 20, 11, '#fff', 'left'));
+                });
+                hRound(c, 34, 142, 272, 40, 12, 'rgba(0,0,0,.6)', HOWC.gold); hTxt(c, '🛍️ opens every 15 waves  ·  🪙 coins', 170, 155, 12, '#fff'); hTxt(c, 'ONE purchase per shop', 170, 171, 12, HOWC.gold);
+            },
+            w_levels(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#10161f');
+                hTxt(c, '⭐ Level 7', 16, 16, 14, HOWC.gold, 'left'); hRound(c, 100, 10, 224, 12, 6, 'rgba(255,255,255,.18)'); hRound(c, 100, 10, 120, 12, 6, '#64FF64');
+                c.save(); c.beginPath(); c.rect(14, 36, 148, 100); c.clip(); hGrass(c, 14, 36, 148, 100); hPath(c, hZig(36, 100, 24, 152), HOWC.path, 9); c.restore(); hTxt(c, 'School Grounds', 88, 150, 12, '#fff');
+                c.fillStyle = '#2f6b2f'; c.fillRect(178, 36, 148, 100); c.strokeStyle = 'rgba(255,255,255,.7)'; c.lineWidth = 2; c.strokeRect(186, 44, 132, 84);
+                c.beginPath(); c.moveTo(252, 44); c.lineTo(252, 128); c.stroke(); c.beginPath(); c.arc(252, 86, 16, 0, 7); c.stroke();
+                hRound(c, 204, 72, 96, 28, 8, 'rgba(0,0,0,.75)', HOWC.gold); hTxt(c, 'Unlocks: Lv ' + QUAD_UNLOCK_LEVEL, 252, 86, 11, HOWC.gold); hTxt(c, 'The Quad', 252, 150, 12, '#fff');
+                hTxt(c, 'XP from kebabs + cleared waves', 170, 176, 11, '#cfd8e6');
+            },
+            w_friends(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#10161f');
+                [['Sam', '#26A69A', true, 'Ready to play?'], ['Alex', '#7E57C2', false, 'GG!']].forEach((f, i) => {
+                    const y = 10 + i * 50; hRound(c, 16, y, 308, 42, 10, 'rgba(255,255,255,.07)', HOWC.blue);
+                    c.fillStyle = f[1]; c.beginPath(); c.arc(44, y + 21, 15, 0, 7); c.fill(); hTxt(c, f[0][0], 44, y + 21, 15, '#fff');
+                    c.fillStyle = f[2] ? '#3ddc5f' : '#8a93a3'; c.beginPath(); c.arc(57, y + 33, 5, 0, 7); c.fill();
+                    hTxt(c, f[0], 72, y + 14, 13, '#fff', 'left'); hTxt(c, f[3], 72, y + 30, 11, '#cfd8e6', 'left'); hTxt(c, f[2] ? 'Online' : 'Offline', 308, y + 21, 11, f[2] ? '#3ddc5f' : '#8a93a3', 'right');
+                });
+                hRound(c, 16, 116, 146, 30, 12, 'rgba(255,215,0,.15)', HOWC.gold); hTxt(c, '🤝 Team Up', 89, 131, 13, HOWC.gold);
+                hRound(c, 178, 116, 146, 30, 12, 'rgba(255,215,0,.15)', HOWC.gold); hTxt(c, '⚔️ VS', 251, 131, 13, HOWC.gold);
+                hTxt(c, '🌐 Online Mode (work in progress)', 170, 166, 11, '#cfd8e6');
+            },
+            w_help(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#10161f');
+                [['📖 All You Need to Know', 'every mechanic explained (bottom right)'], ['💡 Suggestions', 'send your ideas to the admin'], ['⚙️ Settings', 'in your account menu'], ['❓ How to Play', 'in a battle: turns on Guide Mode']].forEach((b, i) => {
+                    const y = 8 + i * 45; hRound(c, 20, y, 300, 39, 12, 'rgba(255,255,255,.08)', HOWC.gold); hTxt(c, b[0], 34, y + 13, 13, '#fff', 'left'); hTxt(c, b[1], 34, y + 29, 11, '#cfd8e6', 'left');
+                });
+            }
+        });
+        const HOW_DEF_CORE = () => ({
             team: { name: 'Team Up', icon: '🤝', key: 'guideTeam', prefix: 'tu_', slides: [
                 ['Two players, one school', 't_maps', "You and your friend (or the bot) defend <b>two School Grounds maps</b> stacked on top of each other. Each has its own kebab shop and school. <b>Coins and school health are shared.</b>"],
                 ['2 free Wise Sheikhs each', 't_free', "Pick <b>Wise Sheikh</b> and click a green tile next to the track. <b>You get 2 free</b> and your teammate gets <b>2 free</b> (4 in total). After that teachers cost shared coins."],
@@ -10518,6 +10704,18 @@
                 ['Coins and upgrades', 'v_up', "You start with <b>" + VS_START_COINS + " coins</b> and earn <b>" + VS_INCOME + " a second</b>. Upgrades make your sent teachers and defenders stronger, earn more coins or <b>repair your school</b>."]
             ] }
         });
+        const HOW_DEF = () => Object.assign(HOW_DEF_CORE(), {
+            welcome: { name: 'Welcome', icon: '👋', welcome: true, slides: [
+                ['Teachers vs Kebabs', 'w_hello', "Hordes of <b>kebabs</b> march toward <b>your school</b>. Place <b>teachers</b> on the grass beside the track and they fight for you. Press <b>▶ PLAY</b> to start. This quick guide takes about a minute, and you can skip it any time."],
+                ['Make an account', 'w_acct', "Press <b>👤 Sign Up / Log In</b> at the top right of the main menu (a username and password, or <b>Google</b>). Signed in, you get <b>levels, Positives, achievements, skins, saved battles and friends</b>. Guests can play, but nothing is saved. Tip: <b>link Google</b> in your profile so you never lose your account."],
+                ['Positives and the Shop', 'w_pos', "You earn <b>1 💚 Positive</b> for every kebab you defeat while signed in. Spend them in the <b>Shop</b> (top right of the menu, sign-in needed) on <b>skins, accessories and profile backgrounds</b>, and from <b>level " + BUFF_UNLOCK_LEVEL + "</b> on teacher <b>buffs</b>. Wear what you buy from your profile (<b>🎨 Customize</b>)."],
+                ['Daily rewards', 'w_daily', "Press <b>🎁 Daily</b> once a day to claim free 💚. Claim on <b>consecutive days</b> to grow your 🔥 streak: <b>Day 7 pays the most</b>. <b>Miss a day and it starts over.</b> A red <b>!</b> on the button means a reward is waiting."],
+                ['The shop in battle', 'w_shop', "Every <b>15 waves</b> a cafe <b>shop</b> opens in your battle. Spend <b>🪙 coins</b> (from defeated kebabs) on <b>upgrades</b> or to <b>hire teachers</b>. You can make <b>ONE purchase per shop</b>, and prices rise with every shop, so choose wisely."],
+                ['Levels and maps', 'w_levels', "<b>Play</b> opens the map select: <b>School Grounds</b>, and <b>The Quad</b> once you reach <b>level " + QUAD_UNLOCK_LEVEL + "</b>. Defeating kebabs and clearing waves earns <b>XP</b> so you level up (only in the main game, not Test Mode or Online Mode)."],
+                ['Friends and Online Mode', 'w_friends', "<b>Link Google</b>, then add friends by username in your <b>📥 Inbox</b>. A <b>green dot</b> means a friend is online. <b>Online Mode</b> lets you play <b>Team Up</b> or <b>VS</b> with a friend or a bot. It is still a <b>work in progress</b>, so expect some bugs."],
+                ['Help is always here', 'w_help', "<b>📖 All You Need to Know</b> explains every mechanic. <b>💡 Suggestions</b> sends ideas to the admin. In a battle, <b>❓ How to Play</b> turns on <b>Guide Mode</b>. Replay this guide any time with <b>👋 Welcome Guide</b> at the bottom of the main menu. Have fun! ✅"]
+            ] }
+        });
         let HOW = null;
         const HOWS = { mode: 'team', i: 0 };
         function howOpen(mode) {
@@ -10526,9 +10724,11 @@
             document.getElementById('howModal').classList.add('show');
             howRender();
         }
-        function howClose() { document.getElementById('howModal').classList.remove('show'); }
+        function howClose() { document.getElementById('howModal').classList.remove('show'); if (HOWS.mode === 'welcome') welcomeMarkSeen(); }
         function howRender() {
-            const H = HOW[HOWS.mode], n = H.slides.length, ask = HOWS.i >= n;
+            const H = HOW[HOWS.mode], n = H.slides.length, ask = !H.welcome && HOWS.i >= n;
+            document.querySelector('#howModal .tutorial-skip').textContent = H.welcome ? 'Skip guide' : 'Close';
+            document.getElementById('howNext').textContent = H.welcome && HOWS.i === n - 1 ? '✅' : '▶';
             document.getElementById('howSlide').style.display = ask ? 'none' : '';
             document.getElementById('howAsk').style.display = ask ? '' : 'none';
             const cv = document.getElementById('howCanvas'), c = cv.getContext('2d');
@@ -10546,9 +10746,9 @@
             document.getElementById('howText').innerHTML = sl[2];
             document.getElementById('howPrev').style.visibility = HOWS.i === 0 ? 'hidden' : '';
             const d = document.getElementById('howDots'); d.innerHTML = '';
-            for (let k = 0; k <= n; k++) { const sp = document.createElement('span'); if (k === HOWS.i) sp.className = 'active'; d.appendChild(sp); }
+            for (let k = 0; k < (H.welcome ? n : n + 1); k++) { const sp = document.createElement('span'); if (k === HOWS.i) sp.className = 'active'; d.appendChild(sp); }
         }
-        function howStep(d) { const n = HOW[HOWS.mode].slides.length; HOWS.i = Math.max(0, Math.min(n, HOWS.i + d)); howRender(); }
+        function howStep(d) { const H = HOW[HOWS.mode], n = H.slides.length; if (H.welcome && HOWS.i + d >= n) { howClose(); return; } HOWS.i = Math.max(0, Math.min(H.welcome ? n - 1 : n, HOWS.i + d)); howRender(); }
         function howAnswer(yes) {
             const H = HOW[HOWS.mode];
             settings[H.key] = !!yes; saveSettings();
@@ -10639,7 +10839,7 @@
                 "A shop opens every 15 waves. Save your coins before it arrives!",
                 "Boss kebabs show up every 20 waves. Bring your best upgrades!",
                 "Teachers only attack while a wave is running. Use the break to heal and place them.",
-                "The Mathematician joins at the first shop. His Shhhh! knocks kebabs right back!",
+                "Every teacher can be hired from the first shop. The Mathematician's Shhhh! knocks kebabs right back!",
                 "The Arabic Expert makes kebabs sit on the floor. Sit down, everyone!",
                 "Wise Sheikh's ultimate shakes the whole room. Charge it up and let it rip!",
                 "At wave 40 a third track opens. Spread your teachers out!",
@@ -11028,9 +11228,12 @@
         function upgradeCount(id) {
             return game.purchasedUpgrades[id] || 0;
         }
+        const MAX_CLICK_POWER = 3, CLICK_POWER_STEP = 4;
         function upgradeMaxed(id) {
-            return upgradeCount(id) >= MAX_PER_UPGRADE;
+            return upgradeCount(id) >= (id === 'click' ? MAX_CLICK_POWER : MAX_PER_UPGRADE);
         }
+        // Damage of one mouse click on a kebab: 1, then +4 for every Click Power bought (up to 13)
+        function clickDamage() { return 1 + CLICK_POWER_STEP * upgradeCount('click'); }
 
         function shopCanAfford(cost) {
             return game.testMode || game.sentrals >= cost;
@@ -11092,6 +11295,11 @@
                 off: upgradeMaxed('speed1.5'), priceLabel: upgradeMaxed('speed1.5') ? 'MAXED' : null,
                 buy: () => buyUpgrade('speed1.5', upgradeCost, 1.5, 'speed')
             });
+            addMenuRow(upList, {
+                name: '👆 Click Power', desc: 'Clicking a kebab hurts <b>' + clickDamage() + ' → ' + (clickDamage() + CLICK_POWER_STEP) + '</b> · ' + upgradeCount('click') + '/' + MAX_CLICK_POWER + ' bought', price: upgradeCost,
+                off: upgradeMaxed('click'), priceLabel: upgradeMaxed('click') ? 'MAXED' : null,
+                buy: () => buyUpgrade('click', upgradeCost, CLICK_POWER_STEP, 'click')
+            });
             const canBuyHealth = game.health < game.maxHealth && !upgradeMaxed('health');
             addMenuRow(upList, {
                 name: '❤️ School Health', desc: '+5 max health (' + game.health + '/' + game.maxHealth + ') · ' + bought('health'), price: upgradeCost,
@@ -11127,7 +11335,7 @@
             // Team Up and VS keep the old order (Angry Teacher always, Mathematician from wave 30, no Arabic Expert).
             const online = game.teamUp || game.vs;
             const quadMap = game.mapId === 'quad';
-            const unlockWave = online ? { badui: 0, math: 30, arabic: 9999 } : (quadMap ? { badui: 15, math: 15, arabic: 30 } : { math: 15, badui: 30, arabic: 45 });
+            const unlockWave = online ? { badui: 0, math: 30, arabic: 9999 } : { math: 15, badui: 15, arabic: 15 };   // solo: every teacher is hireable from the FIRST shop (wave 15); you still buy one thing per shop visit
             const teacherRows = [
                 { type: 'math', name: '📐 Mathematician', desc: 'Shushes kebabs back · two random ultimates', price: getMathUnlockCost(), owned: game.mathUnlocked, hired: "He's already on your team!" },
                 { type: 'badui', name: '👩‍🏫 Angry Teacher', desc: 'Writes Negative: marked kebabs take 2.5x damage', price: SHOP_PRICES.badui, owned: document.getElementById('baduiBtn').style.display !== 'none', hired: "She's already on your team!" },
@@ -12894,7 +13102,7 @@
             const T = g.towers.map(t => [t.col, t.row, t.type, t.pl || 'p1', Math.round(t.hp * 10) / 10, t.maxHp, Math.round(t.shebabCharge), t.ultLockout || 0].concat(t.type === 'tuff' && t.laserT > 0 ? [t.laserT, Math.round((tuffAim(t) || { x: t.x }).x), Math.round((tuffAim(t) || { y: t.y }).y)] : []));
             const ls = g.lastStand;
             return { n: ++NET.snapN, e: NET.evs.slice(-20), E: E, T: T,
-                g: { health: g.health, maxHealth: g.maxHealth, sentrals: vs ? vs.gc : g.sentrals, wave: g.wave, wip: g.waveInProgress, mw: g.mergedWaves, as: g.autoStartFrames, pu: g.purchasedUpgrades,
+                g: { health: g.health, maxHealth: g.maxHealth, sentrals: vs ? vs.gc : g.sentrals, wave: g.wave, wip: g.waveInProgress, pz: NET.pzEnd ? Math.max(1, Math.round(NET.pzEnd - performance.now())) : 0, mw: g.mergedWaves, as: g.autoStartFrames, pu: g.purchasedUpgrades,
                     med: g.medicHeal, dm: g.damageMultiplier, am: g.attackSpeedMultiplier, tcb: g.towerCapBonus, mu: g.mathUnlocked, so: g.shopsOpened, fg: g.freeGuest, bu: document.getElementById('baduiBtn').style.display === 'block' ? 1 : 0,
                     k: g.kills, bk: g.bossKills, ce: g.coinsEarned, pl: g.placed, fc: g.frameCount, go: g.gameOver ? 1 : 0,
                     ls: ls ? { total: ls.total, killed: ls.killed, hits: ls.hits, max: ls.max, ago: ls.hitAt ? Math.round(performance.now() - ls.hitAt) : -1, age: Math.round(performance.now() - ls.t0) } : null, lsu: g.lastStandUsed ? 1 : 0 },
@@ -12911,7 +13119,8 @@
             NET.hostFc = G.fc;
             g.health = G.health; g.maxHealth = G.maxHealth; g.sentrals = G.sentrals; g.wave = G.wave; g.waveInProgress = !!G.wip; g.mergedWaves = G.mw; g.autoStartFrames = G.as;
             g.purchasedUpgrades = G.pu || {}; g.medicHeal = G.med; g.damageMultiplier = G.dm; g.attackSpeedMultiplier = G.am; g.towerCapBonus = G.tcb; g.mathUnlocked = !!G.mu; g.shopsOpened = G.so;
-            g.freeTeachersLeft = G.fg || 0; g.kills = G.k; g.bossKills = G.bk; g.coinsEarned = G.ce; g.placed = G.pl;
+            g.freeTeachersLeft = G.fg || 0;
+            netGuestPause(G.pz || 0); g.kills = G.k; g.bossKills = G.bk; g.coinsEarned = G.ce; g.placed = G.pl;
             document.getElementById('baduiBtn').style.display = (G.bu || g.vs) ? 'block' : 'none';
             document.getElementById('mathBtn').style.display = (G.mu || g.vs) ? 'block' : 'none';
             if (G.ls) { const L = g.lastStand || (g.lastStand = {}); L.total = G.ls.total; L.killed = G.ls.killed; L.hits = G.ls.hits; L.max = G.ls.max; L.t0 = now - G.ls.age; L.hitAt = G.ls.ago >= 0 ? now - G.ls.ago : 0; } else g.lastStand = null;
@@ -12953,6 +13162,8 @@
             if (ev.t === 'shop') { if (typeof openShop === 'function') { game.shopsOpened = Math.max(game.shopsOpened, ev.so || 0); openShop(); } }
             else if (ev.t === 'ult') { const tw = game.towers.find(x => x.col === ev.c && x.row === ev.r); if (tw) { NET.cosUlt = true; tw.shebabCharge = tw.shebabMax; try { tw.ultimate(); } catch (e) {} NET.cosUlt = false; } }
             else if (ev.t === 'toast') showToast(ev.m, ev.d || 2500);
+            else if (ev.t === 'req') { if (ev.from !== myPl()) netShowReq(ev.k, NET.peer || 'Your friend'); }
+            else if (ev.t === 'reqend') { netHideReq(); NET.myReq = null; }
             else if (ev.t === 'over') { if (game.vs) { game.gameOver = true; vsShowEnd(ev.w, ev.m); } else netGuestOver(); }
             else if (ev.t === 'shake') startShake(ev.f || 12, ev.m || 6);
             else if (ev.t === 'chat') { if (ev.from !== myPl()) netAddChat('them', NET.peer || 'Friend', ev.m); }
@@ -12976,6 +13187,9 @@
             const pl = 'p2';
             if (a.t === 'ping') return;
             if (a.t === 'aim') { const tw = game.towers.find(x => x.col === a.col && x.row === a.row && x.type === 'tuff' && x.pl === pl); if (tw && tw.laserT > 0) tw.aim = { x: +a.x || 0, y: +a.y || 0 }; return; }
+            if (a.t === 'req') { netIncomingReq(a.k, 'p2'); return; }
+            if (a.t === 'resp') { netRespIn(a); return; }
+            if (a.t === 'resume') { if (NET.pzEnd) netEndPause(); return; }
             if (a.t === 'chat') { const m = String(a.m || '').slice(0, 120); if (m) { netAddChat('them', NET.peer || 'Friend', m); netEvent({ t: 'chat', from: 'p2', m: m }); } return; }
             if (game.vs) {
                 if (a.t === 'place') vsPlace(pl, a.type, a.col, a.row);
@@ -12990,7 +13204,6 @@
             else if (a.t === 'heal') { const tw = game.towers.find(x => x.col === a.col && x.row === a.row); if (tw) healTower(tw); }
             else if (a.t === 'ult') netHostUlt(a);
             else if (a.t === 'wave') nextWave();
-            else if (a.t === 'skip') skipWave();
             else if (a.t === 'buyU') applyUpgrade(a.id, a.cost, a.multiplier, a.type);
             else if (a.t === 'buyT') applyTeacherBuy(a.type, a.cost);
         }
@@ -12999,6 +13212,7 @@
         // ---------- frame hook ----------
         function netTick(now) {
             if (!NET.active || !NET.tp || !game.active) return;
+            netPauseTick(now);
             if (isHost() && NET.bot) { NET.peerSeen = now; botTick(); netCamKeys(); return; }
             if (isHost()) {
                 const idle = game.enemies.length === 0;
@@ -13014,6 +13228,95 @@
                 else if (NET.peerSeen && now - NET.peerSeen < 8000) NET.lostShown = false;
             }
             netCamKeys();
+        }
+
+        // ---------- pause + skip-wave requests (online) ----------
+        // Either player can ask to pause or to skip a wave. The friend gets Accept / Decline (a request runs out after
+        // 30s). An accepted pause freezes the game for up to 30 seconds, then it resumes by itself (either player can
+        // resume sooner). After a pause there is a short cooldown. Against the bot the request is granted instantly.
+        const NET_REQ_MS = 30000, NET_PAUSE_MS = 30000, NET_PAUSE_COOL = 20000;
+        function netMeName() { return isHost() ? 'p1' : 'p2'; }
+        function netRequest(k) {
+            if (!NET.active || !NET.tp) return;
+            const now = performance.now();
+            if (k === 'pause' && (NET.pzEnd || NET.gPaused)) { netPauseButton(); return; }
+            if (NET.myReq && now - NET.myReq.t < NET_REQ_MS) { showToast('⏳ Still waiting for ' + (NET.peer || 'your friend') + ' to answer…', 2000); return; }
+            if (NET.bot) { if (k === 'pause' && now < (NET.pzCool || 0)) { showToast('⏸ You can pause again in ' + Math.ceil((NET.pzCool - now) / 1000) + 's', 2000); return; } netGrant(k); return; }
+            if (isHost() && k === 'pause' && now < (NET.pzCool || 0)) { showToast('⏸ You can pause again in ' + Math.ceil((NET.pzCool - now) / 1000) + 's', 2000); return; }
+            NET.myReq = { k: k, t: now };
+            setTimeout(() => { if (NET.myReq && performance.now() - NET.myReq.t >= NET_REQ_MS - 50) { NET.myReq = null; showToast('⌛ ' + (NET.peer || 'Your friend') + ' did not answer the ' + (k === 'pause' ? 'pause' : 'skip') + ' request.', 2500); } }, NET_REQ_MS);
+            showToast('📨 Asked ' + (NET.peer || 'your friend') + ' to ' + (k === 'pause' ? 'pause' : 'skip the wave') + '… (they have 30s)', 3000);
+            if (isHost()) { NET.pend = { k: k, from: 'p1', t: now }; netEvent({ t: 'req', k: k, from: 'p1' }); }
+            else netAct({ t: 'req', k: k });
+        }
+        function netIncomingReq(k, from) {   // host: a request from the guest arrived
+            if (k !== 'pause' && k !== 'skip') return;
+            const now = performance.now();
+            if (k === 'pause' && now < (NET.pzCool || 0)) { netEvent({ t: 'toast', m: '⏸ Pause is on cooldown for ' + Math.ceil((NET.pzCool - now) / 1000) + 's' }); return; }
+            if (k === 'pause' && NET.pzEnd) return;
+            NET.pend = { k: k, from: from, t: now };
+            netShowReq(k, NET.peer || 'Your friend');
+        }
+        function netShowReq(k, who) {
+            NET.reqIn = { k: k, t: performance.now() };
+            let el = document.getElementById('netReq');
+            if (!el) { el = document.createElement('div'); el.id = 'netReq'; el.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:3000;background:rgba(15,25,40,.96);border:2px solid #6ec1ff;border-radius:14px;padding:12px 16px;color:#fff;font-weight:800;box-shadow:0 8px 30px rgba(0,0,0,.5);display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:92vw'; document.body.appendChild(el); }
+            el.innerHTML = '<span>' + (k === 'pause' ? '⏸' : '⏭') + ' ' + escapeHtmlSafe(who) + ' wants to ' + (k === 'pause' ? 'pause for up to 30s' : 'skip the wave') + '</span><button class="friend-action-btn accept" onclick="netAnswer(true)">Accept</button><button class="friend-action-btn decline" onclick="netAnswer(false)">Decline</button>';
+            el.style.display = 'flex';
+            clearTimeout(NET.reqTimer); NET.reqTimer = setTimeout(netHideReq, NET_REQ_MS);
+        }
+        function netHideReqSafe() { try { netHideReq(); } catch (e) {} }
+        function netHideReq() { const el = document.getElementById('netReq'); if (el) el.style.display = 'none'; NET.reqIn = null; clearTimeout(NET.reqTimer); }
+        function netAnswer(ok) {
+            const r = NET.reqIn; netHideReq(); if (!r || !NET.active) return;
+            if (isHost()) {
+                const pd = NET.pend; NET.pend = null;
+                if (!pd || pd.k !== r.k || pd.from !== 'p2' || performance.now() - pd.t > NET_REQ_MS) return;
+                if (ok) netGrant(r.k); else netEvent({ t: 'toast', m: '❌ ' + (NET.names ? NET.names.p1 : 'Your friend') + ' said no to the ' + (r.k === 'pause' ? 'pause' : 'skip') + '.' });
+                netEvent({ t: 'reqend' });
+            } else netAct({ t: 'resp', k: r.k, ok: !!ok });
+        }
+        function netRespIn(a) {   // host: the guest answered my request
+            const pd = NET.pend; NET.pend = null; NET.myReq = null;
+            if (!pd || pd.from !== 'p1' || pd.k !== a.k || performance.now() - pd.t > NET_REQ_MS) return;
+            if (a.ok) netGrant(a.k); else showToast('❌ ' + (NET.peer || 'Your friend') + ' said no to the ' + (a.k === 'pause' ? 'pause' : 'skip') + '.', 3000);
+        }
+        function netGrant(k) {   // host only
+            if (!isHost()) return;
+            NET.myReq = null;
+            if (k === 'pause') {
+                if (NET.pzEnd || game.gameOver) return;
+                NET.pzEnd = performance.now() + NET_PAUSE_MS; game.paused = true; NET.forceSnap = true;
+                netEvent({ t: 'toast', m: '⏸ Paused for up to 30 seconds' }); showToast('⏸ Paused for up to 30 seconds', 2500);
+            } else if (k === 'skip') {
+                NET.skipOk = true; try { skipWave(); } finally { NET.skipOk = false; }
+                netEvent({ t: 'toast', m: '⏭ Skip wave accepted' });
+            }
+        }
+        function netEndPause() {
+            if (!isHost() || !NET.pzEnd) return;
+            NET.pzEnd = 0; NET.pzCool = performance.now() + NET_PAUSE_COOL; game.paused = false; NET.forceSnap = true;
+            document.getElementById('pauseOverlay').classList.remove('show');
+            document.getElementById('pauseBtn').textContent = '⏸ Pause';
+        }
+        function netPauseButton() {
+            if (!NET.active || !game.active || game.gameOver) return;
+            if (NET.pzEnd) { netEndPause(); return; }               // host resumes early
+            if (NET.gPaused) { netAct({ t: 'resume' }); return; }   // guest asks the host to resume
+            netRequest('pause');
+        }
+        function netGuestPause(ms) {   // guest: follow the host's pause state from the snapshot
+            if (ms > 0) { NET.gPaused = true; NET.gEnd = performance.now() + ms; game.paused = true; }
+            else if (NET.gPaused) { NET.gPaused = false; game.paused = false; document.getElementById('pauseOverlay').classList.remove('show'); document.getElementById('pauseBtn').textContent = '⏸ Pause'; }
+        }
+        function netPauseTick(now) {
+            if (isHost() && NET.pzEnd && now >= NET.pzEnd) netEndPause();
+            if (isGuest() && NET.gPaused && now > NET.gEnd + 3000) netGuestPause(0);
+            const left = isHost() ? (NET.pzEnd ? NET.pzEnd - now : 0) : (NET.gPaused ? NET.gEnd - now : 0);
+            const ov = document.getElementById('pauseOverlay'), on = left > 0;
+            if (ov.classList.contains('show') !== on) { ov.classList.toggle('show', on); document.getElementById('pauseBtn').textContent = on ? '▶ Resume' : '⏸ Pause'; }
+            if (on) { const t = document.getElementById('pauseTitle'); const txt = '⏸ Paused · resumes in ' + Math.ceil(left / 1000) + 's'; if (t.textContent !== txt) t.textContent = txt; }
+            if (NET.pend && now - NET.pend.t > NET_REQ_MS) NET.pend = null;
         }
         function netLeave() {
             try { if (NET.room && typeof firebase !== 'undefined' && NET.tp && NET.tp.fire) firebase.firestore().collection('rooms').doc(NET.room).update({ status: 'ended' }).catch(() => {}); } catch (e) {}
@@ -13407,7 +13710,7 @@
         // ---------- starting an online game ----------
         function startOnlineGame(role, mode, transport, roomId, peerName) {
             NET.active = true; NET.bot = !!(transport && transport.bot); NET.botT = 0; NET.chat = []; NET.botLog = []; NET.botSpent = 0; NET.botPlaceAt = 0; NET.sayAt = { p1: -999, p2: -999 }; NET.bc = { mode: 'normal', map: null, side: null, type: null, lane: null, unit: null, focus: null }; NET.panelDirty = true; NET.role = role; NET.mode = mode; NET.tp = transport; NET.room = roomId; NET.peer = peerName || ''; NET.over = false; NET.snapN = 0; NET.evs = []; NET.doneEv = 0;
-            NET.peerSeen = performance.now(); NET.lastAct = 0; NET.lostShown = false; NET.forceSnap = true;
+            NET.peerSeen = performance.now(); NET.lastAct = 0; NET.lostShown = false; NET.forceSnap = true; NET.pzEnd = 0; NET.gPaused = false; NET.pzCool = 0; NET.pend = null; NET.myReq = null; NET.reqIn = null; netHideReqSafe();
             const vs = mode === 'vs';
             Object.assign(game, { health: 30, maxHealth: 30, sentrals: 0, wave: 1, selectedTower: null, towers: [], enemies: [], particles: [], gameOver: false, waveInProgress: false, waveSpawned: 0,
                 frameCount: 0, purchasedUpgrades: {}, medicHeal: 0, damageMultiplier: 1, attackSpeedMultiplier: 1, schoolHurt: false, towerCapBonus: 0, mathUnlocked: false,
@@ -13432,7 +13735,7 @@
             game.active = true;
             document.getElementById('baduiBtn').style.display = vs ? 'block' : 'none';
             document.getElementById('mathBtn').style.display = vs ? 'block' : 'none';
-            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = '';
             document.getElementById('skipWaveBtn').style.display = vs ? 'none' : (role === 'guest' ? '' : '');
             document.getElementById('waveBtn').style.display = vs ? 'none' : '';
             document.getElementById('kebabHp').parentElement.style.display = vs ? '' : '';
@@ -13812,7 +14115,7 @@
                 for (let enemy of (game.vs || isGuest() ? [] : game.enemies)) {
                     const dist = Math.hypot(enemy.x - worldX, enemy.y - y);
                     if (dist < 25) {
-                        enemy.health -= 1 * (enemy.nsDamageMultiplier || 1);
+                        enemy.health -= clickDamage() * (enemy.nsDamageMultiplier || 1);
                         playSound(300, 0.05, 'square');
                         return;
                     }
@@ -14486,7 +14789,8 @@
                 let adm = false; try { adm = isAdminAccount(); } catch (e) {}
                 game._adm = adm;
             }
-            const tuffShow = !!game._adm;   // admin only, in every mode (normal, Quad, Test, Team Up, VS)
+            let tuffEq = true; try { const ac = getCurrentAccount(); tuffEq = !(ac && ac.adminEquip && ac.adminEquip.tuff === false); } catch (e) {}
+            const tuffShow = !!game._adm && tuffEq;   // admin only, in every mode (normal, Quad, Test, Team Up, VS)
             tuffBtnElem.style.display = tuffShow ? 'block' : 'none';
             if (tuffShow) tuffBtnElem.disabled = ownTowerCount('tuff') >= getTowerCap('tuff');
             const arabicBtnElem = document.getElementById('arabicBtn');

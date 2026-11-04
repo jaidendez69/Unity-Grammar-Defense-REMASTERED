@@ -2966,7 +2966,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.29</div>
+    <div id="versionTag">v1.0.30</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3085,6 +3085,14 @@
         <div class="updates-content">
             <h2>📜 Update Log</h2>
             <div class="update-list">
+                <div class="update-entry">
+                    <div class="update-date">November 4, 2026</div>
+                    <ul>
+                        <li><b>New admin character: Tuff Sheikh</b> (only the admin account can place him): Wise Sheikh with glowing red eyes. He does not attack, his red ultimate fills by itself, and when you click it he shouts <b>SHEBABBBB</b> and for 5 seconds lasers shoot out of his eyes that follow your mouse and one-shot everything. He is free to place (max 3) and also hangs out in the main menu background.</li>
+                        <li><b>New skin: Modern</b> for the Mathematician (150 💚): a blue shirt with a folded collar and white buttons. Find it in the shop's Skins tab (Sporty, Modern &amp; Special board).</li>
+                        <li><b>New skin: Fancy Suit for the Arabic Expert</b> (250 💚, same price as the other Fancy Suits): black suit, white shirt and red tie.</li>
+                    </ul>
+                </div>
                 <div class="update-entry">
                     <div class="update-date">November 3, 2026</div>
                     <ul>
@@ -4187,6 +4195,10 @@
                         🪑 Arabic Expert
                         <div class="tower-cost" id="arabicCost">Cost: 350 🪙</div>
                     </button>
+                    <button class="tower-button" id="tuffBtn" onclick="selectTower('tuff')" style="display: none; border-color: #FF1A1A;">
+                        🔴 Tuff Sheikh
+                        <div class="tower-cost" id="tuffCost">FREE · Admin only</div>
+                    </button>
                 </div>
 
                 <button class="tutorial-btn" onclick="openTutorial()">❓ How to Play</button>
@@ -4481,7 +4493,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-03';
+        const LAST_UPDATE_DATE = '2026-11-04';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4628,6 +4640,8 @@
             'badui:fuming':     { type: 'badui',  name: 'Fuming',      kind: 'fuming',    how: 'Achievement: Fuming' },
             'sheikh:sporty':    { type: 'sheikh', name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'math:sporty':      { type: 'math',   name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
+            'arabic:suit':      { type: 'arabic', name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
+            'math:modern':      { type: 'math',   name: 'Modern',      kind: 'modern',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'arabic:sporty':    { type: 'arabic', name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'arabic:abudawud':  { type: 'arabic', name: 'Abu Dawud',   kind: 'abudawud',  how: 'Shop', price: SKIN_PRICE_SPORTY * 2 }
         };
@@ -4673,6 +4687,19 @@
                 ctx.strokeRect(x - rx * 0.72, y + ry * 0.12, rx * 0.5, ry * 0.32);
                 ctx.strokeRect(x + rx * 0.22, y + ry * 0.12, rx * 0.5, ry * 0.32);
                 ctx.fillStyle = '#E8E8E8'; ctx.beginPath(); ctx.arc(x, y - ry * 0.45, 1.8, 0, Math.PI * 2); ctx.fill();
+            } else if (kind === 'modern') {
+                ctx.fillStyle = '#2F6FD0'; ctx.fillRect(x - rx, y - ry, rx * 2, ry * 2);                 // blue shirt
+                ctx.fillStyle = '#2459AA'; ctx.fillRect(x - 1.1, y + ry * 0.3, 2.2, ry * 0.8);            // button strip
+                ctx.fillStyle = '#5E97EE'; ctx.strokeStyle = '#17407F'; ctx.lineWidth = 1.4; ctx.lineJoin = 'round';
+                for (const sd of [-1, 1]) {                                                                // folded collar: two flaps turned outward
+                    ctx.beginPath();
+                    ctx.moveTo(x + sd * 1.5, y - ry * 0.3);
+                    ctx.lineTo(x + sd * 13, y - ry * 0.2);
+                    ctx.lineTo(x + sd * 6.5, y + ry * 0.3);
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+                }
+                ctx.fillStyle = '#FFFFFF';
+                for (const f of [0.4, 0.62, 0.84]) { ctx.beginPath(); ctx.arc(x, y + ry * f, 1.9, 0, Math.PI * 2); ctx.fill(); }   // white buttons
             } else if (kind === 'sporty') {
                 ctx.fillStyle = '#15151b'; ctx.fillRect(x - rx, y - ry, rx * 2, ry * 2);
                 ctx.fillStyle = '#8A2BE2'; // purple shoulders
@@ -7001,6 +7028,18 @@
                 ]) +
                 gTip('Place him next to your Wise Sheikhs near a corner where kebabs are about to escape.') },
 
+            { id: 'tuff', group: 'teachers', icon: '🔴', title: 'Tuff Sheikh (Admin)', html: () =>
+                gStats([['Who can use him', 'The admin account only'], ['Health', '20'], ['Attack', 'None'], ['Cost', 'FREE'], ['Limit', '3'], ['Ultimate', 'Fills by itself']]) +
+                '<p>Wise Sheikh with <b>glowing red eyes</b>. He is a special character that <b>only the admin account</b> can place (a red 🔴 button shows in the teacher panel in normal, Quad and Test Mode battles). He is free to place and does not throw anything.</p>' +
+                '<h4>SHEBABBBB</h4>' +
+                gList([
+                    'His <b>red ultimate fills up by itself</b> over time (about 14 seconds). When he glows, <b>click him</b>.',
+                    'He shouts <b>SHEBABBBB</b> and for <b>5 seconds</b> two <b>lasers shoot out of his eyes and follow your mouse</b>.',
+                    'Anything a laser touches is <b>one-shot</b>, including boss kebabs.',
+                    'After the 5 seconds his ultimate starts filling again.'
+                ]) +
+                gTip('Move your mouse slowly across the track to sweep kebabs off the map.') },
+
             { id: 'placement', group: 'teachers', icon: '📍', title: 'Placing & Teacher Limits', html: () =>
                 gList([
                     'Pick a teacher in the right panel, then click an empty grass tile. A tile holds one teacher.',
@@ -7228,7 +7267,7 @@
                     'It uses <b>Positives</b> (the 💚 number at the bottom) instead of coins. Your Positives are <b>saved on your account</b> and follow you when you sign in on another device.',
                     'You can also claim free Positives every day with the <b>🎁 Daily</b> button on the main menu (see ' + gLink('daily', 'Daily Rewards') + ').',
                     'The bottom bar has three sections: <b>Upgrades</b>, <b>Skins</b> and <b>Style</b>. <b>Upgrades</b> has two boards: <b>Teachers</b> (the three ' + gLink('teacherbuffs', 'teacher buffs') + ') and a clothes rack.',
-                    '<b>Skins</b>: the <b>Fancy Suit</b> board (' + SKIN_PRICE_SUIT + ' 💚 each) and the <b>Sporty & Special</b> board (Sporty ' + SKIN_PRICE_SPORTY + ' 💚, Abu Dawud ' + (SKIN_PRICE_SPORTY * 2) + ' 💚).',
+                    '<b>Skins</b>: the <b>Fancy Suit</b> board (' + SKIN_PRICE_SUIT + ' 💚 each) and the <b>Sporty, Modern & Special</b> board (Sporty ' + SKIN_PRICE_SPORTY + ' 💚, Abu Dawud ' + (SKIN_PRICE_SPORTY * 2) + ' 💚).',
                     '<b>Style</b>: the <b>Accessories</b> board (hats, glasses, bow ties, scarves and medals) and the <b>Backgrounds</b> board for your profile. Scroll the boards to see everything. Wear what you buy from your profile under <b>🎨 Customize</b>.',
                     'If you are <b>not signed in</b> the Shop button still shows, with a 🔒. Pressing it asks you to sign in.'
                 ]) },
@@ -7517,9 +7556,10 @@
             { id: 'skins', group: 'more', icon: '🎽', title: 'Skins', html: () =>
                 '<p>Skins change how a teacher looks. Every teacher of that type wears the skin you equip, and it shows in the main menu scene too.</p>' +
                 gList([
-                    '<b>Fancy Suit</b> (all 3 teachers): black suit with a white shirt and red tie. Bought in the main menu shop for <b>' + SKIN_PRICE_SUIT + ' 💚</b> each.',
+                    '<b>Fancy Suit</b> (all 4 teachers): black suit with a white shirt and red tie. Bought in the main menu shop for <b>' + SKIN_PRICE_SUIT + ' 💚</b> each.',
                     '<b>Field Trip</b> (Wise Sheikh): green jacket. Earned by lining up 4 Wise Sheikhs.',
                     '<b>Fuming</b> (Angry Teacher): her head turns to fire. Earned when a kebab she marked with Negative still reaches the school.',
+                    '<b>Modern</b> (Mathematician): a plain blue shirt with a folded collar and white buttons. Bought in the main menu shop for <b>' + SKIN_PRICE_SPORTY + ' 💚</b>.',
                     '<b>Sporty</b> (Wise Sheikh, Mathematician and Arabic Expert): black shirt, purple shoulders and two purple lines down the ribs. Bought in the main menu shop for <b>' + SKIN_PRICE_SPORTY + ' 💚</b> each.',
                     '<b>Abu Dawud</b> (Arabic Expert): a whole new look. Light brown skin, dotted grey hair, a big chin covered in grey dots, a red shirt, and he hunches forward a little. Bought in the main menu shop for <b>' + (SKIN_PRICE_SPORTY * 2) + ' 💚</b> (double a normal skin).',
                     'Equip skins from your profile under <b>🎽 Skins</b>. Your skins and achievements are saved on your account and sync to the cloud.'
@@ -8553,6 +8593,7 @@
             if (type === 'badui') return getBaduiCost();
             if (type === 'math') return getMathCost();
             if (type === 'arabic') return getArabicCost();
+            if (type === 'tuff') return 0;   // admin character: free
             return getSheikhPlaceCost();
         }
 
@@ -8560,7 +8601,7 @@
         // the shop's "More Teachers" upgrade adds +3 per purchase.
         // Solo battles: at most 5 Angry Teachers, 7 Mathematicians and 7 Arabic Experts. The Wise Sheikh keeps the
         // normal cap (More Teachers adds +3 to it). Team Up and VS keep the old cap for everyone.
-        const SOLO_CAPS = { badui: 5, math: 7, arabic: 7 };
+        const SOLO_CAPS = { badui: 5, math: 7, arabic: 7, tuff: 3 };
         function getTowerCap(type) {
             if (type && SOLO_CAPS[type] && !game.teamUp && !game.vs) return SOLO_CAPS[type];
             return Math.round((BASE_TOWER_CAP + game.towerCapBonus) * (game.teamUp ? TEAM_MULT : 1));
@@ -8571,10 +8612,11 @@
             if (type === 'badui') return 'Angry Teacher';
             if (type === 'math') return 'Mathematician';
             if (type === 'arabic') return 'Arabic Expert';
+            if (type === 'tuff') return 'Tuff Sheikh';
             return 'Wise Sheikh';
         }
 
-        let _lastCostLabels = { sheikh: '', badui: '', math: '', arabic: '' };
+        let _lastCostLabels = { sheikh: '', badui: '', math: '', arabic: '', tuff: '' };
         function refreshTowerCostLabels() {
             const cap = getTowerCap('sheikh');
             const sCount = ownTowerCount('sheikh');
@@ -8587,6 +8629,8 @@
             const bText = (getPlaceCost('badui') === 0 ? 'Cost: FREE' : 'Cost: ' + getBaduiCost() + ' 🪙') + ' (' + bCount + '/' + getTowerCap('badui') + ')';
             const mText = (getPlaceCost('math') === 0 ? 'Cost: FREE' : 'Cost: ' + getMathCost() + ' 🪙') + ' (' + mCount + '/' + getTowerCap('math') + ')';
             const aText = 'Cost: ' + getArabicCost() + ' 🪙 (' + aCount + '/' + getTowerCap('arabic') + ')';
+            const tText = 'FREE · Admin only (' + ownTowerCount('tuff') + '/' + getTowerCap('tuff') + ')';
+            if (tText !== _lastCostLabels.tuff) { document.getElementById('tuffCost').textContent = tText; _lastCostLabels.tuff = tText; }
             if (aText !== _lastCostLabels.arabic) { document.getElementById('arabicCost').textContent = aText; _lastCostLabels.arabic = aText; }
             if (sText !== _lastCostLabels.sheikh) {
                 document.getElementById('sheikhCost').textContent = sText;
@@ -10841,8 +10885,8 @@
                         (own ? '<span class="pskin-own">✓ Owned</span>' : '<button onclick="buyShopSkin(\'' + k + '\')">' + d.price + ' 💚 Buy</button>') + '</div></div>';
                 };
                 const kindKeys = kind => Object.keys(SKIN_DEFS).filter(k => SKIN_DEFS[k].kind === kind && SKIN_DEFS[k].price);
-                s1.innerHTML = '<div class="pshop-menu-title">Fancy Suit</div><div class="pshop-menu-sub">SKINS</div>' + kindKeys('suit').map(card).join('');
-                s2.innerHTML = '<div class="pshop-menu-title">Sporty &amp; Special</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('sporty').concat(kindKeys('abudawud')).map(card).join('') + '</div>';
+                s1.innerHTML = '<div class="pshop-menu-title">Fancy Suit</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('suit').map(card).join('') + '</div>';
+                s2.innerHTML = '<div class="pshop-menu-title">Sporty, Modern &amp; Special</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('sporty').concat(kindKeys('modern'), kindKeys('abudawud')).map(card).join('') + '</div>';
                 drawAllPreviews(s1); drawAllPreviews(s2);
             } else if (pShopTabId === 'cosmetics') {
                 const accCard = k => {
@@ -11400,12 +11444,14 @@
             if (owner === 'sheikh') return '#1E90FF';
             if (owner === 'math') return '#FF8C00';
             if (owner === 'arabic') return '#E53935';
+            if (owner === 'tuff') return '#FF1A1A';
             return '#FF1493';
         }
         function attackColorRGB(owner) {
             if (owner === 'sheikh') return '30, 144, 255';
             if (owner === 'math') return '255, 140, 0';
             if (owner === 'arabic') return '229, 57, 53';
+            if (owner === 'tuff') return '255, 26, 26';
             return '255, 20, 147';
         }
 
@@ -11637,6 +11683,54 @@
 
         // ===== END TEACHER LIFE =====
 
+        // ===== Tuff Sheikh (admin) eye-lasers =====
+        function tuffAim(t) { return t.aim || game.hover; }                 // follows the mouse (or a fixed target in the menu scene)
+        function tuffEyes(t) { return [[t.x - 6.5, t.y - 16.5], [t.x + 6.5, t.y - 16.5]]; }
+        function tuffLaserKill(t) {
+            const A = tuffAim(t);
+            if (!A) return;
+            for (const [ex, ey] of tuffEyes(t)) {
+                let dx = A.x - ex, dy = A.y - ey, len = Math.hypot(dx, dy);
+                if (len < 6) { dx = 1; dy = 0; len = 1; }
+                dx /= len; dy /= len;
+                for (const e of game.enemies) {
+                    if (e.health <= 0) continue;
+                    const px = e.x - ex, py = e.y - ey;
+                    if (px * dx + py * dy < 0) continue;                       // behind the eye
+                    if (Math.abs(px * dy - py * dx) < (e.isBoss ? 46 : 22)) {
+                        e.health = 0;                                          // one shot
+                        game.particles.push({ type: 'explosion', owner: 'tuff', x: e.x, y: e.y, vx: 0, vy: 0, life: 24 });
+                    }
+                }
+            }
+        }
+        function drawTuffLasers(towers, animT) {
+            for (const t of towers) {
+                if (t.type !== 'tuff' || !(t.laserT > 0)) continue;
+                const A = tuffAim(t);
+                if (!A) continue;
+                const bob = Math.sin(animT * 0.05 + (t.bobOffset || 0)) * 3;
+                const pulse = 0.75 + 0.25 * Math.sin(animT * 0.9);
+                ctx.save();
+                ctx.lineCap = 'round';
+                for (const [ex0, ey0] of tuffEyes(t)) {
+                    const ex = ex0 - cameraOffset, ey = ey0 + bob;
+                    let dx = A.x - cameraOffset - ex, dy = A.y - ey, len = Math.hypot(dx, dy);
+                    if (len < 6) { dx = 1; dy = 0; len = 1; }
+                    const fx = ex + dx / len * 2600, fy = ey + dy / len * 2600;
+                    if (!lowFx()) { ctx.shadowColor = '#FF1A1A'; ctx.shadowBlur = 18; }
+                    ctx.strokeStyle = 'rgba(255, 20, 20, ' + (0.55 * pulse) + ')'; ctx.lineWidth = 11;
+                    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(fx, fy); ctx.stroke();
+                    ctx.strokeStyle = 'rgba(255, 90, 70, 0.95)'; ctx.lineWidth = 5;
+                    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(fx, fy); ctx.stroke();
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.8;
+                    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(fx, fy); ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
         const SHEBAB_LOCKOUT_FRAMES = 60;   // Wise Sheikh cannot attack for 1 second after his ultimate
 
         class Tower {
@@ -11654,7 +11748,7 @@
                 this.shebabCharge = 0;
                 this.shebabMax = 100;
                 this.bobOffset = Math.random() * Math.PI * 2;
-                this.hp = (type === 'sheikh' ? 10 : (type === 'math' ? 125 : (type === 'arabic' ? 12 : 8))) * (game.teamUp ? TEAM_MULT : (game.vs ? 2 : 1));
+                this.hp = (type === 'sheikh' ? 10 : (type === 'tuff' ? 20 : (type === 'math' ? 125 : (type === 'arabic' ? 12 : 8)))) * (game.teamUp ? TEAM_MULT : (game.vs ? 2 : 1));
                 this.maxHp = this.hp;
                 this.pl = 'p1';   // which player placed this teacher (online modes)
                 this.onTrack = false;
@@ -11668,6 +11762,8 @@
                     this.enterTimer = 0;
                     this.ultimateCircles = [];
                     this.whistle = null;
+                } else if (type === 'tuff') {
+                    this.laserT = 0;        // frames of eye-lasers left
                 } else if (type === 'arabic') {
                     this.lastTuck = 240;     // first chair-tuck comes quickly
                 } else if (type === 'math') {
@@ -11882,6 +11978,18 @@
                     }
 
                     // (Angry Teacher no longer charges over time: her ultimate only fills when she marks a kebab with Negative)
+                }
+                if (this.type === 'tuff') {
+                    // Tuff Sheikh does not attack: his ultimate fills up by itself. SHEBABBBB = 5 seconds of eye-lasers
+                    // that follow the mouse and one-shot every kebab they touch.
+                    if (this.laserT > 0) {
+                        this.laserT--;
+                        tuffLaserKill(this);
+                        if (this.laserT % 8 === 0 && !lowFx()) playSound(150 + Math.random() * 60, 0.06, 'sawtooth');
+                        if (this.laserT === 0) this.aim = null;
+                    } else if (this.shebabCharge < this.shebabMax) {
+                        this.shebabCharge = Math.min(this.shebabCharge + 0.12, this.shebabMax);
+                    }
                 }
                 if (this.type === 'arabic') {
                     // "Tuck your chair in, sit on the floor!": every 8 seconds, 2 kebabs in range sink half into the floor for 3 seconds
@@ -12103,7 +12211,7 @@
             tryShoot() {
                 // Angry Teacher and Mathematician don't throw anything - they
                 // only use their periodic ability and their ultimate.
-                if (this.type === 'badui' || this.type === 'math' || this.type === 'arabic') return;
+                if (this.type === 'badui' || this.type === 'math' || this.type === 'arabic' || this.type === 'tuff') return;
                 if (this.ultLockout > 0) return;    // out of breath after his ultimate
                 if (!game.waveInProgress || this.lastShot < this.fireRate || game.enemies.length === 0) return;
 
@@ -12174,6 +12282,13 @@
 
             ultimate() {
                 if (this.shebabCharge < this.shebabMax) return false;
+                if (this.type === 'tuff') {
+                    this.shebabCharge = 0;
+                    this.laserT = 300;   // 5 seconds
+                    playSound(90, 0.5, 'sawtooth');
+                    game.particles.push({ type: 'text', owner: 'tuff', x: this.x, y: this.y - 80, text: 'SHEBABBBB', life: 70, size: 30 });
+                    return true;
+                }
 
                 this.shebabCharge = 0;
                 achStat('ultimates');
@@ -14357,6 +14472,16 @@
                 const mathCount = ownTowerCount('math');
                 mathBtnElem.disabled = !((game.testMode || game.sentrals >= getPlaceCost('math')) && mathCount < getTowerCap('math'));
             }
+            // Tuff Sheikh is only for the admin account, in solo battles
+            const tuffBtnElem = document.getElementById('tuffBtn');
+            if (game._admCheck === undefined || game.frameCount - game._admCheck >= 120) {
+                game._admCheck = game.frameCount;
+                let adm = false; try { adm = isAdminAccount(); } catch (e) {}
+                game._adm = adm;
+            }
+            const tuffShow = !!game._adm && !game.teamUp && !game.vs;
+            tuffBtnElem.style.display = tuffShow ? 'block' : 'none';
+            if (tuffShow) tuffBtnElem.disabled = ownTowerCount('tuff') >= getTowerCap('tuff');
             const arabicBtnElem = document.getElementById('arabicBtn');
             if (arabicBtnElem.style.display !== 'none') {
                 arabicBtnElem.disabled = !((game.testMode || game.sentrals >= getPlaceCost('arabic')) && ownTowerCount('arabic') < getTowerCap('arabic'));
@@ -15346,7 +15471,7 @@
                     ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.stroke();
-                    drawSkinBody('sheikh', x, y, 20, 28);
+                    if (tower.type !== 'tuff') drawSkinBody('sheikh', x, y, 20, 28);
 
                     ctx.fillStyle = '#C08850';
                     ctx.beginPath();
@@ -15411,6 +15536,25 @@
                     ctx.beginPath(); ctx.arc(x, y - 39.5, 2.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
                     }
 
+                    if (tower.type === 'tuff') {
+                        // Tuff Sheikh: no sunglasses, glowing red eyes that burn white-hot while the lasers fire
+                        const lasing = tower.laserT > 0;
+                        const pul = 0.8 + 0.2 * Math.sin(animT * 0.25);
+                        for (const ex of [x - 6.5, x + 6.5]) {
+                            const ey = y - 16.5;
+                            if (!lowFx()) {
+                                const g = ctx.createRadialGradient(ex, ey, 1, ex, ey, lasing ? 15 : 11);
+                                g.addColorStop(0, 'rgba(255,60,60,' + (0.75 * pul) + ')'); g.addColorStop(1, 'rgba(255,0,0,0)');
+                                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ex, ey, lasing ? 15 : 11, 0, Math.PI * 2); ctx.fill();
+                            }
+                            ctx.fillStyle = '#FF1E1E'; ctx.strokeStyle = '#000'; ctx.lineWidth = 1.4;
+                            if (tower.blinkFrames > 0) { ctx.beginPath(); ctx.moveTo(ex - 3.6, ey + 0.5); ctx.lineTo(ex + 3.6, ey + 0.5); ctx.strokeStyle = '#FF1E1E'; ctx.lineWidth = 2; ctx.stroke(); }
+                            else {
+                                ctx.beginPath(); ctx.arc(ex, ey, 3.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                                ctx.fillStyle = lasing ? '#FFFFFF' : '#FFC0B0'; ctx.beginPath(); ctx.arc(ex, ey, lasing ? 2.1 : 1.3, 0, Math.PI * 2); ctx.fill();
+                            }
+                        }
+                    } else {
                     ctx.fillStyle = '#434343'; ctx.strokeStyle = '#000000'; ctx.lineWidth = 1.6;
                     for (const lx of [x - 10.8, x + 2.2]) {
                         ctx.beginPath();
@@ -15427,6 +15571,7 @@
                         const gx = (tower.lookX || 0) * 1.3;
                         ctx.fillRect(x - 9.4 + gx * 0.6, y - 18.4, 3, 1.3);
                         ctx.fillRect(x + 3.6 + gx * 0.6, y - 18.4, 3, 1.3);
+                    }
                     }
                 }
 
@@ -15783,6 +15928,7 @@
 
             drawTowersLayer(game.towers, animT, alpha);
             drawEnemiesLayer(game.enemies, alpha, animT);
+            drawTuffLasers(game.towers, animT);
             ctx.restore();
             drawThemeOverlay();
             ctx.save(); if (_Z !== 1) ctx.scale(_Z, _Z);
@@ -15983,7 +16129,7 @@
             MB.wctx = MB.world.getContext('2d');
             // teachers stand on the grass just beside the track
             // (off to the sides, so the menu in the middle does not cover them)
-            const types = [['sheikh', 150], ['badui', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760]];
+            const types = [['sheikh', 150], ['badui', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760], ['tuff', 450]];
             const used = [];
             for (const [type, wantX] of types) {
                 let best = null, bd = 1e9;
@@ -16022,6 +16168,25 @@
             }
             for (const t of MB.towers) {
                 t.updateLife();
+                if (t.type === 'tuff') {
+                    // menu scene: every so often he shouts SHEBABBBB and burns the nearest kebab with his eye-lasers
+                    if (t.laserT > 0) {
+                        t.laserT--;
+                        if (t.aim && !E.includes(t.aimEnemy)) { t.laserT = Math.min(t.laserT, 10); }
+                        else if (t.aimEnemy) { t.aim = { x: t.aimEnemy.x, y: t.aimEnemy.y }; }
+                        if (t.laserT <= 0) t.aim = null;
+                        tuffLaserKill(t);
+                    } else if (--t.cd <= 0) {
+                        let tg = null, td = 1e9;
+                        for (const e of E) { const d = Math.hypot(e.x - t.x, e.y - t.y); if (d < td) { td = d; tg = e; } }
+                        t.cd = 420 + Math.random() * 200;
+                        if (tg) {
+                            t.laserT = 70; t.aimEnemy = tg; t.aim = { x: tg.x, y: tg.y };
+                            P.push({ type: 'text', owner: 'tuff', x: t.x, y: t.y - 70, text: 'SHEBABBBB', life: 50, size: 20 });
+                        }
+                    }
+                    continue;
+                }
                 if (t.gestureTimer > 0) t.gestureTimer--;
                 if (t.leanTimer > 0) t.leanTimer--;
                 if (t.shushT > 0) t.shushT--;
@@ -16093,6 +16258,7 @@
                 const alpha = advance ? MB.acc : 0, animT = MB.step + alpha;
                 drawTowersLayer(MB.towers, animT, alpha);
                 drawEnemiesLayer(MB.enemies, alpha, animT);
+                drawTuffLasers(MB.towers, animT);
                 drawParticlesLayer(MB.particles, alpha);
             });
             // sky

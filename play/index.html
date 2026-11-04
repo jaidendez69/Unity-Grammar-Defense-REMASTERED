@@ -2966,7 +2966,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.30</div>
+    <div id="versionTag">v1.0.31</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3088,7 +3088,8 @@
                 <div class="update-entry">
                     <div class="update-date">November 4, 2026</div>
                     <ul>
-                        <li><b>New admin character: Tuff Sheikh</b> (only the admin account can place him): Wise Sheikh with glowing red eyes. He does not attack, his red ultimate fills by itself, and when you click it he shouts <b>SHEBABBBB</b> and for 5 seconds lasers shoot out of his eyes that follow your mouse and one-shot everything. He is free to place (max 3) and also hangs out in the main menu background.</li>
+                        <li><b>Tuff Sheikh update</b>: he no longer shows in the main menu background (admin characters never will), and the admin can now use him <b>everywhere</b>: normal map, Quad, Test Mode and Online Mode (Team Up and VS). He is always free.</li>
+                        <li><b>New admin character: Tuff Sheikh</b> (only the admin account can place him): Wise Sheikh with glowing red eyes. He does not attack, his red ultimate fills by itself, and when you click it he shouts <b>SHEBABBBB</b> and for 5 seconds lasers shoot out of his eyes that follow your mouse and one-shot everything. He is free to place (max 3) and works in every mode, including Online Mode.</li>
                         <li><b>New skin: Modern</b> for the Mathematician (150 💚): a blue shirt with a folded collar and white buttons. Find it in the shop's Skins tab (Sporty, Modern &amp; Special board).</li>
                         <li><b>New skin: Fancy Suit for the Arabic Expert</b> (250 💚, same price as the other Fancy Suits): black suit, white shirt and red tie.</li>
                     </ul>
@@ -7030,7 +7031,7 @@
 
             { id: 'tuff', group: 'teachers', icon: '🔴', title: 'Tuff Sheikh (Admin)', html: () =>
                 gStats([['Who can use him', 'The admin account only'], ['Health', '20'], ['Attack', 'None'], ['Cost', 'FREE'], ['Limit', '3'], ['Ultimate', 'Fills by itself']]) +
-                '<p>Wise Sheikh with <b>glowing red eyes</b>. He is a special character that <b>only the admin account</b> can place (a red 🔴 button shows in the teacher panel in normal, Quad and Test Mode battles). He is free to place and does not throw anything.</p>' +
+                '<p>Wise Sheikh with <b>glowing red eyes</b>. He is a special character that <b>only the admin account</b> can place (a red 🔴 button shows in the teacher panel in <b>every mode</b>: normal, Quad, Test Mode and Online Mode). He is free to place and does not throw anything.</p>' +
                 '<h4>SHEBABBBB</h4>' +
                 gList([
                     'His <b>red ultimate fills up by itself</b> over time (about 14 seconds). When he glows, <b>click him</b>.',
@@ -8603,6 +8604,7 @@
         // normal cap (More Teachers adds +3 to it). Team Up and VS keep the old cap for everyone.
         const SOLO_CAPS = { badui: 5, math: 7, arabic: 7, tuff: 3 };
         function getTowerCap(type) {
+            if (type === 'tuff') return 3;   // admin character: 3 in every mode
             if (type && SOLO_CAPS[type] && !game.teamUp && !game.vs) return SOLO_CAPS[type];
             return Math.round((BASE_TOWER_CAP + game.towerCapBonus) * (game.teamUp ? TEAM_MULT : 1));
         }
@@ -11684,7 +11686,7 @@
         // ===== END TEACHER LIFE =====
 
         // ===== Tuff Sheikh (admin) eye-lasers =====
-        function tuffAim(t) { return t.aim || game.hover; }                 // follows the mouse (or a fixed target in the menu scene)
+        function tuffAim(t) { return t.aim || game.hover; }                 // follows the mouse (or the target sent over the network)
         function tuffEyes(t) { return [[t.x - 6.5, t.y - 16.5], [t.x + 6.5, t.y - 16.5]]; }
         function tuffLaserKill(t) {
             const A = tuffAim(t);
@@ -12889,7 +12891,7 @@
             const E = g.enemies.map(e => e.isMarcher
                 ? [e.id, 1, e.pl, e.mtype, e.lane, e.pathIndex, Math.round(e.progress * 10) / 10, Math.round(e.x), Math.round(e.y), Math.round(e.health), Math.round(e.maxHealth)]
                 : [e.id, 0, pathNo(e), e.pathIndex, Math.round(e.progress * 10) / 10, Math.round(e.x), Math.round(e.y), Math.round(e.health * 10) / 10, Math.round(e.maxHealth), e.isBoss ? 1 : 0, e.kind, e.hasNS ? 1 : 0, e.hitter ? 1 : 0, e.swarm ? 1 : 0, e.nsDamageMultiplier || 1]);
-            const T = g.towers.map(t => [t.col, t.row, t.type, t.pl || 'p1', Math.round(t.hp * 10) / 10, t.maxHp, Math.round(t.shebabCharge), t.ultLockout || 0]);
+            const T = g.towers.map(t => [t.col, t.row, t.type, t.pl || 'p1', Math.round(t.hp * 10) / 10, t.maxHp, Math.round(t.shebabCharge), t.ultLockout || 0].concat(t.type === 'tuff' && t.laserT > 0 ? [t.laserT, Math.round((tuffAim(t) || { x: t.x }).x), Math.round((tuffAim(t) || { y: t.y }).y)] : []));
             const ls = g.lastStand;
             return { n: ++NET.snapN, e: NET.evs.slice(-20), E: E, T: T,
                 g: { health: g.health, maxHealth: g.maxHealth, sentrals: vs ? vs.gc : g.sentrals, wave: g.wave, wip: g.waveInProgress, mw: g.mergedWaves, as: g.autoStartFrames, pu: g.purchasedUpgrades,
@@ -12922,6 +12924,7 @@
                 let tw = g.towers.find(x => x.col === t[0] && x.row === t[1]);
                 if (!tw) { tw = new Tower(t[0], t[1], t[2]); g.towers.push(tw); }
                 tw.pl = t[3]; tw.hp = t[4]; tw.maxHp = t[5]; tw.shebabCharge = t[6]; tw.ultLockout = t[7]; tw._opt = 0;
+                if (tw.type === 'tuff') { if (t.length > 9) { tw.laserT = t[8]; if (tw.pl !== myPl()) tw.aim = { x: t[9], y: t[10] }; } else if (tw.laserT > 10) tw.laserT = 10; }
             }
             for (let i = g.towers.length - 1; i >= 0; i--) { const tw = g.towers[i]; if (!want.has(keyOf(tw.col, tw.row)) && !(tw._opt && now - tw._opt < 1500)) g.towers.splice(i, 1); }
             // enemies
@@ -12972,6 +12975,7 @@
             NET.peerSeen = performance.now();
             const pl = 'p2';
             if (a.t === 'ping') return;
+            if (a.t === 'aim') { const tw = game.towers.find(x => x.col === a.col && x.row === a.row && x.type === 'tuff' && x.pl === pl); if (tw && tw.laserT > 0) tw.aim = { x: +a.x || 0, y: +a.y || 0 }; return; }
             if (a.t === 'chat') { const m = String(a.m || '').slice(0, 120); if (m) { netAddChat('them', NET.peer || 'Friend', m); netEvent({ t: 'chat', from: 'p2', m: m }); } return; }
             if (game.vs) {
                 if (a.t === 'place') vsPlace(pl, a.type, a.col, a.row);
@@ -13003,6 +13007,9 @@
                 else if (NET.peerSeen && now - NET.peerSeen < 8000) NET.lostShown = false;
             } else {
                 if (now - NET.lastAct > 3000) { NET.lastAct = now; netAct({ t: 'ping' }); }
+                if (game.hover && now - (NET.lastAim || 0) > 120) {   // my Tuff Sheikh's lasers follow MY mouse
+                    for (const tw of game.towers) if (tw.type === 'tuff' && tw.pl === 'p2' && tw.laserT > 0) { NET.lastAim = now; netAct({ t: 'aim', col: tw.col, row: tw.row, x: Math.round(game.hover.x), y: Math.round(game.hover.y) }); break; }
+                }
                 if (NET.peerSeen && now - NET.peerSeen > 20000 && !NET.lostShown) { NET.lostShown = true; showToast('🌐 Lost connection to the host…', 6000); }
                 else if (NET.peerSeen && now - NET.peerSeen < 8000) NET.lostShown = false;
             }
@@ -13198,7 +13205,7 @@
             if (game.towers.filter(t => t.type === type).length >= getTowerCap(type)) return false;
             if (type === 'badui' && document.getElementById('baduiBtn').style.display !== 'block') return false;
             if (type === 'math' && !game.mathUnlocked) return false;
-            let cost = type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost());
+            let cost = type === 'tuff' ? 0 : (type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             const mine = pl === 'p2' ? 'freeGuest' : 'freeTeachersLeft';
             let usedFree = false;
             if (type === 'sheikh' && game[mine] > 0) { cost = 0; usedFree = true; }
@@ -13262,7 +13269,7 @@
             if (!vsCanPlace(pl, col, row)) return false;
             if (game.towers.find(t => t.col === col && t.row === row)) return false;
             if (game.towers.filter(t => t.type === type && t.pl === pl).length >= getTowerCap(type)) return false;
-            const cost = type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost());
+            const cost = type === 'tuff' ? 0 : (type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             if (vsCoins(pl) < cost) return false;
             vsAddCoins(pl, -cost);
             const tw = new Tower(col, row, type); tw.pl = pl; game.towers.push(tw);
@@ -13821,7 +13828,7 @@
                 const me = myPl(), ty = game.selectedTower;
                 if (!vsCanPlace(me, col, row)) { showToast('Place teachers on the grass rows (the two between the tracks) in YOUR half.', 2600); return; }
                 if (game.towers.find(t => t.col === col && t.row === row)) return;
-                if (game.towers.filter(t => t.type === ty && t.pl === me).length >= getTowerCap()) { showToast('⚠️ Max ' + getTowerCap() + ' ' + towerName(ty) + ' reached!', 2500); return; }
+                if (game.towers.filter(t => t.type === ty && t.pl === me).length >= getTowerCap(ty)) { showToast('⚠️ Max ' + getTowerCap() + ' ' + towerName(ty) + ' reached!', 2500); return; }
                 const cost = getPlaceCost(ty);
                 if (game.sentrals < cost) { showToast('⚠️ Not enough coins!'); return; }
                 if (isGuest()) { game.sentrals -= cost; const nt = new Tower(col, row, ty); nt.pl = me; nt._opt = performance.now(); game.towers.push(nt); game.placed++; netAct({ t: 'place', type: ty, col: col, row: row }); playSound(600, 0.15, 'sine'); }
@@ -14472,14 +14479,14 @@
                 const mathCount = ownTowerCount('math');
                 mathBtnElem.disabled = !((game.testMode || game.sentrals >= getPlaceCost('math')) && mathCount < getTowerCap('math'));
             }
-            // Tuff Sheikh is only for the admin account, in solo battles
+            // Tuff Sheikh is only for the admin account
             const tuffBtnElem = document.getElementById('tuffBtn');
             if (game._admCheck === undefined || game.frameCount - game._admCheck >= 120) {
                 game._admCheck = game.frameCount;
                 let adm = false; try { adm = isAdminAccount(); } catch (e) {}
                 game._adm = adm;
             }
-            const tuffShow = !!game._adm && !game.teamUp && !game.vs;
+            const tuffShow = !!game._adm;   // admin only, in every mode (normal, Quad, Test, Team Up, VS)
             tuffBtnElem.style.display = tuffShow ? 'block' : 'none';
             if (tuffShow) tuffBtnElem.disabled = ownTowerCount('tuff') >= getTowerCap('tuff');
             const arabicBtnElem = document.getElementById('arabicBtn');
@@ -16129,7 +16136,7 @@
             MB.wctx = MB.world.getContext('2d');
             // teachers stand on the grass just beside the track
             // (off to the sides, so the menu in the middle does not cover them)
-            const types = [['sheikh', 150], ['badui', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760], ['tuff', 450]];
+            const types = [['sheikh', 150], ['badui', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760]];
             const used = [];
             for (const [type, wantX] of types) {
                 let best = null, bd = 1e9;
@@ -16168,25 +16175,6 @@
             }
             for (const t of MB.towers) {
                 t.updateLife();
-                if (t.type === 'tuff') {
-                    // menu scene: every so often he shouts SHEBABBBB and burns the nearest kebab with his eye-lasers
-                    if (t.laserT > 0) {
-                        t.laserT--;
-                        if (t.aim && !E.includes(t.aimEnemy)) { t.laserT = Math.min(t.laserT, 10); }
-                        else if (t.aimEnemy) { t.aim = { x: t.aimEnemy.x, y: t.aimEnemy.y }; }
-                        if (t.laserT <= 0) t.aim = null;
-                        tuffLaserKill(t);
-                    } else if (--t.cd <= 0) {
-                        let tg = null, td = 1e9;
-                        for (const e of E) { const d = Math.hypot(e.x - t.x, e.y - t.y); if (d < td) { td = d; tg = e; } }
-                        t.cd = 420 + Math.random() * 200;
-                        if (tg) {
-                            t.laserT = 70; t.aimEnemy = tg; t.aim = { x: tg.x, y: tg.y };
-                            P.push({ type: 'text', owner: 'tuff', x: t.x, y: t.y - 70, text: 'SHEBABBBB', life: 50, size: 20 });
-                        }
-                    }
-                    continue;
-                }
                 if (t.gestureTimer > 0) t.gestureTimer--;
                 if (t.leanTimer > 0) t.leanTimer--;
                 if (t.shushT > 0) t.shushT--;
@@ -16258,7 +16246,6 @@
                 const alpha = advance ? MB.acc : 0, animT = MB.step + alpha;
                 drawTowersLayer(MB.towers, animT, alpha);
                 drawEnemiesLayer(MB.enemies, alpha, animT);
-                drawTuffLasers(MB.towers, animT);
                 drawParticlesLayer(MB.particles, alpha);
             });
             // sky

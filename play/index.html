@@ -2586,6 +2586,56 @@
 
         /* GAME INTRO (title movie) */
         @keyframes giBlink { 50% { opacity: .35; } }
+        /* GAME INTRO LETTERS */
+        .title-intro { position: fixed; inset: 0; z-index: 99990; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: opacity .6s ease;
+            background: radial-gradient(ellipse at 50% 45%, #17503a 0%, #0e3a28 55%, #050f09 100%); }
+        .title-intro.hidden { display: none !important; }
+        .title-intro.out { opacity: 0; pointer-events: none; }
+        .title-intro-letters { text-align: center; }
+        .il-row { display: flex; justify-content: center; line-height: .95; }
+        .il { display: inline-block; opacity: 0; font-weight: 900; animation: ilPop .55s cubic-bezier(.2,1.7,.4,1) both; animation-delay: calc(350ms + var(--i) * 75ms); }
+        .il-a .il, .il-b .il { font-size: clamp(54px, 13vw, 118px); letter-spacing: 2px; color: #FFE066;
+            text-shadow: 4px 4px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 0 6px 0 #000, 0 12px 0 #8a5a00, 0 20px 30px rgba(0,0,0,.6); }
+        .il-b .il { color: #fff; }
+        .il-c { margin-top: 16px; }
+        .il-c .il { font-size: clamp(18px, 4vw, 34px); letter-spacing: 6px; color: #FFD700; text-shadow: 0 3px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000; }
+        .il-tag { margin-top: 20px; color: #cfe8d6; font-weight: 800; letter-spacing: 4px; font-size: clamp(11px, 2.2vw, 16px); opacity: 0; animation: ilFade .8s var(--d, 2s) ease-out both; }
+        .title-intro-skip { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.45); font-size: 12px; }
+        @keyframes ilPop { 0% { opacity: 0; transform: translateY(-90px) rotate(-14deg) scale(.4); } 60% { opacity: 1; transform: translateY(8px) rotate(3deg) scale(1.15); } 100% { opacity: 1; transform: none; } }
+        @keyframes ilFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        body.title-intro-hold #menuScreen, body.title-intro-hold #menuScreen * { animation-play-state: paused !important; }
+        @media (prefers-reduced-motion: reduce) { .il, .il-tag { animation: none; opacity: 1; } }
+        /* TITLE SPLASH TEXT (like Minecraft) */
+        .mm-titlewrap { position: relative; display: inline-block; max-width: 100%; }
+        .mm-splash { position: absolute; right: -2%; bottom: -2px; transform: rotate(-16deg); transform-origin: 50% 50%; z-index: 3; cursor: pointer; white-space: nowrap; max-width: 82vw;
+            color: #FFEB3B; font-weight: 900; font-size: 18px; text-shadow: 2px 2px 0 #3a3200, 0 0 12px rgba(255,235,59,.55); animation: splashPulse .6s ease-in-out infinite alternate; pointer-events: auto; user-select: none; }
+        .mm-splash.pop { animation: splashPop .35s ease-out, splashPulse .6s .35s ease-in-out infinite alternate; }
+        body.no-splash .mm-splash { display: none; }
+        @keyframes splashPulse { from { scale: .93; } to { scale: 1.07; } }
+        @keyframes splashPop { from { scale: 1.7; } to { scale: 1; } }
+        @media (max-width: 600px) { .mm-splash { position: static; display: block; transform: rotate(-4deg); margin-top: 8px; text-align: center; } }
+        /* LEADERBOARD */
+        .mm-top .lb-corner-btn { color: #ffd54f; border-color: #ffd54f; }
+        .mm-top .lb-corner-btn:hover { background: #ffd54f; color: #111; }
+        #leaderboardScreen { justify-content: flex-start; overflow-y: auto; padding: 64px 0 36px; }
+        .lb-content { max-width: 640px !important; }
+        .lb-content h2 { font-size: 40px !important; margin-bottom: 14px !important; }
+        .lb-tabs { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+        .lb-tab { padding: 9px 16px; border-radius: 12px; border: 2px solid rgba(255,215,0,.5); background: rgba(0,0,0,.35); color: #FFD700; font-weight: 800; font-family: inherit; cursor: pointer; font-size: 14px; }
+        .lb-tab.active { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1b1200; border-color: #fff; }
+        .lb-note { color: #cfd8e6; font-size: 13px; margin: 6px 0 12px; line-height: 1.45; min-height: 18px; }
+        .lb-list { display: flex; flex-direction: column; gap: 6px; text-align: left; margin-bottom: 18px; }
+        .lb-row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 12px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.1); }
+        .lb-row.me { border-color: #64FF64; background: rgba(100,255,100,.12); }
+        .lb-row.r1 { border-color: #FFD700; background: rgba(255,215,0,.14); }
+        .lb-row.r2 { border-color: #cfd8e6; background: rgba(207,216,230,.1); }
+        .lb-row.r3 { border-color: #cd7f32; background: rgba(205,127,50,.12); }
+        .lb-rank { width: 46px; font-weight: 900; font-size: 18px; color: #FFD700; text-align: center; flex: none; }
+        .lb-name { flex: 1; min-width: 0; font-weight: 800; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lb-lv { color: #aab4d8; font-size: 12px; font-weight: 700; flex: none; }
+        .lb-val { font-weight: 900; color: #64FF64; font-size: 18px; min-width: 76px; text-align: right; flex: none; }
+        .lb-empty { padding: 26px 10px; color: #cfd8e6; text-align: center; line-height: 1.5; }
+        .lb-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         /* ONLINE HOW TO PLAY */
         .how-modal { z-index: 9600; }
         .how-content { max-width: 400px; }
@@ -2989,6 +3039,12 @@
 
     <div id="fpsCounter" style="display:none"></div>
 
+    <!-- GAME INTRO (the title letters pop in when the game is first opened) -->
+    <div class="title-intro hidden" id="titleIntro" onclick="titleIntroSkip()">
+        <div class="title-intro-letters" id="titleIntroLetters"></div>
+        <div class="title-intro-skip">click or press any key to skip</div>
+    </div>
+
     <!-- MAIN MENU -->
     <div class="menu-screen" id="menuScreen">
         <div class="hw-deco"><span style="left:6%;top:12%">🦇</span><span style="left:84%;top:8%">🦇</span><span style="left:12%;top:72%">🎃</span><span style="left:88%;top:70%">🎃</span><span style="left:24%;top:28%">👻</span><span style="left:72%;top:34%">🕸️</span><span style="left:48%;top:90%">🪦</span></div>
@@ -2997,10 +3053,11 @@
             <button class="side-corner-btn account-corner-btn" id="accountCornerBtn" onclick="openAccountScreen()">👤 Sign Up</button>
             <button class="side-corner-btn daily-corner-btn hidden" id="dailyCornerBtn" onclick="gateSignIn('Daily Rewards', openDailyReward)">🎁 Daily<span class="corner-badge hidden" id="dailyBadge">!</span></button>
             <button class="side-corner-btn shop-corner-btn hidden" id="shopCornerBtn" onclick="gateSignIn('the Shop', openPlayerShop)">🛍️ Shop</button>
+            <button class="side-corner-btn lb-corner-btn" id="lbCornerBtn" onclick="openLeaderboard()">🏆 Leaderboard</button>
         </div>
         <div class="mm-main">
             <div class="mm-kicker">🎓 SHEBABS VS KEBABS</div>
-            <h1 class="mm-title"><span>UNITY</span><span>DEFENSE</span></h1>
+            <div class="mm-titlewrap"><h1 class="mm-title"><span>UNITY</span><span>DEFENSE</span></h1><div class="mm-splash" id="mmSplash" onclick="rollSplash(true)" title="Click for another one"></div></div>
             <div class="mm-ribbon">REMASTERED</div>
             <button class="mm-play" onclick="playGame()"><b>▶ PLAY</b><small>Defend the school from the kebabs</small></button>
             <div class="mm-nudge" id="mmNudge"></div>
@@ -3096,6 +3153,13 @@
                         <li><b>New: Welcome Guide</b>: the first time you open the game, a short slideshow with pictures explains the things new players ask about: <b>accounts</b> (and linking Google), <b>Positives and the main menu Shop</b>, <b>🎁 daily rewards</b>, the <b>shop that opens in battle</b>, <b>levels and maps</b>, <b>friends and Online Mode</b>, and where to find help. Use the arrows to move through it, <b>Skip guide</b> to close it any time.</li>
                         <li><b>Replay the Welcome Guide</b> any time with <b>👋 Welcome Guide</b> at the bottom of the main menu, or the <b>Replay</b> button in Settings.</li>
                         <li><b>Guides updated</b>: All You Need to Know has a new <b>Welcome Guide</b> page, and the Start Here, Main Menu, Settings, Versions and Disclaimer pages were updated.</li>
+                        <li><b>Better Welcome Guide intro</b>: it now opens with <b>"Welcome to Unity Defense REMASTERED!"</b> and explains why the guide is worth reading. It has 9 slides now.</li>
+                        <li><b>New: 🏆 Leaderboard</b>: most <b>waves survived</b> and most <b>💚 Positives</b>. Only accounts linked to <b>Google</b> are ranked, and the admin is not. Button at the top right of the main menu.</li>
+                        <li><b>Shops: buy 2 upgrades at once</b>: each shop now lets you make <b>two purchases</b> before it closes. Every teacher is already for hire in the very first shop.</li>
+                        <li><b>Mathematician buff</b>: <b>Algebra Swarm</b> now hits for <b>45%</b> of a kebab's health (was 35%).</li>
+                        <li><b>New: Game intro</b>: the title letters pop in when you first open the game (click to skip). Turn it off with <b>Game intro (letters)</b> in Settings.</li>
+                        <li><b>New: Title splash text</b>: random Minecraft-style text next to the title (click it for another). Turn it off with <b>Title splash text</b> in Settings.</li>
+                        <li><b>Credits</b>: <b>Die Of Death</b> added for the shop music.</li>
                     </ul>
                 </div>
                 <div class="update-entry">
@@ -3707,7 +3771,25 @@
                 Jaiden Maximiliano Hernandez
                 <span class="credit-role">Creator &amp; Developer</span>
             </div>
+            <div class="credit-entry">
+                Die Of Death
+                <span class="credit-role">Shop music</span>
+            </div>
             <button class="back-btn" onclick="backToMenu('credits')">Back</button>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="credits-screen hidden" id="leaderboardScreen">
+        <div class="credits-content lb-content">
+            <h2>🏆 Leaderboard</h2>
+            <div class="lb-tabs">
+                <button class="lb-tab active" id="lbTabWaves" onclick="lbSetTab('waves')">🌊 Most waves survived</button>
+                <button class="lb-tab" id="lbTabPositives" onclick="lbSetTab('positives')">💚 Most Positives</button>
+            </div>
+            <div class="lb-note" id="lbNote"></div>
+            <div class="lb-list" id="lbList"></div>
+            <div class="lb-actions"><button class="back-btn" onclick="lbLoad()">🔄 Refresh</button><button class="back-btn" onclick="backToMenu('leaderboard')">Back</button></div>
         </div>
     </div>
 
@@ -3882,6 +3964,10 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Game intro (letters)<small>When you first open the game, the title letters pop in one by one before the menu appears. Plays once per visit.</small></div>
+                    <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Title splash text<small>A small tilted line of random text next to the title on the main menu. Click it for another one.</small></div>
+                    <label class="switch"><input type="checkbox" id="set_splashText" onchange="onSettingChange('splashText', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode: Team Up<small>Points things out during Team Up matches (two maps, shared coins, chat, the bot panel, tracks and bosses). It also gets offered at the end of the Team Up how-to-play.</small></div>
@@ -3970,7 +4056,7 @@
                 </div>
                 <div class="shop-bottom">
                     <svg viewBox="0 0 60 60"><path d="M10 18 H38 V40 Q38 50 28 50 H20 Q10 50 10 40 Z" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M38 24 H44 Q50 24 50 30 Q50 38 42 38 H38" fill="none" stroke="#000" stroke-width="3"/></svg>
-                    <div class="shop-bottom-text">ONE PURCHASE PER SHOP<small id="shopNumberLabel">Shop #1</small></div>
+                    <div class="shop-bottom-text"><span id="shopBuysLabel">2 PURCHASES PER SHOP</span><small id="shopNumberLabel">Shop #1</small></div>
                     <div class="shop-balance"><span class="sent-ico"></span><span id="shopBalance">0</span></div>
                     <button class="shop-close-btn" onclick="closeShop()">Close Shop</button>
                 </div>
@@ -6203,6 +6289,7 @@
                 // public username -> uid entry so other players can find you by name
                 firebase.firestore().collection('usernames').doc(acc.username.toLowerCase())
                     .set({ uid: acc.cloudUid, username: acc.username }).catch(() => {});
+                lbPublish(acc);
             } catch (e) {
                 console.warn('Cloud push failed:', e);
             }
@@ -6929,16 +7016,17 @@
                 gTip('Not sure what something does? Use the search box above, or tap the <b>🤖 Ask me!</b> button in the bottom right and ask Helper Bot a question in your own words.') },
 
             { id: 'welcome', group: 'basics', icon: '👋', title: 'Welcome Guide (first time)', html: () =>
-                '<p>The first time you open the game on a device, a short <b>slideshow</b> pops up and explains what new players ask about most. It has <b>8 slides</b>, each with a picture and a few lines.</p>' +
+                '<p>The first time you open the game on a device, a short <b>slideshow</b> pops up and explains what new players ask about most. It has <b>9 slides</b>, each with a picture and a few lines. The first one says why the guide is worth a minute: this game has a lot going on.</p>' +
                 gTbl(['Slide', 'What it covers'], [
-                    ['1. Teachers vs Kebabs', 'The goal of the game and how to start with <b>▶ PLAY</b>.'],
-                    ['2. Make an account', 'Why to sign up (levels, Positives, achievements, skins, saved battles, friends) and to <b>link Google</b>. See ' + gLink('account', 'Accounts') + '.'],
-                    ['3. Positives and the Shop', 'Earning 💚 (1 per kebab) and what the ' + gLink('menushop', 'main menu Shop') + ' sells: skins, accessories, backgrounds and ' + gLink('teacherbuffs', 'teacher buffs') + ' (level ' + BUFF_UNLOCK_LEVEL + ').'],
-                    ['4. Daily rewards', 'The 🎁 ' + gLink('daily', 'Daily Reward') + ' and the 7-day streak.'],
-                    ['5. The shop in battle', 'The cafe ' + gLink('shop', 'shop') + ' that opens every 15 waves, coins, and the one purchase per shop rule.'],
-                    ['6. Levels and maps', gLink('levels', 'XP and levels') + ', School Grounds and ' + gLink('maps', 'The Quad') + ' (level ' + QUAD_UNLOCK_LEVEL + ').'],
-                    ['7. Friends and Online Mode', gLink('social', 'Friends') + ' (online dots) and ' + gLink('online', 'Online Mode') + ' (Team Up and VS, work in progress).'],
-                    ['8. Help is always here', 'This guide, 💡 ' + gLink('suggestions', 'Suggestions') + ' and ' + gLink('guidemode', 'Guide Mode') + '.']
+                    ['1. Welcome to Unity Defense REMASTERED!', 'Why you need this guide: accounts, two shops, daily rewards, levels and friends are easy to miss.'],
+                    ['2. Teachers vs Kebabs', 'The goal of the game and how to start with <b>▶ PLAY</b>.'],
+                    ['3. Make an account', 'Why to sign up (levels, Positives, achievements, skins, saved battles, friends) and to <b>link Google</b>. See ' + gLink('account', 'Accounts') + '.'],
+                    ['4. Positives and the Shop', 'Earning 💚 (1 per kebab) and what the ' + gLink('menushop', 'main menu Shop') + ' sells: skins, accessories, backgrounds and ' + gLink('teacherbuffs', 'teacher buffs') + ' (level ' + BUFF_UNLOCK_LEVEL + ').'],
+                    ['5. Daily rewards', 'The 🎁 ' + gLink('daily', 'Daily Reward') + ' and the 7-day streak.'],
+                    ['6. The shop in battle', 'The cafe ' + gLink('shop', 'shop') + ' that opens every 15 waves, coins, and the <b>two purchases per shop</b> rule.'],
+                    ['7. Levels and maps', gLink('levels', 'XP and levels') + ', School Grounds and ' + gLink('maps', 'The Quad') + ' (level ' + QUAD_UNLOCK_LEVEL + ').'],
+                    ['8. Friends, Leaderboard, Online', gLink('social', 'Friends') + ' (online dots), the ' + gLink('leaderboard', 'Leaderboard') + ' and ' + gLink('online', 'Online Mode') + ' (Team Up and VS, work in progress).'],
+                    ['9. Help is always here', 'This guide, 💡 ' + gLink('suggestions', 'Suggestions') + ' and ' + gLink('guidemode', 'Guide Mode') + '.']
                 ]) +
                 gList([
                     'Use the <b>◀ ▶</b> arrows to move through the slides. On the last slide the arrow turns into a <b>✅</b> that finishes the guide. <b>Skip guide</b> (top right) closes it at any time.',
@@ -7078,7 +7166,7 @@
                 '<h4>🎲 Ultimate (random every time)</h4>' +
                 gList([
                     'Charges over time (about <b>17 seconds</b>). Each use is a <b>50/50</b> between:',
-                    '<b>📐 Algebra Swarm</b>: adds up to <b>6</b> math symbols that orbit him (90-140 px away, 20 max at once) <b>forever</b> until one touches a kebab. A touch removes <b>35% of that kebab\'s current health</b> (so it is great on tanky kebabs and bosses). It ignores damage upgrades but <b>is doubled on Negative-marked kebabs (70% of its current health)</b>.',
+                    '<b>📐 Algebra Swarm</b>: adds up to <b>6</b> math symbols that orbit him (90-140 px away, 20 max at once) <b>forever</b> until one touches a kebab. A touch removes <b>45% of that kebab\'s current health</b> (so it is great on tanky kebabs and bosses). It ignores damage upgrades but <b>is doubled on Negative-marked kebabs (70% of its current health)</b>.',
                     '<b>📏 Beam Pull</b>: ties a beam (a line, ray or segment) to the <b>3 kebabs closest to the school</b> and drags them back toward him for <b>5 seconds</b>, dealing <b>10 damage per second</b> (× damage upgrades). Pulled kebabs cannot move forward.'
                 ]) +
                 '<h4>🎯 Buff: Area Strike (1000 💚)</h4>' +
@@ -7146,9 +7234,9 @@
                     ['Teacher', 'Wise Sheikh', 'Angry Teacher', 'Mathematician'],
                     ['Charges by', 'Killing blows, +20% each', 'Marking a kebab, +20% each', 'Time (~17 s)'],
                     ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
-                    ['Damage', '30% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 35% current HP each. Area Strike: 30% current HP. Beam: 20 per second'],
+                    ['Damage', '30% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 20 per second'],
                     ['Scales with damage upgrades?', 'No', 'Yes', 'Swarm and Area Strike: no. Beam: yes'],
-                    ['Hits Negative-marked kebabs for', '2.5×', '2.5×', '2.5× (swarm = 87.5%, Area Strike = 75%)']
+                    ['Hits Negative-marked kebabs for', '2.5×', '2.5×', '2.5× (swarm = 112.5%, so one orb finishes a marked kebab; Area Strike = 75%)']
                 ]) +
                 '<p>With the <b>teacher buffs</b> (' + gLink('teacherbuffs', 'see Teacher Buffs') + ') the Angry Teacher\'s BOYS! becomes the Whistle and the Mathematician\'s Algebra Swarm becomes Area Strike.</p>' +
                 gList([
@@ -7221,7 +7309,7 @@
                         'A boss pays <b>60 🪙</b> when defeated (normal kebabs pay 15) and costs the school 1 health if it gets through.'
                     ]) +
                     gTbl(['Wave', 'Normal kebab HP', 'Boss HP'], rows) +
-                    gTip('Mathematician\'s Algebra Swarm takes 35% of a boss\'s current health per orb. Mark it with Negative first and each orb deals 87.5%.') +
+                    gTip('Mathematician\'s Algebra Swarm takes 45% of a boss\'s current health per orb. Mark it with Negative first and each orb deals 112.5%, enough to finish it.') +
                     gTip('Keep Mathematician (125 HP) as the front line against bosses and heal everyone between waves.');
             } },
 
@@ -7242,7 +7330,7 @@
                     ['15, 30, 45, 60...', '🛍️ A shop opens (every 15 waves).'],
                     ['15', '📐 Mathematician can be hired (first shop).'],
                     ['20, 40, 60...', '👹 Boss kebab.'],
-                    ['15', '👩‍🏫 Angry Teacher and 🪑 Arabic Expert can also be hired (you pick which one to hire first, one purchase per shop).'],
+                    ['15', '👩‍🏫 Angry Teacher and 🪑 Arabic Expert can also be hired (you pick which one to hire first, and you can make two purchases per shop).'],
                                         ['40', '🛤️ The track splits into THREE. The map gets bigger.'],
                     ['45', '💥 Mega Damage and ⚡⚡ Lightning Speed unlock in the shop.']
                 ]) },
@@ -7313,7 +7401,7 @@
                     'A shop opens <b>every 15 waves</b> (when you clear wave 14 → 15, 29 → 30, and so on). If a combined wave jumps over a multiple of 15, it still opens.',
                     'It is a little <b>UDR cafe</b>: a storefront with a sign saying <b>UPGRADES + TEACHERS</b>, two menu boards (one for upgrades, one for teachers) and a scarf-wearing shop teacher behind the counter.',
                     'It <b>slides in from the right</b>, the shutters roll up, and the shop teacher appears. When you leave it sinks into the ground and the shutters drop.',
-                    '<b>You can only make ONE purchase per shop.</b> The shop closes by itself right after you buy something (with a money sound and a goodbye line). Choose wisely!',
+                    '<b>You can make TWO purchases per shop.</b> After your first purchase the shop stays open (the bottom of the shop says how many are left). It closes by itself right after your second purchase (with a money sound and a goodbye line). Choose wisely!',
                     'You can also press <b>Close Shop</b> to leave without buying. The next wave\'s countdown pauses while the shop is open.',
                     'Prices rise <b>50% of the base price</b> with every shop you reach (see the table below).',
                     'You can buy <b>each upgrade at most twice</b> (<b>👆 Click Power</b> up to 3 times). Rows show "0/2 bought", and read <b>MAXED</b> when finished.',
@@ -7389,7 +7477,7 @@
                     'You earn <b>15 🪙 per kebab</b> defeated, whoever finishes it (teacher, ultimate or your own click). A <b>boss kebab pays 60 🪙</b>.',
                     'Clearing a wave pays a <b>' + WAVE_COIN_BONUS + ' coin bonus</b> on top of the coins from kebabs.',
                     'You only earn from kebabs you <b>defeat</b>. Kebabs that reach the school earn nothing.',
-                    'Spending: placing teachers, and one purchase per shop.',
+                    'Spending: placing teachers, and two purchases per shop.',
                     'You lose nothing when a teacher leaves, but <b>removing a teacher never refunds</b>.',
                     'Test Mode has infinite coins (shown as ∞).',
                     'Signed-in players also earn <b>💚 Positives</b> (1 per kebab) and <b>⭐ XP</b> (see ' + gLink('levels', 'Levels & XP') + ').'
@@ -7442,7 +7530,7 @@
                     '<b>▶ PLAY</b> opens the <b>map select</b> (School Grounds, The Quad, and a Coming Soon card), then starts a real game with the kebab shop intro unless you skip it. Under the button is your <b>level and XP bar</b> (or a "Sign in" button if you are signed out). See ' + gLink('maps', 'Maps') + ' and ' + gLink('levels', 'Levels & XP') + '.',
                     '<b>🧪 Test Mode</b>: sandbox with infinite coins. Inside it is a <b>🛠 Developer Mode</b> switch that restarts into the separate Developer Mode: a normal game with time controls (speed, pause, step, rewind).',
                     '<b>🌐 Online Mode</b> has a <b>WIP</b> tag (work in progress): a message tells you it may have bugs before you go in. <b>📜 Updates</b> is the update log, and under it is the <b>Last updated</b> date, which turns <b>red</b> on the day of an update.',
-                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b>, <b>👋 Welcome Guide</b> (replays the first-time slideshow) and <b>Disclaimer</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
+                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in), plus <b>🏆 Leaderboard</b> (see the ' + gLink('leaderboard', 'Leaderboard') + ' page). Next to the title is a random <b>splash text</b> (' + gLink('splash', 'details') + '). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b>, <b>👋 Welcome Guide</b> (replays the first-time slideshow) and <b>Disclaimer</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
                     'On the longer screens (Profile / Log In, Inbox, Chat, Updates, Credits and Settings) a <b>← BACK</b> button stays in the <b>top-left corner</b>, so you never have to scroll down to leave. The Back button at the bottom still works too. Opening Settings, Inbox or Chat from your account menu and pressing Back returns you to the account menu.',
                     'Bottom right: <b>📖 All You Need to Know</b> (this guide) and <b>💡 Suggestions</b> (' + gLink('suggestions', 'send your ideas') + ').',
                     'Switching between menu screens uses a smooth fade and slide.'
@@ -7476,7 +7564,7 @@
                     ['Sound effects', 'Turn game sounds on or off.'],
                     ['Level-up pop-ups', 'On by default. Shows the gold LEVEL UP! banner when you gain a level. Your XP is saved either way.'],
                     ['Button & menu sounds', 'On by default. A small click plays when you press buttons, and a whooshing wind plays when a menu screen zooms out and switches.'],
-                    ['Shop music', 'On by default. The shop theme song plays while the in-game shop or the menu Shop is open and fades out when it closes. It follows the Volume slider.'],
+                    ['Shop music', 'On by default. The shop theme song (Die Of Death) plays while the in-game shop or the menu Shop is open and fades out when it closes. It follows the Volume slider.'],
                     ['Screen shake', 'Boss spawns, tracks appearing, kebabs reaching the school.'],
                     ['Animated menu background', 'On by default. The main menu shows a live little battle on the map (teachers vs kebabs). Turn it off for a still picture; low-effects mode also freezes it.'],
                     ['Guide Mode', 'Off by default. Turn it on here or with the <b>❓ How to Play</b> button in a battle. See the ' + gLink('guidemode', 'Guide Mode') + ' page.'],
@@ -7485,6 +7573,8 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
+                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('splash', 'Intro & Splash Text') + ' page.'],
+                    ['Title splash text', 'Shows or hides the random yellow text next to the main menu title.'],
                     ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
@@ -7509,7 +7599,29 @@
                     'Turn on <b>Show FPS counter</b> to see how it is doing.'
                 ]) },
 
+            { id: 'leaderboard', group: 'more', icon: '🏆', title: 'Leaderboard', html: () =>
+                '<p>The <b>🏆 Leaderboard</b> (top right of the main menu) ranks players on two boards. Use the two buttons at the top to switch between them.</p>' +
+                gTbl(['Board', 'Ranked by'], [
+                    ['🌊 Most waves survived', 'Your <b>best wave</b> in any battle.'],
+                    ['💚 Most Positives', 'The <b>total Positives</b> you have earned.']
+                ]) +
+                gList([
+                    '<b>Only accounts linked to Google</b> are ranked. A username-and-password account lives on one device only, so it cannot be on a shared board. Link Google in your profile (see ' + gLink('account', 'Accounts') + ') to join.',
+                    '<b>The admin is not ranked</b>, and neither are built-in test accounts.',
+                    'The top <b>50</b> are shown. Your own row is highlighted green and says <b>(you)</b>. Gold, silver and bronze go to the top three.',
+                    'Your numbers are sent to the board automatically when your account saves. <b>🔄 Refresh</b> reloads the list.',
+                    'It needs an internet connection. Offline, the board just says it is unavailable.'
+                ]) },
+
+            { id: 'splash', group: 'more', icon: '✨', title: 'Intro & Splash Text', html: () =>
+                '<p>Two small touches when you open the game. Both can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
+                gTbl(['What', 'Details'], [
+                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.'],
+                    ['Splash text', 'A small yellow tilted line of random text next to the title on the main menu, like in Minecraft. <b>Click it</b> for another one. It changes every time you open the game.']
+                ]) },
+
             { id: 'account', group: 'more', icon: '👤', title: 'Accounts, Saving & Continue', html: () =>
+                '<p class="g-note">Linking <b>Google</b> also puts you on the ' + gLink('leaderboard', 'Leaderboard') + '.</p>' +
                 gList([
                     'Signed-in accounts can claim a <b>🎁 Daily Reward</b> of free Positives once a day (see ' + gLink('daily', 'Daily Rewards') + '). Your streak is saved with the account.',
                     'Your <b>account menu</b> is the hub: along the top are <b>⚙️ Settings</b>, <b>📥 Inbox</b> and <b>👥 Friends</b>, and below are your <b>Overview, 🏆 Achievements, 🎽 Skins and 🎨 Customize</b> tabs. The Back button on those screens returns you to the account menu.',
@@ -7679,7 +7791,7 @@
                     'Press <b>📖 How to play</b> under Team Up in the Online Mode screen for a picture slideshow. It ends by offering <b>Guide Mode for Team Up</b> (also in Settings).',
                     'The whole game <b>scales to fit your screen</b> so the maps and panels are never cut off.',
                     'The <b>💬 chat</b> box under How to Play lets you talk to your friend while you play.',
-                    'When the shop opens it opens for <b>both of you</b>, and each of you can make <b>one purchase</b>. Purchases are paid with the shared coins.',
+                    'When the shop opens it opens for <b>both of you</b>, and each of you can make <b>two purchases</b>. Purchases are paid with the shared coins.',
                     'The <b>Last Stand</b> works as normal when the school falls.',
                     'Playing with a <b>Bot</b>? The panel under How to Play lists every move it makes and how many coins it has spent. It spends the shared coins (watch your coin counter go down), heals teachers between waves, uses ultimates and buys one shop upgrade each shop. The chat box becomes its <b>command box</b>: try <i>save coins</i>, <i>spend coins</i>, <i>top map</i>, <i>bottom map</i>, <i>near the school</i>, <i>near the shop</i>, <i>sheikh</i>, <i>angry</i>, <i>math</i>, <i>use ults</i> or <i>status</i>.'
                 ]) },
@@ -7758,14 +7870,14 @@
                 gList([
                     'Teachers on the track take damage. If you place one there, heal it every wave.',
                     'Never skip waves when your defence is struggling. Do it when you are clearly overkill.',
-                    'One purchase per shop means <b>save up</b>: it is better to buy the right thing at a later shop than a weak thing now.'
+                    'Only two purchases per shop means <b>save up</b>: it is better to buy the right things at a later shop than weak things now.'
                 ]) },
 
             { id: 'faq', group: 'more', icon: '❓', title: 'FAQ', html: () =>
                 gTbl(['Question', 'Answer'], [
                     ['Why can\'t I place a teacher?', 'Not enough coins, you reached the cap (' + BASE_TOWER_CAP + ' of that type), or the tile is already taken.'],
                     ['Why can\'t I heal?', 'You can only heal <b>between waves</b>.'],
-                    ['Why did the shop close after one buy?', 'You only get one purchase per shop.'],
+                    ['Why did the shop close after two buys?', 'You only get two purchases per shop. The bottom of the shop shows how many you have left.'],
                     ['Where is Angry Teacher / Mathematician?', 'Hire them in the shop. From the very first shop (wave 15) you can unlock any of them (Mathematician, Angry Teacher, Arabic Expert), but you can only buy one thing per shop visit.'],
                     ['Why does my kebab have a red Negative label?', 'Angry Teacher marked it: it takes 2.5× damage.'],
                     ['Can I get my coins back for a removed teacher?', 'No.'],
@@ -8325,7 +8437,7 @@
 
         // A Back button that stays in the top-left corner of the long menu screens, so you never have to scroll to
         // the bottom to leave. It presses the screen's own (last) Back button, so it follows sub-views like Forgot Password.
-        const FLOAT_BACK_SCREENS = ['accountScreen', 'inboxScreen', 'chatScreen', 'updatesScreen', 'creditsScreen', 'settingsScreen'];
+        const FLOAT_BACK_SCREENS = ['accountScreen', 'inboxScreen', 'chatScreen', 'updatesScreen', 'creditsScreen', 'settingsScreen', 'leaderboardScreen'];
         function floatBackScreen() {
             for (const id of FLOAT_BACK_SCREENS) {
                 const el = document.getElementById(id);
@@ -8358,7 +8470,8 @@
                 settings: 'settingsScreen',
                 guide: 'guideScreen',
                 suggestions: 'suggestionsScreen',
-                admin: 'adminScreen'
+                admin: 'adminScreen',
+                leaderboard: 'leaderboardScreen'
             };
             const screenId = screenMap[from] || 'creditsScreen';
             const screen = document.getElementById(screenId);
@@ -8422,6 +8535,8 @@
             sfx: true,
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
+            introAnim: true,        // the title letters pop in when the game is first opened
+            splashText: true,       // random splash text next to the main menu title
             guideMode: false,       // Guide Mode: circles and points at things while you play
             guideTeam: false,       // Guide Mode inside Team Up
             guideVs: false,         // Guide Mode inside VS
@@ -10032,6 +10147,149 @@
             }, 800);
         }
         // ===== END WELCOME GUIDE =====
+
+        // ===== GAME INTRO (the title letters pop in when the game is first opened) =====
+        // Plays once per visit (per browser tab session), before the disclaimer / Welcome Guide. Click or any key skips it.
+        // The main menu waits (its slide-in animations are paused) and then slides in as the intro fades away.
+        const TITLE_INTRO_KEY = 'ugd_intro_seen';
+        var _tiTimers = [], _tiCb = null, _tiOn = false;
+        function tiLater(fn, ms) { _tiTimers.push(setTimeout(fn, ms)); }
+        function maybeShowTitleIntro(done) {
+            _tiCb = done;
+            let seen = false;
+            try { seen = sessionStorage.getItem(TITLE_INTRO_KEY) === '1'; } catch (e) {}
+            const ov = document.getElementById('titleIntro'), menu = document.getElementById('menuScreen');
+            if (!ov || seen || settings.introAnim === false || !menu || menu.classList.contains('hidden')) { _tiCb = null; if (done) done(); return; }
+            try { sessionStorage.setItem(TITLE_INTRO_KEY, '1'); } catch (e) {}
+            const box = document.getElementById('titleIntroLetters');
+            let n = 0, h = '';
+            [['UNITY', 'il-a'], ['DEFENSE', 'il-b'], ['REMASTERED', 'il-c']].forEach(r => {
+                h += '<div class="il-row ' + r[1] + '">';
+                r[0].split('').forEach(ch => { h += '<span class="il" style="--i:' + (n++) + '">' + ch + '</span>'; });
+                h += '</div>';
+            });
+            const landed = 350 + n * 75 + 500;
+            box.innerHTML = h + '<div class="il-tag" style="--d:' + landed + 'ms">SHEBABS VS KEBABS</div>';
+            document.body.classList.add('title-intro-hold');
+            ov.classList.remove('hidden', 'out'); _tiOn = true;
+            tiLater(titleIntroFinish, landed + 1300);
+        }
+        function titleIntroFinish() {
+            if (!_tiOn) return;
+            _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
+            const ov = document.getElementById('titleIntro');
+            ov.classList.add('out');
+            document.body.classList.remove('title-intro-hold');          // the menu slides in underneath the fading intro
+            setTimeout(() => { ov.classList.add('hidden'); ov.classList.remove('out'); }, 650);
+            const cb = _tiCb; _tiCb = null;
+            if (cb) setTimeout(cb, 700);
+        }
+        function titleIntroSkip() { if (_tiOn) titleIntroFinish(); }
+        document.addEventListener('keydown', () => titleIntroSkip());
+        // ===== END GAME INTRO =====
+
+        // ===== TITLE SPLASH TEXT (like Minecraft) =====
+        const SPLASHES = ["Shebabs vs Kebabs!", "Now with 100% more kebabs!", "Class is in session!", "Homework not included!", "Press P to pause!", "Hold Alt to heal!",
+            "Mind the Kebab Man!", "Negative!", "SHEBAB!", "Shhhh!", "Tuck him in!", "Also try the Quad!", "Made with AI!", "Positives are good for you!", "Don't skip waves!",
+            "Two purchases per shop!", "UDR approved!", "Wise Sheikh says hi!", "Clock out!", "Link your Google!", "Eat your vegetables!", "The school is safe(ish)!", "Level up!",
+            "Mathematician approved!", "Arabic Expert is stuck on you!", "Remastered!", "Is it lunch yet?", "Zero calories!", "Click the kebabs!", "Sauce on the floor!",
+            "100% grammatical!", "Daily reward waiting!", "Boss kebab incoming!", "Now in HD (High Doner)!", "Kebabs hate this one trick!", "Check the leaderboard!"];
+        var _splashLast = -1;
+        function rollSplash(fromClick) {
+            const el = document.getElementById('mmSplash'); if (!el) return;
+            let i = 0;
+            do { i = Math.floor(Math.random() * SPLASHES.length); } while (i === _splashLast && SPLASHES.length > 1);
+            _splashLast = i;
+            const t = SPLASHES[i];
+            el.textContent = t;
+            el.style.fontSize = Math.max(12, Math.min(20, Math.round(380 / Math.max(t.length, 14)))) + 'px';
+            if (fromClick) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+        }
+        // ===== END SPLASH TEXT =====
+
+        // ===== LEADERBOARD (most waves survived / most Positives) =====
+        // Public Firestore collection "leaderboard" (one document per Google-linked account, written by that account only).
+        // Not ranked: accounts without Google (they only exist on one device), the admin, and test accounts.
+        var LB_HIDDEN = ['jaiden'];
+        var _lbLastKey = '';
+        var LB = { tab: 'waves', data: { waves: null, positives: null }, loading: false, err: '' };
+        function lbEligible(acc) {
+            if (!acc || !acc.cloudUid || !acc.username) return false;                 // Google-linked accounts only
+            const n = String(acc.username).toLowerCase();
+            if (LB_HIDDEN.indexOf(n) >= 0) return false;                               // the admin is not ranked
+            if (typeof PERK_ACCOUNTS !== 'undefined' && PERK_ACCOUNTS[n]) return false; // built-in test accounts
+            return true;
+        }
+        function lbPublish(acc, force) {
+            if (!lbEligible(acc) || !cloudAuthReady) return;
+            const key = acc.cloudUid + '|' + acc.username + '|' + (acc.bestWave || 0) + '|' + (acc.positives || 0);
+            if (!force && key === _lbLastKey) return;
+            _lbLastKey = key;
+            try {
+                firebase.firestore().collection('leaderboard').doc(acc.cloudUid).set({
+                    username: acc.username, bestWave: acc.bestWave || 0, positives: acc.positives || 0,
+                    level: Math.max(1, Math.min(9999, Number(accLevel(acc)) || 1)),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(() => {});
+            } catch (e) {}
+        }
+        function openLeaderboard() {
+            clearContinueModal();
+            const menuScreen = document.getElementById('menuScreen');
+            menuScreen.classList.add('fade-out');
+            setTimeout(() => {
+                menuScreen.classList.add('hidden');
+                menuScreen.classList.remove('fade-out');
+                document.getElementById('leaderboardScreen').classList.remove('hidden');
+                lbLoad();
+            }, 500);
+        }
+        function lbSetTab(tab) { LB.tab = tab; lbLoad(); }
+        function lbLoad() {
+            const acc = getCurrentAccount();
+            if (acc) lbPublish(acc, true);                                             // make sure you are on the board
+            LB.err = '';
+            if (typeof firebase === 'undefined' || !firebase.firestore) { LB.err = 'offline'; lbRender(); return; }
+            const field = LB.tab === 'positives' ? 'positives' : 'bestWave', tab = LB.tab;
+            LB.loading = true; lbRender();
+            setTimeout(() => {
+                firebase.firestore().collection('leaderboard').orderBy(field, 'desc').limit(100).get().then(snap => {
+                    const rows = [];
+                    snap.forEach(d => {
+                        const v = d.data() || {}; if (!v.username) return;
+                        if (LB_HIDDEN.indexOf(String(v.username).toLowerCase()) >= 0) return;
+                        if (typeof PERK_ACCOUNTS !== 'undefined' && PERK_ACCOUNTS[String(v.username).toLowerCase()]) return;
+                        if ((Number(v[field]) || 0) <= 0) return;
+                        rows.push({ uid: d.id, name: String(v.username), wave: Number(v.bestWave) || 0, pos: Number(v.positives) || 0, level: Number(v.level) || 1 });
+                    });
+                    LB.data[tab] = rows.slice(0, 50); LB.loading = false; lbRender();
+                }).catch(err => { LB.loading = false; LB.err = (err && err.code === 'permission-denied') ? 'rules' : 'error'; lbRender(); });
+            }, acc ? 700 : 0);                                                         // a moment for your own entry to land
+        }
+        function lbRender() {
+            document.getElementById('lbTabWaves').classList.toggle('active', LB.tab === 'waves');
+            document.getElementById('lbTabPositives').classList.toggle('active', LB.tab === 'positives');
+            const acc = getCurrentAccount(), list = document.getElementById('lbList'), note = document.getElementById('lbNote');
+            let msg = 'Only accounts linked to Google are ranked. The admin is not ranked.';
+            if (!acc) msg += ' Sign up and link Google to join the board.';
+            else if (!acc.cloudUid && !isAdminAccount()) msg += ' Link your Google account in your profile to appear here.';
+            note.textContent = msg;
+            if (LB.loading) { list.innerHTML = '<div class="lb-empty">Loading…</div>'; return; }
+            if (LB.err) {
+                list.innerHTML = '<div class="lb-empty">' + (LB.err === 'rules' && isAdminAccount() ? 'The leaderboard needs the new Firestore rules published (see the update notes).' : LB.err === 'offline' ? 'The leaderboard needs an internet connection. Open the game from its website or the desktop app.' : 'The leaderboard is not available right now. Try again in a moment.') + '</div>';
+                return;
+            }
+            const rows = LB.data[LB.tab];
+            if (!rows) { list.innerHTML = ''; return; }
+            if (!rows.length) { list.innerHTML = '<div class="lb-empty">Nobody is on this board yet. Be the first!</div>'; return; }
+            const medal = ['🥇', '🥈', '🥉'];
+            list.innerHTML = rows.map((r, i) => {
+                const me = acc && acc.cloudUid && acc.cloudUid === r.uid;
+                const val = LB.tab === 'positives' ? '💚 ' + r.pos.toLocaleString() : '🌊 ' + r.wave.toLocaleString();
+                return '<div class="lb-row' + (i < 3 ? ' r' + (i + 1) : '') + (me ? ' me' : '') + '"><span class="lb-rank">' + (i < 3 ? medal[i] : '#' + (i + 1)) + '</span><span class="lb-name">' + escapeHtml(r.name) + (me ? ' (you)' : '') + '</span><span class="lb-lv">Lv ' + r.level + '</span><span class="lb-val">' + val + '</span></div>';
+            }).join('');
+        }
+        // ===== END LEADERBOARD =====
         // Accounts made while the game is in early access carry a badge next to their name.
         function eaBadgeHTML(acc, small) {
             return acc && acc.earlyAccess ? '<span class="ea-badge' + (small ? ' sm' : '') + '" title="This account was made during Early Access">EARLY ACCESS</span>' : '';
@@ -10157,7 +10415,7 @@
 
             // --- the shop ---
             { id: 'shop1', shop: true, next: true, title: 'The shop', target: () => gmEl('#shopUpgradeList', 4),
-              text: () => "A shop opens <b>every 15 waves</b>. This board has <b>upgrades</b>: more damage, faster attacks, school health and <b>👆 Click Power</b> (your mouse clicks on kebabs hit harder). You can make <b>ONE purchase</b> per shop, then it closes, so choose wisely." },
+              text: () => "A shop opens <b>every 15 waves</b>. This board has <b>upgrades</b>: more damage, faster attacks, school health and <b>👆 Click Power</b> (your mouse clicks on kebabs hit harder). You can make <b>TWO purchases</b> per shop, then it closes, so choose wisely." },
             { id: 'shop2', shop: true, next: true, after: 'shop1', title: 'Hire teachers', target: () => gmEl('#shopTeacherList', 4),
               text: () => "This board <b>hires new teachers</b> (<b>you can hire any of them from the very first shop</b>: Mathematician, Angry Teacher or Arabic Expert) and <b>More Teachers</b>, which raises the max Wise Sheikhs by <b>+3</b>." },
             { id: 'shop3', shop: true, next: true, after: 'shop2', title: 'Prices & coins', target: () => gmBoxes(['#shopNumberLabel', '#shopBalance'], 10),
@@ -10619,6 +10877,15 @@
         };
         Object.assign(HOW_PICS, {
             w_hello(c) {
+                hRound(c, 0, 0, 340, 190, 0, '#0e3a28');
+                c.fillStyle = 'rgba(255,255,255,.05)'; for (let i = 0; i < 340; i += 20) for (let j = 0; j < 190; j += 20) if (((i + j) / 20) % 2 === 0) c.fillRect(i, j, 20, 20);
+                hTxt(c, 'Welcome to', 170, 20, 15, '#fff');
+                hTxt(c, 'UNITY DEFENSE', 170, 50, 30, HOWC.gold);
+                hRound(c, 88, 70, 164, 26, 8, '#FFD700', '#000'); hTxt(c, 'REMASTERED!', 170, 83, 16, '#1b1200');
+                [['🧙', 40], ['👩‍🏫', 105], ['📐', 170], ['🪑', 235], ['🍢', 300]].forEach(e => hEm(c, e[0], e[1], 128, 34));
+                hTxt(c, 'A 1-minute guide to what is easy to miss', 170, 170, 12, '#cfe8d6');
+            },
+            w_goal(c) {
                 hGrass(c, 0, 0, 340, 190); hPath(c, hZig(20, 150, 20, 330), HOWC.path, 16);
                 hEm(c, '🥙', 22, 65, 28); hEm(c, '🏫', 320, 65, 28);
                 [[62, 112], [165, 88], [272, 112]].forEach(p => { hRing(c, p[0], p[1], HOWC.blue); hEm(c, '🧙', p[0], p[1], 26); });
@@ -10657,7 +10924,7 @@
                     const x = 14 + i * 164; hRound(c, x, 42, 148, 92, 10, '#4a3318', '#c9a063'); hTxt(c, b[0], x + 74, 55, 12, HOWC.gold);
                     b[1].forEach((l, k) => hTxt(c, l, x + 10, 76 + k * 20, 11, '#fff', 'left'));
                 });
-                hRound(c, 34, 142, 272, 40, 12, 'rgba(0,0,0,.6)', HOWC.gold); hTxt(c, '🛍️ opens every 15 waves  ·  🪙 coins', 170, 155, 12, '#fff'); hTxt(c, 'ONE purchase per shop', 170, 171, 12, HOWC.gold);
+                hRound(c, 34, 142, 272, 40, 12, 'rgba(0,0,0,.6)', HOWC.gold); hTxt(c, '🛍️ opens every 15 waves  ·  🪙 coins', 170, 155, 12, '#fff'); hTxt(c, 'TWO purchases per shop', 170, 171, 12, HOWC.gold);
             },
             w_levels(c) {
                 hRound(c, 0, 0, 340, 190, 0, '#10161f');
@@ -10706,13 +10973,14 @@
         });
         const HOW_DEF = () => Object.assign(HOW_DEF_CORE(), {
             welcome: { name: 'Welcome', icon: '👋', welcome: true, slides: [
-                ['Teachers vs Kebabs', 'w_hello', "Hordes of <b>kebabs</b> march toward <b>your school</b>. Place <b>teachers</b> on the grass beside the track and they fight for you. Press <b>▶ PLAY</b> to start. This quick guide takes about a minute, and you can skip it any time."],
+                ['Welcome to Unity Defense REMASTERED!', 'w_hello', "Thanks for playing! This game has a lot going on: <b>accounts</b>, <b>two shops</b>, <b>daily rewards</b>, <b>levels</b>, <b>friends</b> and more. This guide shows you the parts that are <b>easy to miss</b>, so you <b>don't lose your progress</b> or skip <b>free rewards</b>. It takes about a minute, and you can skip it any time. Press <b>▶</b> to start!", true],
+                ['Teachers vs Kebabs', 'w_goal', "Hordes of <b>kebabs</b> march toward <b>your school</b>. Place <b>teachers</b> on the grass beside the track and they fight for you. Press <b>▶ PLAY</b> on the main menu to start a battle."],
                 ['Make an account', 'w_acct', "Press <b>👤 Sign Up / Log In</b> at the top right of the main menu (a username and password, or <b>Google</b>). Signed in, you get <b>levels, Positives, achievements, skins, saved battles and friends</b>. Guests can play, but nothing is saved. Tip: <b>link Google</b> in your profile so you never lose your account."],
                 ['Positives and the Shop', 'w_pos', "You earn <b>1 💚 Positive</b> for every kebab you defeat while signed in. Spend them in the <b>Shop</b> (top right of the menu, sign-in needed) on <b>skins, accessories and profile backgrounds</b>, and from <b>level " + BUFF_UNLOCK_LEVEL + "</b> on teacher <b>buffs</b>. Wear what you buy from your profile (<b>🎨 Customize</b>)."],
                 ['Daily rewards', 'w_daily', "Press <b>🎁 Daily</b> once a day to claim free 💚. Claim on <b>consecutive days</b> to grow your 🔥 streak: <b>Day 7 pays the most</b>. <b>Miss a day and it starts over.</b> A red <b>!</b> on the button means a reward is waiting."],
-                ['The shop in battle', 'w_shop', "Every <b>15 waves</b> a cafe <b>shop</b> opens in your battle. Spend <b>🪙 coins</b> (from defeated kebabs) on <b>upgrades</b> or to <b>hire teachers</b>. You can make <b>ONE purchase per shop</b>, and prices rise with every shop, so choose wisely."],
+                ['The shop in battle', 'w_shop', "Every <b>15 waves</b> a cafe <b>shop</b> opens in your battle. Spend <b>🪙 coins</b> (from defeated kebabs) on <b>upgrades</b> or to <b>hire teachers</b>. You can make <b>TWO purchases per shop</b>, and prices rise with every shop, so choose wisely."],
                 ['Levels and maps', 'w_levels', "<b>Play</b> opens the map select: <b>School Grounds</b>, and <b>The Quad</b> once you reach <b>level " + QUAD_UNLOCK_LEVEL + "</b>. Defeating kebabs and clearing waves earns <b>XP</b> so you level up (only in the main game, not Test Mode or Online Mode)."],
-                ['Friends and Online Mode', 'w_friends', "<b>Link Google</b>, then add friends by username in your <b>📥 Inbox</b>. A <b>green dot</b> means a friend is online. <b>Online Mode</b> lets you play <b>Team Up</b> or <b>VS</b> with a friend or a bot. It is still a <b>work in progress</b>, so expect some bugs."],
+                ['Friends, Leaderboard, Online', 'w_friends', "<b>Link Google</b>, then add friends by username in your <b>📥 Inbox</b> (a <b>green dot</b> = online). Linked accounts also climb the <b>🏆 Leaderboard</b> (top right of the menu). <b>Online Mode</b> lets you play <b>Team Up</b> or <b>VS</b> with a friend or a bot, but it is still a <b>work in progress</b>."],
                 ['Help is always here', 'w_help', "<b>📖 All You Need to Know</b> explains every mechanic. <b>💡 Suggestions</b> sends ideas to the admin. In a battle, <b>❓ How to Play</b> turns on <b>Guide Mode</b>. Replay this guide any time with <b>👋 Welcome Guide</b> at the bottom of the main menu. Have fun! ✅"]
             ] }
         });
@@ -10741,7 +11009,7 @@
                 return;
             }
             const sl = H.slides[HOWS.i];
-            document.getElementById('howTitle').textContent = H.icon + ' ' + H.name + ': ' + sl[0];
+            document.getElementById('howTitle').textContent = sl[3] ? H.icon + ' ' + sl[0] : H.icon + ' ' + H.name + ': ' + sl[0];
             HOW_PICS[sl[1]](c);
             document.getElementById('howText').innerHTML = sl[2];
             document.getElementById('howPrev').style.visibility = HOWS.i === 0 ? 'hidden' : '';
@@ -10793,7 +11061,7 @@
                 "Welcome to UDR! Take a look at the menus!",
                 "Shutters up! The shop is open, my dear students!",
                 "Ooh, perfect timing. Fresh upgrades just in!",
-                "Come in, come in! One purchase only, so choose carefully!",
+                "Come in, come in! Two purchases per visit, so choose carefully!",
                 "Ahh, a customer! Take your time, but not too long.",
                 "Great work on those waves! You've earned a little shopping.",
                 "Hello hello! Upgrades on the left, teachers on the right.",
@@ -10815,6 +11083,13 @@
                 "Until next time. Class dismissed!",
                 "Take care! And don't tell the kebabs where I live."
             ],
+            buy2: [
+                "Cha-ching! You still have one purchase left!",
+                "Nice one! One more purchase, if you like.",
+                "Sold! You can buy one more thing today.",
+                "Excellent! One purchase left, make it count!",
+                "Lovely! Anything else? You get one more."
+            ],
             buy: [
                 "Cha-ching! Excellent choice!",
                 "Pleasure doing business with you!",
@@ -10834,7 +11109,7 @@
             tips: [
                 "Left-click a teacher between waves to heal 5% of their health. Right-click removes them!",
                 "Angry Teacher marks the kebab closest to the school every 5 seconds, and marked kebabs take 2.5x damage!",
-                "You only get ONE purchase per shop, so pick wisely!",
+                "You only get TWO purchases per shop, so pick wisely!",
                 "Every shop costs 50% more than the last one. Spend smart!",
                 "A shop opens every 15 waves. Save your coins before it arrives!",
                 "Boss kebabs show up every 20 waves. Bring your best upgrades!",
@@ -11214,10 +11489,20 @@
             }, readMs + 860);
         }
 
+        // You can make this many purchases in each shop visit (the shop closes after the last one)
+        const SHOP_BUYS_PER_VISIT = 2;
+        let shopBuysLeft = SHOP_BUYS_PER_VISIT;
         function shopPurchased() {
             if (shopState !== 'open') return;
             achStat('shopBuys');
             playMoneySound();
+            shopBuysLeft = Math.max(0, shopBuysLeft - 1);
+            if (shopBuysLeft > 0) {            // a purchase is still left: stay open and refresh the rows
+                renderShopMenus();
+                const more = pickShopLine(SHOP_LINES.buy2);
+                npcSay(more, () => npcScheduleIdle(more.length));
+                return;
+            }
             shopFinish(pickShopLine(SHOP_LINES.buy), 1250);
         }
 
@@ -11282,6 +11567,8 @@
             const bought = id => upgradeCount(id) + '/' + MAX_PER_UPGRADE + ' bought';
 
             document.getElementById('shopNumberLabel').textContent = 'Shop #' + shopNumber + ' - prices rise every shop';
+            const _bl = document.getElementById('shopBuysLabel');
+            if (_bl) _bl.textContent = shopBuysLeft >= SHOP_BUYS_PER_VISIT ? SHOP_BUYS_PER_VISIT + ' PURCHASES PER SHOP' : shopBuysLeft + ' PURCHASE' + (shopBuysLeft === 1 ? '' : 'S') + ' LEFT';
             document.getElementById('shopBalance').textContent = game.testMode ? '∞' : game.sentrals;
 
             // ---- Upgrades menu ----
@@ -11364,6 +11651,7 @@
             shopTimers.forEach(clearTimeout);
             shopTimers = [];
             shopState = 'opening';
+            shopBuysLeft = SHOP_BUYS_PER_VISIT;
             startShopTheme();
             fitShop();
             randomizeNpc();
@@ -12226,7 +12514,7 @@
                         const py = this.y + Math.sin(particle.angle) * particle.radius;
                         for (const enemy of game.enemies) {
                             if (Math.hypot(enemy.x - px, enemy.y - py) < 30) {
-                                enemy.health -= enemy.health * 0.35 * (enemy.nsDamageMultiplier || 1);
+                                enemy.health -= enemy.health * 0.45 * (enemy.nsDamageMultiplier || 1);
                                 this.mathSwarm.splice(i, 1);
                                 game.particles.push({ type: 'explosion', owner: 'math', x: px, y: py, vx: 0, vy: 0, life: 20 });
                                 break;
@@ -15416,6 +15704,7 @@
         setInterval(fitGame, 500);
         function applySettings() {
             applyMasterVolume();
+            document.body.classList.toggle('no-splash', settings.splashText === false);
             const wrap = document.getElementById('gameWrapper');
             fitGame(true);
             document.body.classList.remove('theme-classic', 'theme-halloween', 'theme-night', 'theme-candy');
@@ -15443,6 +15732,8 @@
             setVal('set_guideTeam', settings.guideTeam);
             setVal('set_guideVs', settings.guideVs);
             setVal('set_menuAnim', settings.menuAnim);
+            setVal('set_introAnim', settings.introAnim);
+            setVal('set_splashText', settings.splashText);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
             setVal('set_bgPlay', settings.bgPlay);
@@ -16596,7 +16887,8 @@
         requestAnimationFrame(menuBgLoop);
 
         updateLastUpdateDateDisplay();
-        maybeShowDisclaimers();
+        maybeShowTitleIntro(maybeShowDisclaimers);
+        rollSplash();
         gmRefreshBtn();
 
         applySettings();

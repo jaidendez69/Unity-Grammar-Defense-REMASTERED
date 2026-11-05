@@ -4,9 +4,15 @@ This repo hosts the auto-update files for the Unity Defense Remastered desktop a
 The `releases/` folder always contains the latest Windows build - the game
 checks `releases/latest.yml` on startup to see if a newer version is available.
 
-**Important:** `releases/UnityGrammarDefense-Setup-latest.exe` is a stable-named
+**Important:** `releases/UnityDefense-Setup-latest.exe` is a stable-named
 copy of the current version, kept in sync with the versioned file every time a
 new version is published. The download page (`index.html`) and its email link
 point to this stable filename specifically so they never go stale when a new
 version replaces the versioned file. When publishing a new version, always
 update this copy too - don't just replace the versioned .exe.
+
+**Keep this folder small:** GitHub Pages stops publishing the site if the repo is
+over 1 GB, which made the download page and `/play/` stop updating. Only keep the
+current versioned installer (and its `.blockmap`), `UnityDefense-Setup-latest.exe`
+and `latest.yml` in `releases/`. Delete the previous version's installer when
+publishing a new one (old versions stay in git history).

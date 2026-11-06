@@ -3142,6 +3142,12 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
+                    <div class="update-date">November 7, 2026</div>
+                    <ul>
+                        <li><b>Wise Sheikh</b>: his SHEBAB ultimate is back to <b>30%</b> of a kebab's current health (the 15% nerf from November 6 is undone).</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
                     <div class="update-date">November 6, 2026</div>
                     <ul>
                         <li><b>Tougher kebabs</b>: every <b>30 waves</b> the HP kebabs gain per wave grows by <b>15</b>: <b>+35</b> per wave up to wave 30, <b>+50</b> from wave 30, <b>+65</b> from wave 60, and so on. <b>Saved battles use the new numbers too.</b></li>
@@ -4614,7 +4620,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-06';
+        const LAST_UPDATE_DATE = '2026-11-07';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -7101,7 +7107,7 @@
                     ['Health', '10', '8', '125', '12'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles', '2 tiles (no throwing)'],
                     ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2.5× damage', 'None. "Shhhh!" every 6 s: 100 damage and knockback to 3 kebabs', 'None. "Tuck your chair in, sit on the floor!" every 8 s: 2 kebabs sink half into the floor for 3 s and cannot move'],
-                    ['Ultimate', '🔥 SHEBAB: blast around him for 15% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None'],
+                    ['Ultimate', '🔥 SHEBAB: blast around him for 30% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None'],
                     ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm', 'None'],
                     ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)', '-'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits', 'Freezing the leaders so everyone else can hit them']
@@ -7131,7 +7137,7 @@
                 '<h4>🔥 Ultimate: SHEBAB</h4>' +
                 gList([
                     'Charges <b>only by landing killing blows</b>: each kebab he kills fills <b>20%</b>, so <b>5 kills</b> = full. Other teachers\' kills do not count.',
-                    'When full he glows. Click him: he shakes, and a blast hits <b>every kebab within about 1.6 tiles</b> for <b>15% of its current health</b> (so it hurts big, healthy kebabs the most; damage upgrades do not change it, × 2.5 on marked kebabs).',
+                    'When full he glows. Click him: he shakes, and a blast hits <b>every kebab within about 1.6 tiles</b> for <b>30% of its current health</b> (so it hurts big, healthy kebabs the most; damage upgrades do not change it, × 2.5 on marked kebabs).',
                     'After SHEBAB he is out of breath and <b>cannot attack for 1 second</b> (he shows "Catching breath..."). Plan your ultimate for when it is safe.',
                     'Click him anywhere inside the glowing ring. The click works even if you have a teacher selected to place.',
                     'The charge bar under him shows his progress.'
@@ -7254,7 +7260,7 @@
                     ['Teacher', 'Wise Sheikh', 'Angry Teacher', 'Mathematician'],
                     ['Charges by', 'Killing blows, +20% each', 'Marking a kebab, +20% each', 'Time (~17 s)'],
                     ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
-                    ['Damage', '15% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 12 per second'],
+                    ['Damage', '30% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 12 per second'],
                     ['Scales with damage upgrades?', 'No', 'Yes', 'Swarm and Area Strike: no. Beam: yes'],
                     ['Hits Negative-marked kebabs for', '2.5×', '2.5×', '2.5× (swarm = 112.5%, so one orb finishes a marked kebab; Area Strike = 75%)']
                 ]) +
@@ -12884,7 +12890,7 @@
                     }
                 } else {
                     const ultimateRange = this.range * GRID_SIZE * 0.8;
-                    const ultimateFrac = 0.15;   // SHEBAB takes 15% of each kebab's CURRENT health
+                    const ultimateFrac = 0.3;   // SHEBAB takes 30% of each kebab's CURRENT health
 
                     let blasted = 0;
                     for (let enemy of game.enemies) {

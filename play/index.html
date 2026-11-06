@@ -3145,6 +3145,10 @@
                     <div class="update-date">November 7, 2026</div>
                     <ul>
                         <li><b>Wise Sheikh</b>: his SHEBAB ultimate is back to <b>30%</b> of a kebab's current health (the 15% nerf from November 6 is undone).</li>
+                        <li><b>Hitter kebabs</b>: a steady <b>1 in 5</b> kebabs on every wave (they no longer get rarer as waves go on).</li>
+                        <li><b>Everything is 35% cheaper</b>: hiring and placing every teacher, and all the in-battle shop upgrades (damage, speed, click power, health, medic, mega, more teachers).</li>
+                        <li><b>New buff: 🪪 Uniform Check</b> for the Arabic Expert (1000 💚, level 20). It gives him a slow-charging ultimate: he checks the uniform of <b>5 random kebabs</b>, each has a <b>25% chance to be expelled</b>, and the rest are sent to the <b>second track</b>.</li>
+                        <li><b>Guides updated</b>: Hitter Kebabs, Arabic Expert, Teacher Buffs, All Teachers at a Glance and the price tables.</li>
                     </ul>
                 </div>
                 <div class="update-entry">
@@ -4297,19 +4301,19 @@
                     <h3>Place Teachers</h3>
                     <button class="tower-button" id="sheikhBtn" onclick="selectTower('sheikh')">
                         🧑‍🏫 Wise Sheikh
-                        <div class="tower-cost" id="sheikhCost">Cost: 100 🪙</div>
+                        <div class="tower-cost" id="sheikhCost">Cost: 65 🪙</div>
                     </button>
                     <button class="tower-button" id="baduiBtn" onclick="selectTower('badui')" style="display: none;">
                         👩‍🏫 Angry Teacher
-                        <div class="tower-cost" id="baduiCost">Cost: 230 🪙</div>
+                        <div class="tower-cost" id="baduiCost">Cost: 150 🪙</div>
                     </button>
                     <button class="tower-button" id="mathBtn" onclick="selectTower('math')" style="display: none;">
                         📐 Mathematician
-                        <div class="tower-cost" id="mathCost">Cost: 330 🪙</div>
+                        <div class="tower-cost" id="mathCost">Cost: 215 🪙</div>
                     </button>
                     <button class="tower-button" id="arabicBtn" onclick="selectTower('arabic')" style="display: none;">
                         🪑 Arabic Expert
-                        <div class="tower-cost" id="arabicCost">Cost: 350 🪙</div>
+                        <div class="tower-cost" id="arabicCost">Cost: 228 🪙</div>
                     </button>
                     <button class="tower-button" id="tuffBtn" onclick="selectTower('tuff')" style="display: none; border-color: #FF1A1A;">
                         🔴 Tuff Sheikh
@@ -4431,7 +4435,7 @@
             if (game.mapId !== 'quad' && (saved.arabicUnlocked || game.towers.some(t => t.type === 'arabic'))) {
                 const gone = game.towers.filter(t => t.type === 'arabic').length;
                 game.towers = game.towers.filter(t => t.type !== 'arabic');
-                const refund = (saved.arabicUnlocked ? SHOP_PRICES.arabic : 0) + gone * 350;
+                const refund = (saved.arabicUnlocked ? SHOP_PRICES.arabic : 0) + gone * getArabicCost();
                 game.sentrals += refund;
                 game.arabicUnlocked = false;
                 document.getElementById('arabicBtn').style.display = 'none';
@@ -7103,13 +7107,13 @@
             { id: 'compare', group: 'teachers', icon: '📋', title: 'All Teachers at a Glance', html: () =>
                 gTbl(['', '🧑‍🏫 Wise Sheikh', '👩‍🏫 Angry Teacher', '📐 Mathematician', '🪑 Arabic Expert'], [
                     ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', '<b>The Quad only</b>: hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
-                    ['Cost to place', 'First 2 free, then 100 + 4 per wave (max 250)', '230 + 5 per wave (no max)', '330 🪙 each (flat)', '350 🪙 each (flat)'],
+                    ['Cost to place', 'First 2 free, then about 65 + 2.6 per wave (max 163)', 'about 150 + 3 per wave (no max)', getMathCost() + ' 🪙 each (flat)', getArabicCost() + ' 🪙 each (flat)'],
                     ['Health', '10', '8', '125', '12'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles', '2 tiles (no throwing)'],
                     ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2.5× damage', 'None. "Shhhh!" every 6 s: 100 damage and knockback to 3 kebabs', 'None. "Tuck your chair in, sit on the floor!" every 8 s: 2 kebabs sink half into the floor for 3 s and cannot move'],
-                    ['Ultimate', '🔥 SHEBAB: blast around him for 30% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None'],
-                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm', 'None'],
-                    ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)', '-'],
+                    ['Ultimate', '🔥 SHEBAB: blast around him for 30% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None (🪪 Uniform Check with the buff)'],
+                    ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm', '🪪 Uniform Check: gives him an ultimate'],
+                    ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)', '- (with the buff: time, about 75 seconds)'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits', 'Freezing the leaders so everyone else can hit them']
                 ]) +
                 gTip('Each teacher has its own cap: up to <b>' + BASE_TOWER_CAP + ' Wise Sheikhs</b> (' + (BASE_TOWER_CAP + 6) + ' with both "More Teachers"), <b>5 Angry Teachers</b>, <b>7 Mathematicians</b> and <b>7 Arabic Experts</b>.') },
@@ -7132,7 +7136,7 @@
                 '<h4>Cost</h4>' +
                 gList([
                     'Your <b>first 2</b> Wise Sheikhs are <b>free</b>.',
-                    'After that: <b>100 🪙 + 4 per wave</b>, capped at <b>250 🪙</b> (you hit the cap at wave 39). Right now he costs <b>' + getSheikhCost() + ' 🪙</b>.'
+                    'After that: <b>about 65 🪙 + 2.6 per wave</b>, capped at <b>163 🪙</b> (you hit the cap at wave 39). Right now he costs <b>' + getSheikhCost() + ' 🪙</b>.'
                 ]) +
                 '<h4>🔥 Ultimate: SHEBAB</h4>' +
                 gList([
@@ -7149,7 +7153,7 @@
                 '<h4>How to get her</h4>' +
                 gList([
                     'Hire her in the shop for a flat <b>' + SHOP_PRICES.badui + ' 🪙</b> (she is available from the <b>first shop at wave 15</b>). Hiring only unlocks her. You can place up to <b>5</b> Angry Teachers.',
-                    'Then each one you place costs <b>230 🪙 + 5 per wave</b> with no cap. Right now: <b>' + getBaduiCost() + ' 🪙</b>.'
+                    'Then each one you place costs <b>about 150 🪙 + 3 per wave</b> with no cap. Right now: <b>' + getBaduiCost() + ' 🪙</b>.'
                 ]) +
                 '<h4>Negative</h4>' +
                 gList([
@@ -7179,7 +7183,7 @@
                 '<h4>How to get him</h4>' +
                 gList([
                     'He appears in the shop <b>from wave 15</b> (the <b>first</b> shop; you can pick any teacher there). Until then the row is locked and the shop teacher says he is "still marking papers".',
-                    'Hiring costs a flat <b>' + SHOP_PRICES.math + ' 🪙</b> once. After that <b>each Mathematician you place costs a flat 330 🪙</b> (no price rise per wave).'
+                    'Hiring costs a flat <b>' + SHOP_PRICES.math + ' 🪙</b> once. After that <b>each Mathematician you place costs a flat ' + getMathCost() + ' 🪙</b> (no price rise per wave).'
                 ]) +
                 '<h4>Shhhh!</h4>' +
                 gList([
@@ -7203,17 +7207,26 @@
                 gTip('His 125 health makes him the one teacher you can safely put right beside the track.') },
 
             { id: 'arabic', group: 'teachers', icon: '🪑', title: 'Arabic Expert', html: () =>
-                gStats([['Health', '12'], ['Attack', 'None'], ['Ability cooldown', '8 s'], ['Stuck kebabs', '2'], ['Stuck for', '3 s'], ['Ultimate', 'None']]) +
+                gStats([['Health', '12'], ['Attack', 'None'], ['Ability cooldown', '8 s'], ['Stuck kebabs', '2'], ['Stuck for', '3 s'], ['Ultimate', 'Uniform Check (buff)']]) +
                 '<p>A calm older teacher with a bald round head and a <b>short grey beard</b> with a rounded end and a <b>blue gingham work shirt</b>.</p>' +
                 '<h4>Tuck your chair in, sit on the floor!</h4>' +
                 gList([
                     'Every <b>8 seconds</b>, if a kebab is within <b>2 tiles</b>, he shouts <b>"Tuck your chair in, sit on the floor!"</b> and the <b>2 kebabs closest to the school</b> in range sink <b>half into the floor</b> (only the top half shows, with a dirt mound and little stars).',
                     'Stuck kebabs <b>cannot move for 3 seconds</b>. A stuck hitter kebab cannot hit anyone either. He does no damage himself, so <b>your other teachers get 3 free seconds</b> to attack them.',
                     '<b>Boss kebabs are too big to sit down</b>, so they ignore it.',
-                    'He has <b>no ultimate</b> and does not throw anything.',
+                    'He does not throw anything, and has <b>no ultimate</b> until you buy the 🪪 <b>Uniform Check</b> buff (see below).',
                     '<b>He only teaches on The Quad.</b> On the School Grounds his shop row is locked.',
-                    'How to get him (on the Quad): hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (available from the <b>first shop at wave 15</b>). Then each one you place costs a flat <b>350 🪙</b>. You can place up to <b>7</b>.',
+                    'How to get him (on the Quad): hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (available from the <b>first shop at wave 15</b>). Then each one you place costs a flat <b>' + getArabicCost() + ' 🪙</b>. You can place up to <b>7</b>.',
                     'Old saved battles on the School Grounds lose him and you get the coins back.'
+                ]) +
+                '<h4>🪪 Buff: Uniform Check (' + BUFF_PRICE + ' 💚)</h4>' +
+                gList([
+                    'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + ' (level 20, signed-in players). It gives him an <b>ultimate</b>.',
+                    'It <b>fills slowly</b>: about <b>75 seconds</b> by itself. When he glows, <b>click him</b>.',
+                    'He picks <b>5 random kebabs</b> anywhere on the map (bosses are never picked) and checks their uniform.',
+                    'Each of the 5 has a <b>25% chance to be expelled</b> (🚫 it is removed and counts as a defeat, so you still get its coins).',
+                    'The ones that pass are <b>sent to the second track</b>. The second track opens at <b>wave 10</b>, so before that nothing moves.',
+                    'If there are no kebabs on the map, the click does nothing and the ultimate stays ready.'
                 ]) +
                 gTip('Place him next to your Wise Sheikhs near a corner where kebabs are about to escape.') },
 
@@ -7286,7 +7299,7 @@
 
             // ---------------------------------------------------------- KEBABS
             { id: 'hitters', group: 'kebabs', icon: '😠', title: 'Hitter Kebabs', html: () =>
-                '<p><b>about 1 in every 5 kebabs</b> are <b>hitters</b> at the start, and it gets <b>3% less likely every 5 waves</b> (never below about 1 in 25). It has a little <b>red anger mark</b> next to its top meat piece, so you can spot it.</p>' +
+                '<p><b>1 in every 5 kebabs</b> is a <b>hitter</b>, on every wave (it never gets rarer or more common). It has a little <b>red anger mark</b> next to its top meat piece, so you can spot it.</p>' +
                 gList([
                     'Every <b>teacher it walks past</b> (within about 1.5 tiles of the track) gets hit: it <b>stops on the spot for half a second</b>, shakes, and takes <b>' + HITTER_DAMAGE + ' HP</b> off that teacher (a red <b>HIT!</b> pops up).',
                     'It hits <b>once per teacher</b>, so a hitter that walks past a whole line of teachers hits every one of them once.',
@@ -7399,7 +7412,7 @@
 
             // ---------------------------------------------------------- SHOP
             { id: 'teacherbuffs', group: 'shop', icon: '✨', title: 'Teacher Buffs', html: () =>
-                '<p>Each teacher has <b>one special buff</b>. You buy it <b>once</b> in the main menu <b>Shop → Upgrades → Teachers</b> with 💚 Positives, and you keep it forever. Buffs <b>unlock at level 20</b>. They cost a lot on purpose: <b>' + BUFF_PRICE + ' 💚 each</b>.</p>' +
+                '<p>Each teacher has <b>one special buff</b> (four in total). You buy it <b>once</b> in the main menu <b>Shop → Upgrades → Teachers</b> with 💚 Positives, and you keep it forever. Buffs <b>unlock at level 20</b>. They cost a lot on purpose: <b>' + BUFF_PRICE + ' 💚 each</b>.</p>' +
                 gTbl(['Buff', 'Teacher', 'What it does'], Object.keys(TEACHER_BUFFS).map(k => [TEACHER_BUFFS[k].icon + ' ' + TEACHER_BUFFS[k].name, TEACHER_BUFFS[k].teacher, TEACHER_BUFFS[k].desc])) +
                 gList([
                     '<b>Equip and unequip:</b> only in your <b>profile → ✨ Buffs</b> tab (not in the shop). An unequipped buff stays owned but does nothing, so you can switch back to the normal teacher any time.',
@@ -7407,7 +7420,7 @@
                     'They work in <b>every battle while you are signed in</b>, including Test Mode. If you are signed out you do not get them.',
                     'Buying one does <b>not</b> use up the in-game shop. It is a different shop that uses Positives, not coins.',
                     'Earn Positives from kebabs (1 each), achievements and the ' + gLink('daily', '🎁 Daily Reward') + '.',
-                    'More details on each teacher\'s page: ' + gLink('sheikh', 'Wise Sheikh') + ', ' + gLink('badui', 'Angry Teacher') + ', ' + gLink('math', 'Mathematician') + '.'
+                    'More details on each teacher\'s page: ' + gLink('sheikh', 'Wise Sheikh') + ', ' + gLink('badui', 'Angry Teacher') + ', ' + gLink('math', 'Mathematician') + ', ' + gLink('arabic', 'Arabic Expert') + '.'
                 ]) },
 
             { id: 'daily', group: 'shop', icon: '🎁', title: 'Daily Rewards', html: () =>
@@ -7465,8 +7478,8 @@
             { id: 'shopteachers', group: 'shop', icon: '👩‍🏫', title: 'Teachers Menu', html: () =>
                 gTbl(['Item', 'What it does', 'Price'], [
                     ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (wave 15+, any shop)', SHOP_PRICES.badui + ' 🪙 (flat)'],
-                    ['📐 Mathematician', 'Unlocks Mathematician (first shop, wave 15+). Each one you place then costs 330 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
-                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (The Quad only, wave 15+, any shop). Each one you place then costs 350 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
+                    ['📐 Mathematician', 'Unlocks Mathematician (first shop, wave 15+). Each one you place then costs ' + getMathCost() + ' 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
+                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (The Quad only, wave 15+, any shop). Each one you place then costs ' + getArabicCost() + ' 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
                     ['🏫 More Teachers', '<b>+3 max Wise Sheikhs</b> (' + BASE_TOWER_CAP + ' → ' + (BASE_TOWER_CAP + 3) + ' → ' + (BASE_TOWER_CAP + 6) + ')', SHOP_PRICES.cap + ' 🪙 the first time, ' + (SHOP_PRICES.cap + SHOP_PRICES.capStep) + ' 🪙 the second (× shop multiplier)']
                 ]) +
                 gList([
@@ -7516,7 +7529,7 @@
                 })) +
                 '<h4>Teacher prices as the game goes on</h4>' +
                 gTbl(['Wave', 'Wise Sheikh', 'Angry Teacher'], [1, 10, 20, 30, 40, 50, 60, 80].map(w =>
-                    [w, Math.min(baseTowerCost + (w - 1) * 4, 250) + ' 🪙', (230 + (w - 1) * 5) + ' 🪙'])) },
+                    [w, cheap(Math.min(baseTowerCost + (w - 1) * 4, 250)) + ' 🪙', cheap(230 + (w - 1) * 5) + ' 🪙'])) },
 
             { id: 'suggestions', group: 'basics', icon: '💡', title: 'Suggestions', html: () =>
                 '<p>The <b>💡 Suggestions</b> button is in the main menu, next to <b>📖 All You Need to Know</b>. Use it to tell the makers what to add or fix.</p>' +
@@ -8805,7 +8818,7 @@
         }
 
         function getSheikhCost() {
-            return Math.min(baseTowerCost + (game.wave - 1) * 4, 250);
+            return cheap(Math.min(baseTowerCost + (game.wave - 1) * 4, 250));
         }
 
         // The first 2 Wise Sheikhs you place are free.
@@ -8815,20 +8828,23 @@
 
         // Angry Teacher costs 230 to place, +5 for every wave.
         function getBaduiCost() {
-            return 230 + (game.wave - 1) * 5;
+            return cheap(230 + (game.wave - 1) * 5);
         }
 
         // Mathematician: 300 coins to unlock (first available the 2nd
         // shop onward, same as Angry Teacher's flat 100). After that each
         // Mathematician you place costs a flat 330 coins.
         // In-game shop base prices (doubled in v1.0.24). Upgrade and More Teachers prices also rise with every shop reached.
-        const SHOP_PRICES = { medic: 500, upgrade: 300, mega: 600, badui: 200, math: 600, arabic: 500, cap: 500, capStep: 200 };
+        // v1.0.32: every coin price is 35% cheaper (teacher hiring, placing and the in-battle upgrades)
+        const PRICE_CUT = 0.65;
+        const cheap = n => Math.round(n * PRICE_CUT);
+        const SHOP_PRICES = { medic: cheap(500), upgrade: cheap(300), mega: cheap(600), badui: cheap(200), math: cheap(600), arabic: cheap(500), cap: cheap(500), capStep: cheap(200) };
         const BASE_TOWER_CAP = 10;   // max of EACH teacher (More Teachers adds +3 per purchase)
         function getMathUnlockCost() {
             return SHOP_PRICES.math;
         }
         function getMathCost() {
-            return 330;
+            return cheap(330);
         }
         function getPlaceCost(type) {
             if (game.freeTeacher === type && game.freeTeacherLeft > 0) return 0;   // the Quad's free teacher
@@ -8849,7 +8865,7 @@
             if (type && SOLO_CAPS[type] && !game.teamUp && !game.vs) return SOLO_CAPS[type];
             return Math.round((BASE_TOWER_CAP + game.towerCapBonus) * (game.teamUp ? TEAM_MULT : 1));
         }
-        function getArabicCost() { return 350; }
+        function getArabicCost() { return cheap(350); }
 
         function towerName(type) {
             if (type === 'badui') return 'Angry Teacher';
@@ -10046,8 +10062,12 @@
             badui:  { icon: '🔥', name: 'Whistle', teacher: 'Angry Teacher', price: BUFF_PRICE,
                 desc: 'Replaces <b>BOYS!</b>: she blows a whistle that blasts the <b>3 kebabs nearest the school</b>.' },
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
-                desc: 'Replaces <b>Algebra Swarm</b>. Locks onto 3 kebabs, scans their area, then strikes for <b>30%</b> of their health.' }
+                desc: 'Replaces <b>Algebra Swarm</b>. Locks onto 3 kebabs, scans their area, then strikes for <b>30%</b> of their health.' },
+            arabic: { icon: '🪪', name: 'Uniform Check', teacher: 'Arabic Expert', price: BUFF_PRICE,
+                desc: 'Gives him an <b>ultimate</b> that fills slowly (about <b>75 seconds</b>). He picks <b>5 random kebabs</b> and checks their uniform: each has a <b>25% chance to be expelled</b>. The others are sent to the <b>second track</b>.' }
         };
+        const ARABIC_ULT_RATE = 100 / (75 * 60);   // Uniform Check charges slowly: about 75 seconds
+        const UNIFORM_PICKS = 5, UNIFORM_EXPEL_CHANCE = 0.25;
         const SHEBAB_SENTENCES = ['يا شباب', 'السلام عليكم', 'ما شاء الله', 'بسم الله', 'الحمد لله', 'هيا بنا يا شباب', 'أحسنت يا شباب', 'العلم نور'];
         const _buffCache = { t: -9999, v: {} };
         function hasBuff(type) {
@@ -12504,6 +12524,8 @@
                     this.lastTuck++;
                     if (this.tuckT > 0) this.tuckT--;
                     if (this.lastTuck >= 480 && game.waveInProgress && this.getTuckTargets().length > 0) { this.tuck(); this.lastTuck = 0; }
+                    // Uniform Check buff: his ultimate fills slowly by itself
+                    if (hasBuff('arabic') && this.shebabCharge < this.shebabMax) this.shebabCharge = Math.min(this.shebabCharge + ARABIC_ULT_RATE, this.shebabMax);
                 }
                 if (this.type === 'math') {
                     this.lastShush++;
@@ -12788,8 +12810,33 @@
                 }
             }
 
+            // Uniform Check (Arabic Expert buff): 5 random kebabs get their uniform checked. Each has a 25% chance to be expelled
+            // (it counts as a defeat); the rest are sent to the second track. Bosses are never picked.
+            uniformCheck() {
+                const pool = game.enemies.filter(e => !e.isBoss && e.health > 0);
+                for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+                const picked = pool.slice(0, UNIFORM_PICKS);
+                game.particles.push({ type: 'text', owner: 'arabic', x: this.x, y: this.y - 80, text: '🪪 UNIFORM CHECK!', life: 70, size: 24 });
+                let expelled = 0, moved = 0;
+                for (const e of picked) {
+                    game.particles.push({ type: 'explosion', owner: 'arabic', x: e.x, y: e.y, vx: 0, vy: 0, life: 24 });
+                    if (Math.random() < UNIFORM_EXPEL_CHANCE) {
+                        e.health = 0; expelled++;
+                        game.particles.push({ type: 'text', owner: 'arabic', x: e.x, y: e.y - 40, vy: -0.5, text: '🚫 EXPELLED!', life: 60, size: 16 });
+                    } else {
+                        const ok = sendToSecondTrack(e); if (ok) moved++;
+                        game.particles.push({ type: 'text', owner: 'arabic', x: e.x, y: e.y - 40, vy: -0.5, text: ok ? '✅ To track 2' : '✅ Passed', life: 60, size: 16 });
+                    }
+                }
+                this.uniformLast = { picked: picked.length, expelled, moved };
+            }
+
             ultimate() {
                 if (this.shebabCharge < this.shebabMax) return false;
+                if (this.type === 'arabic' && !game.enemies.some(e => !e.isBoss && e.health > 0)) {
+                    game.particles.push({ type: 'text', owner: 'arabic', x: this.x, y: this.y - 80, text: 'No kebabs to check!', life: 50, size: 18 });
+                    return false;
+                }
                 if (this.type === 'tuff') {
                     this.shebabCharge = 0;
                     this.laserT = 300;   // 5 seconds
@@ -12888,6 +12935,8 @@
                             size: 24
                         });
                     }
+                } else if (this.type === 'arabic') {
+                    this.uniformCheck();
                 } else {
                     const ultimateRange = this.range * GRID_SIZE * 0.8;
                     const ultimateFrac = 0.3;   // SHEBAB takes 30% of each kebab's CURRENT health
@@ -13085,7 +13134,7 @@
         const BOSS_ATTACK_DAMAGE = 3;
         // "Hitter" kebabs: 1 in 10 kebabs is angry. Every teacher it walks past, it has a 50% chance to stop for half a second and hit them.
         // hitters get a little rarer every 5 waves (40% at the start, 5% fewer each 5 waves, never below 6%)
-        function hitterChanceFor(w) { return Math.max(0.04, HITTER_CHANCE - 0.03 * Math.floor(((w || 1) - 1) / 5)); }
+        function hitterChanceFor(w) { return HITTER_CHANCE; }   // a steady 1 in 5 on every wave
         const HITTER_CHANCE = 0.2, HITTER_HIT_CHANCE = 1, HITTER_RANGE = 115, HITTER_STOP_FRAMES = 30, HITTER_DAMAGE = 1;
         // Quad kebab variants
         const SOCCER_KEBAB_WAVE = 5, OZ_KEBAB_WAVE = 10;
@@ -13362,6 +13411,25 @@
         function oppPl(p) { return p === 'p1' ? 'p2' : 'p1'; }
         function camMax() { return game.teamUp ? Math.max(0, WORLD_WIDTH - viewW()) : (game.vs ? Math.max(0, WORLD_WIDTH - canvas.width) : Math.max(0, WORLD_WIDTH - viewW())); }
         function activePathCount() { return game.mapId === 'vs' ? 0 : ( (game.wave >= 40 ? 3 : (game.wave >= 10 ? 2 : 1))); }
+        // Moves a kebab onto the second track (the second track exists from wave 10). It jumps to the closest point on that track.
+        function sendToSecondTrack(e) {
+            if (game.wave < 10) return false;
+            const grp = (typeof PATHB !== 'undefined' && PATHB.indexOf(e.path) >= 0) ? 3 : 0;
+            const target = [PATH1, PATH2, PATH3, PATHB[0], PATHB[1], PATHB[2]][grp + 1];
+            if (!target || e.path === target) return false;
+            let best = null;
+            for (let i = 0; i < target.length - 1; i++) {
+                const a = target[i], b = target[i + 1], dx = b.x - a.x, dy = b.y - a.y, len2 = dx * dx + dy * dy;
+                if (len2 === 0) continue;
+                const t = Math.max(0, Math.min(1, ((e.x - a.x) * dx + (e.y - a.y) * dy) / len2));
+                const px = a.x + dx * t, py = a.y + dy * t, d = Math.hypot(e.x - px, e.y - py);
+                if (!best || d < best.d) best = { d, i, t, px, py, len: Math.sqrt(len2) };
+            }
+            if (!best || best.i >= target.length - 2 && best.t > 0.9) return false;   // too close to the school to move
+            e.path = target; e.pathIndex = best.i; e.progress = best.t * best.len;
+            e.x = best.px; e.y = best.py; e.prevX = e.x; e.prevY = e.y;
+            return true;
+        }
         function pathNo(e) { const i = [PATH1, PATH2, PATH3, PATHB[0], PATHB[1], PATHB[2]].indexOf(e.path); return i < 0 ? 0 : i; }
         function towerDmgMult(t) { return (game.vs && t.pl) ? Math.pow(1.2, vsUp(t.pl).dmg) * game.damageMultiplier : game.damageMultiplier; }
         function towerRateMult(t) { return (game.vs && t.pl) ? Math.pow(1.2, vsUp(t.pl).rate) * game.attackSpeedMultiplier : game.attackSpeedMultiplier; }

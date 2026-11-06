@@ -2605,15 +2605,6 @@
         @keyframes ilFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         body.title-intro-hold #menuScreen, body.title-intro-hold #menuScreen * { animation-play-state: paused !important; }
         @media (prefers-reduced-motion: reduce) { .il, .il-tag { animation: none; opacity: 1; } }
-        /* TITLE SPLASH TEXT (like Minecraft) */
-        .mm-titlewrap { position: relative; display: inline-block; max-width: 100%; }
-        .mm-splash { position: absolute; right: -2%; bottom: -2px; transform: rotate(-16deg); transform-origin: 50% 50%; z-index: 3; cursor: pointer; white-space: nowrap; max-width: 82vw;
-            color: #FFEB3B; font-weight: 900; font-size: 18px; text-shadow: 2px 2px 0 #3a3200, 0 0 12px rgba(255,235,59,.55); animation: splashPulse .6s ease-in-out infinite alternate; pointer-events: auto; user-select: none; }
-        .mm-splash.pop { animation: splashPop .35s ease-out, splashPulse .6s .35s ease-in-out infinite alternate; }
-        body.no-splash .mm-splash { display: none; }
-        @keyframes splashPulse { from { scale: .93; } to { scale: 1.07; } }
-        @keyframes splashPop { from { scale: 1.7; } to { scale: 1; } }
-        @media (max-width: 600px) { .mm-splash { position: static; display: block; transform: rotate(-4deg); margin-top: 8px; text-align: center; } }
         /* LEADERBOARD */
         .mm-top .lb-corner-btn { color: #ffd54f; border-color: #ffd54f; }
         .mm-top .lb-corner-btn:hover { background: #ffd54f; color: #111; }
@@ -2630,7 +2621,11 @@
         .lb-row.r1 { border-color: #FFD700; background: rgba(255,215,0,.14); }
         .lb-row.r2 { border-color: #cfd8e6; background: rgba(207,216,230,.1); }
         .lb-row.r3 { border-color: #cd7f32; background: rgba(205,127,50,.12); }
-        .lb-rank { width: 46px; font-weight: 900; font-size: 18px; color: #FFD700; text-align: center; flex: none; }
+        .lb-rank { width: 46px; font-weight: 900; font-size: 18px; color: #FFD700; text-align: center; flex: none; line-height: 1; }
+        .lb-crown { display: block; width: 34px; height: 26px; margin: 0 auto 1px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.55)); }
+        .lb-row.r1 .lb-crown { animation: lbCrownBob 1.6s ease-in-out infinite; }
+        .lb-rank b { font-size: 13px; color: #fff; }
+        @keyframes lbCrownBob { 50% { transform: translateY(-3px) rotate(-4deg); } }
         .lb-name { flex: 1; min-width: 0; font-weight: 800; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .lb-lv { color: #aab4d8; font-size: 12px; font-weight: 700; flex: none; }
         .lb-val { font-weight: 900; color: #64FF64; font-size: 18px; min-width: 76px; text-align: right; flex: none; }
@@ -3057,7 +3052,7 @@
         </div>
         <div class="mm-main">
             <div class="mm-kicker">🎓 SHEBABS VS KEBABS</div>
-            <div class="mm-titlewrap"><h1 class="mm-title"><span>UNITY</span><span>DEFENSE</span></h1><div class="mm-splash" id="mmSplash" onclick="rollSplash(true)" title="Click for another one"></div></div>
+            <h1 class="mm-title"><span>UNITY</span><span>DEFENSE</span></h1>
             <div class="mm-ribbon">REMASTERED</div>
             <button class="mm-play" onclick="playGame()"><b>▶ PLAY</b><small>Defend the school from the kebabs</small></button>
             <div class="mm-nudge" id="mmNudge"></div>
@@ -3146,6 +3141,20 @@
         <div class="updates-content">
             <h2>📜 Update Log</h2>
             <div class="update-list">
+                <div class="update-entry">
+                    <div class="update-date">November 6, 2026</div>
+                    <ul>
+                        <li><b>Tougher kebabs</b>: every <b>30 waves</b> the HP kebabs gain per wave grows by <b>15</b>: <b>+35</b> per wave up to wave 30, <b>+50</b> from wave 30, <b>+65</b> from wave 60, and so on. <b>Saved battles use the new numbers too.</b></li>
+                        <li><b>The Quad</b>: its kebabs now gain the <b>same HP per wave as the School Grounds</b> (was 25).</li>
+                        <li><b>🪑 Arabic Expert is Quad only</b>: he can only be hired and placed on The Quad. Old saves from the School Grounds lose him and the coins are refunded.</li>
+                        <li><b>Wise Sheikh</b>: his SHEBAB ultimate now takes <b>15%</b> of a kebab's current health (was 30%).</li>
+                        <li><b>Mathematician</b>: his ultimate is now a <b>chance</b>: 50/50 the first time, then a <b>60% chance to switch</b> to the other one each cast. <b>Beam Pull</b> now pulls <b>slower</b> and does <b>less damage</b> (12 per second, was 20).</li>
+                        <li><b>🏆 Leaderboard</b>: now lists <b>every player</b> with a Google-linked account (no need to re-save), and the <b>top 3 wear a 👑 crown</b>.</li>
+                        <li><b>Autoclicker detector</b>: autoclickers and script clicks are caught and <b>click damage is switched off</b> for a while. Playing normally is never affected.</li>
+                        <li><b>Removed</b>: the title splash text and its setting.</li>
+                        <li><b>Guides updated</b>: Kebab health, The Quad, Arabic Expert, Wise Sheikh, Mathematician, Leaderboard and Game Intro pages, plus a new <b>Fair Play</b> page.</li>
+                    </ul>
+                </div>
                 <div class="update-entry">
                     <div class="update-date">November 5, 2026</div>
                     <ul>
@@ -3966,8 +3975,6 @@
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Game intro (letters)<small>When you first open the game, the title letters pop in one by one before the menu appears. Plays once per visit.</small></div>
                     <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
-                <div class="set-row"><div class="set-label">Title splash text<small>A small tilted line of random text next to the title on the main menu. Click it for another one.</small></div>
-                    <label class="switch"><input type="checkbox" id="set_splashText" onchange="onSettingChange('splashText', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode: Team Up<small>Points things out during Team Up matches (two maps, shared coins, chat, the bot panel, tracks and bosses). It also gets offered at the end of the Team Up how-to-play.</small></div>
@@ -4414,6 +4421,17 @@
                 document.getElementById('arabicBtn').style.display = 'block';
             }
 
+            // The Arabic Expert only works on The Quad. Old saves from other maps lose him (the coins come back).
+            if (game.mapId !== 'quad' && (saved.arabicUnlocked || game.towers.some(t => t.type === 'arabic'))) {
+                const gone = game.towers.filter(t => t.type === 'arabic').length;
+                game.towers = game.towers.filter(t => t.type !== 'arabic');
+                const refund = (saved.arabicUnlocked ? SHOP_PRICES.arabic : 0) + gone * 350;
+                game.sentrals += refund;
+                game.arabicUnlocked = false;
+                document.getElementById('arabicBtn').style.display = 'none';
+                showToast('🪑 The Arabic Expert now only works on The Quad. He left this battle and you got ' + refund + ' 🪙 back.', 6000);
+            }
+
             updateWaveButtons();
             refreshTowerCostLabels();
         }
@@ -4596,7 +4614,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-05';
+        const LAST_UPDATE_DATE = '2026-11-06';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -5051,7 +5069,7 @@
             document.getElementById('mapCards').innerHTML =
                 '<div class="map-card pick" onclick="chooseMap(\'normal\')"><canvas width="640" height="224" id="mapCv_normal"></canvas><div class="map-info"><h3>🏫 The School Grounds</h3><p>The classic map. Kebabs march along winding tracks. Split track at wave 10, tri-track at wave 40.</p><span class="map-tag">▶ ALWAYS OPEN</span></div></div>' +
                 '<div class="map-card ' + (quadOpen ? 'pick' : 'locked') + '"' + (quadOpen ? ' onclick="chooseMap(\'quad\')"' : '') + '><canvas width="640" height="224" id="mapCv_quad"></canvas>' + (quadOpen ? '' : '<div class="map-lock-ico">🔒</div>') +
-                '<div class="map-info"><h3>⚽ The Quad</h3><p>A soccer field! Kebabs run along the painted lines and get 25 HP tougher every wave. Meet the <b>Soccer Kebab</b> (wave 5) and the <b>OZ Tag Kebab</b> (wave 10). Choose a free teacher!</p>' + quadStatus + '</div></div>' +
+                '<div class="map-info"><h3>⚽ The Quad</h3><p>A soccer field! Kebabs run along the painted lines and get <b>35 HP</b> tougher every wave (+15 more every 30 waves), same as the School Grounds. Meet the <b>Soccer Kebab</b> (wave 5) and the <b>OZ Tag Kebab</b> (wave 10). Choose a free teacher!</p>' + quadStatus + '</div></div>' +
                 '<div class="map-card locked"><canvas width="640" height="224" id="mapCv_soon"></canvas><div class="map-lock-ico">❓</div><div class="map-info"><h3>🚧 Coming Soon</h3><p>A brand new map is on its way. Keep levelling up!</p><span class="map-tag soon">COMING SOON</span></div></div>';
             mapThumb(document.getElementById('mapCv_normal'), 'normal');
             mapThumb(document.getElementById('mapCv_quad'), 'quad');
@@ -6282,6 +6300,7 @@
                     buffs: acc.buffs || {},
                     ach: acc.ach || null,
                     equipped: acc.equipped || {},
+                    acFlags: acc.acFlags || 0,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true }).catch((err) => {
                     console.warn('Cloud push failed:', err);
@@ -6289,7 +6308,6 @@
                 // public username -> uid entry so other players can find you by name
                 firebase.firestore().collection('usernames').doc(acc.username.toLowerCase())
                     .set({ uid: acc.cloudUid, username: acc.username }).catch(() => {});
-                lbPublish(acc);
             } catch (e) {
                 console.warn('Cloud push failed:', e);
             }
@@ -7043,7 +7061,7 @@
                     ['Scroll the map', 'Use the <b>mouse wheel</b>, the <b>A / D</b> keys (or the arrow keys), or click the arrows on the edges.'],
                     ['Remove a teacher', '<b>Right-click</b> them and confirm. You do <b>not</b> get the coins back.'],
                     ['See a teacher\'s range', '<b>Hover</b> the mouse over them. A shaded circle shows how far they reach.'],
-                    ['Hit a kebab yourself', '<b>Left-click</b> a kebab for <b>1 damage</b> (more with the <b>👆 Click Power</b> shop upgrade: up to 13). Marked with Negative = 2.5× damage.'],
+                    ['Hit a kebab yourself', '<b>Left-click</b> a kebab for <b>1 damage</b> (more with the <b>👆 Click Power</b> shop upgrade: up to 13). Marked with Negative = 2.5× damage. Autoclickers switch this off (see ' + gLink('fairplay', 'Fair Play') + ').'],
                     ['Look at the other side of the map', 'Click the <b>arrows</b> on the left or right edge of the map.'],
                     ['Pause', 'The <b>⏸ Pause</b> button, or press <b>P</b> or <b>Esc</b>. <b>Online</b>: it sends your friend a <b>pause request</b> (an accepted pause lasts up to 30 seconds, then resumes by itself).'],
                     ['Start the next wave early', 'Press the <b>▶ Wave</b> button.'],
@@ -7078,12 +7096,12 @@
             // ---------------------------------------------------------- TEACHERS
             { id: 'compare', group: 'teachers', icon: '📋', title: 'All Teachers at a Glance', html: () =>
                 gTbl(['', '🧑‍🏫 Wise Sheikh', '👩‍🏫 Angry Teacher', '📐 Mathematician', '🪑 Arabic Expert'], [
-                    ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
+                    ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', '<b>The Quad only</b>: hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
                     ['Cost to place', 'First 2 free, then 100 + 4 per wave (max 250)', '230 + 5 per wave (no max)', '330 🪙 each (flat)', '350 🪙 each (flat)'],
                     ['Health', '10', '8', '125', '12'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles', '2 tiles (no throwing)'],
                     ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2.5× damage', 'None. "Shhhh!" every 6 s: 100 damage and knockback to 3 kebabs', 'None. "Tuck your chair in, sit on the floor!" every 8 s: 2 kebabs sink half into the floor for 3 s and cannot move'],
-                    ['Ultimate', '🔥 SHEBAB: blast around him for 30% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None'],
+                    ['Ultimate', '🔥 SHEBAB: blast around him for 15% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None'],
                     ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm', 'None'],
                     ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)', '-'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits', 'Freezing the leaders so everyone else can hit them']
@@ -7113,7 +7131,7 @@
                 '<h4>🔥 Ultimate: SHEBAB</h4>' +
                 gList([
                     'Charges <b>only by landing killing blows</b>: each kebab he kills fills <b>20%</b>, so <b>5 kills</b> = full. Other teachers\' kills do not count.',
-                    'When full he glows. Click him: he shakes, and a blast hits <b>every kebab within about 1.6 tiles</b> for <b>30% of its current health</b> (so it hurts big, healthy kebabs the most; damage upgrades do not change it, × 2.5 on marked kebabs).',
+                    'When full he glows. Click him: he shakes, and a blast hits <b>every kebab within about 1.6 tiles</b> for <b>15% of its current health</b> (so it hurts big, healthy kebabs the most; damage upgrades do not change it, × 2.5 on marked kebabs).',
                     'After SHEBAB he is out of breath and <b>cannot attack for 1 second</b> (he shows "Catching breath..."). Plan your ultimate for when it is safe.',
                     'Click him anywhere inside the glowing ring. The click works even if you have a teacher selected to place.',
                     'The charge bar under him shows his progress.'
@@ -7163,16 +7181,16 @@
                     'Each shushed kebab takes <b>4× Wise Sheikh\'s damage (100 by default)</b> and is blown back <b>70 px over exactly 2 seconds</b>, spinning in a gust of wind. While it is being pushed it cannot walk forward.',
                     'If nothing is in range he waits and fires the moment something enters range.'
                 ]) +
-                '<h4>🎲 Ultimate (random every time)</h4>' +
+                '<h4>🎲 Ultimate (a chance every time)</h4>' +
                 gList([
-                    'Charges over time (about <b>17 seconds</b>). Each use is a <b>50/50</b> between:',
+                    'Charges over time (about <b>17 seconds</b>). The first use is a <b>50/50</b>. After that, each use has a <b>60% chance to switch</b> to the other ultimate and a 40% chance to repeat the last one. The two are:',
                     '<b>📐 Algebra Swarm</b>: adds up to <b>6</b> math symbols that orbit him (90-140 px away, 20 max at once) <b>forever</b> until one touches a kebab. A touch removes <b>45% of that kebab\'s current health</b> (so it is great on tanky kebabs and bosses). It ignores damage upgrades but <b>is doubled on Negative-marked kebabs (70% of its current health)</b>.',
-                    '<b>📏 Beam Pull</b>: ties a beam (a line, ray or segment) to the <b>3 kebabs closest to the school</b> and drags them back toward him for <b>5 seconds</b>, dealing <b>10 damage per second</b> (× damage upgrades). Pulled kebabs cannot move forward.'
+                    '<b>📏 Beam Pull</b>: ties a beam (a line, ray or segment) to the <b>3 kebabs closest to the school</b> and drags them back toward him for <b>5 seconds</b>, dealing <b>12 damage per second</b> (× damage upgrades). The pull is <b>slow</b>, so they only drift back a short way. Pulled kebabs cannot move forward.'
                 ]) +
                 '<h4>🎯 Buff: Area Strike (1000 💚)</h4>' +
                 gList([
                     'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + '. Signed-in players only.',
-                    'It <b>replaces Algebra Swarm</b>: the ultimate is still a 50/50, but between <b>🎯 Area Strike</b> and 📏 Beam Pull.',
+                    'It <b>replaces Algebra Swarm</b>: the ultimate is still a chance each time (60% to switch), but between <b>🎯 Area Strike</b> and 📏 Beam Pull.',
                     'It locks onto the <b>3 kebabs closest to the school</b> and shows a <b>scanning ring</b> that follows each one for about <b>1.25 seconds</b>. Then it strikes: every kebab inside a ring takes <b>30% of its current health</b> (a kebab is hit at most once per strike).',
                     'Like his other abilities, a Negative-marked kebab takes 2.5× (75%). Because it is a percentage, it is great against bosses.'
                 ]) +
@@ -7187,7 +7205,9 @@
                     'Stuck kebabs <b>cannot move for 3 seconds</b>. A stuck hitter kebab cannot hit anyone either. He does no damage himself, so <b>your other teachers get 3 free seconds</b> to attack them.',
                     '<b>Boss kebabs are too big to sit down</b>, so they ignore it.',
                     'He has <b>no ultimate</b> and does not throw anything.',
-                    'How to get him: hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (available from the <b>first shop at wave 15</b>). Then each one you place costs a flat <b>350 🪙</b>. You can place up to <b>7</b>.'
+                    '<b>He only teaches on The Quad.</b> On the School Grounds his shop row is locked.',
+                    'How to get him (on the Quad): hire him in the shop for <b>' + SHOP_PRICES.arabic + ' 🪙</b> (available from the <b>first shop at wave 15</b>). Then each one you place costs a flat <b>350 🪙</b>. You can place up to <b>7</b>.',
+                    'Old saved battles on the School Grounds lose him and you get the coins back.'
                 ]) +
                 gTip('Place him next to your Wise Sheikhs near a corner where kebabs are about to escape.') },
 
@@ -7234,7 +7254,7 @@
                     ['Teacher', 'Wise Sheikh', 'Angry Teacher', 'Mathematician'],
                     ['Charges by', 'Killing blows, +20% each', 'Marking a kebab, +20% each', 'Time (~17 s)'],
                     ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
-                    ['Damage', '30% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 20 per second'],
+                    ['Damage', '15% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 12 per second'],
                     ['Scales with damage upgrades?', 'No', 'Yes', 'Swarm and Area Strike: no. Beam: yes'],
                     ['Hits Negative-marked kebabs for', '2.5×', '2.5×', '2.5× (swarm = 112.5%, so one orb finishes a marked kebab; Area Strike = 75%)']
                 ]) +
@@ -7280,7 +7300,7 @@
                     gTbl(['Wave', 'Kebabs', 'Health each', 'Speed'], rows) +
                     '<h4>Health</h4>' +
                     gList([
-                        'Wave 1 kebabs have <b>100 HP</b>. Every wave adds a flat <b>35 HP</b>, and that never speeds up or slows down (wave 10 = 415 HP, wave 50 = 1,815 HP, wave 100 = 3,565 HP). <b>On the Quad map it is 25 HP per wave</b> instead.',
+                        'Wave 1 kebabs have <b>100 HP</b>. Every wave adds <b>35 HP</b>, and <b>every 30 waves that gain grows by 15</b>: <b>+35 per wave</b> up to wave 30, <b>+50</b> from wave 30, <b>+65</b> from wave 60, <b>+80</b> from wave 90 and so on (wave 10 = 415 HP, wave 30 = 1,115 HP, wave 50 = 2,115 HP, wave 100 = 5,365 HP). <b>The Quad uses the same numbers.</b> Saved battles use them too.',
                         'There is <b>no maximum</b>: kebabs keep getting tougher forever.',
                         'The top bar shows the current <b>Kebab HP</b> (and <b>Kebab Speed</b> next to it).'
                     ]) +
@@ -7440,7 +7460,7 @@
                 gTbl(['Item', 'What it does', 'Price'], [
                     ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (wave 15+, any shop)', SHOP_PRICES.badui + ' 🪙 (flat)'],
                     ['📐 Mathematician', 'Unlocks Mathematician (first shop, wave 15+). Each one you place then costs 330 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
-                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (wave 15+, any shop). Each one you place then costs 350 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
+                    ['🪑 Arabic Expert', 'Unlocks Arabic Expert (The Quad only, wave 15+, any shop). Each one you place then costs 350 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
                     ['🏫 More Teachers', '<b>+3 max Wise Sheikhs</b> (' + BASE_TOWER_CAP + ' → ' + (BASE_TOWER_CAP + 3) + ' → ' + (BASE_TOWER_CAP + 6) + ')', SHOP_PRICES.cap + ' 🪙 the first time, ' + (SHOP_PRICES.cap + SHOP_PRICES.capStep) + ' 🪙 the second (× shop multiplier)']
                 ]) +
                 gList([
@@ -7530,7 +7550,7 @@
                     '<b>▶ PLAY</b> opens the <b>map select</b> (School Grounds, The Quad, and a Coming Soon card), then starts a real game with the kebab shop intro unless you skip it. Under the button is your <b>level and XP bar</b> (or a "Sign in" button if you are signed out). See ' + gLink('maps', 'Maps') + ' and ' + gLink('levels', 'Levels & XP') + '.',
                     '<b>🧪 Test Mode</b>: sandbox with infinite coins. Inside it is a <b>🛠 Developer Mode</b> switch that restarts into the separate Developer Mode: a normal game with time controls (speed, pause, step, rewind).',
                     '<b>🌐 Online Mode</b> has a <b>WIP</b> tag (work in progress): a message tells you it may have bugs before you go in. <b>📜 Updates</b> is the update log, and under it is the <b>Last updated</b> date, which turns <b>red</b> on the day of an update.',
-                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in), plus <b>🏆 Leaderboard</b> (see the ' + gLink('leaderboard', 'Leaderboard') + ' page). Next to the title is a random <b>splash text</b> (' + gLink('splash', 'details') + '). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b>, <b>👋 Welcome Guide</b> (replays the first-time slideshow) and <b>Disclaimer</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
+                    'Top right, in a column: <b>Sign Up / Log In</b> (your profile once signed in), <b>🎁 Daily</b> (free Positives every day, with a red ! when ready) and <b>Shop</b> (a 🔒 until you sign in), plus <b>🏆 Leaderboard</b> (see the ' + gLink('leaderboard', 'Leaderboard') + ' page). <b>Settings, Inbox and Chat now live inside your account menu</b> (press your name / Sign Up). <b>Credits</b>, <b>👋 Welcome Guide</b> (replays the first-time slideshow) and <b>Disclaimer</b> are at the bottom, with a red <b>⏻ Quit</b> button under them (the app closes, the web version closes the tab).',
                     'On the longer screens (Profile / Log In, Inbox, Chat, Updates, Credits and Settings) a <b>← BACK</b> button stays in the <b>top-left corner</b>, so you never have to scroll down to leave. The Back button at the bottom still works too. Opening Settings, Inbox or Chat from your account menu and pressing Back returns you to the account menu.',
                     'Bottom right: <b>📖 All You Need to Know</b> (this guide) and <b>💡 Suggestions</b> (' + gLink('suggestions', 'send your ideas') + ').',
                     'Switching between menu screens uses a smooth fade and slide.'
@@ -7573,8 +7593,7 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
-                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('splash', 'Intro & Splash Text') + ' page.'],
-                    ['Title splash text', 'Shows or hides the random yellow text next to the main menu title.'],
+                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('intro', 'Game Intro') + ' page.'],
                     ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
@@ -7608,16 +7627,29 @@
                 gList([
                     '<b>Only accounts linked to Google</b> are ranked. A username-and-password account lives on one device only, so it cannot be on a shared board. Link Google in your profile (see ' + gLink('account', 'Accounts') + ') to join.',
                     '<b>The admin is not ranked</b>, and neither are built-in test accounts.',
-                    'The top <b>50</b> are shown. Your own row is highlighted green and says <b>(you)</b>. Gold, silver and bronze go to the top three.',
-                    'Your numbers are sent to the board automatically when your account saves. <b>🔄 Refresh</b> reloads the list.',
-                    'It needs an internet connection. Offline, the board just says it is unavailable.'
+                    '<b>Everyone</b> with a Google-linked account is listed (up to 500). Your own row is highlighted green and says <b>(you)</b>. The <b>top 3 wear a 👑 crown</b>: gold, silver and bronze.',
+                    'Your numbers update by themselves whenever your account saves. <b>🔄 Refresh</b> reloads the list. You need to be signed in with Google to look at it.',
+                    'It needs an internet connection and a Google sign-in. Offline, the board just says it is unavailable.'
                 ]) },
 
-            { id: 'splash', group: 'more', icon: '✨', title: 'Intro & Splash Text', html: () =>
-                '<p>Two small touches when you open the game. Both can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
+            { id: 'intro', group: 'more', icon: '✨', title: 'Game Intro', html: () =>
+                '<p>A small touch when you open the game. It can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
                 gTbl(['What', 'Details'], [
-                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.'],
-                    ['Splash text', 'A small yellow tilted line of random text next to the title on the main menu, like in Minecraft. <b>Click it</b> for another one. It changes every time you open the game.']
+                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.']
+                ]) },
+
+            { id: 'fairplay', group: 'more', icon: '🛑', title: 'Fair Play (Autoclickers)', html: () =>
+                '<p>The game watches how you click kebabs. <b>Playing normally is never affected.</b> It only reacts to things a hand cannot do:</p>' +
+                gList([
+                    '<b>Script clicks</b>: fake clicks made by a program instead of a real mouse or finger.',
+                    '<b>Impossible speed</b>: about 18+ clicks a second for 20 clicks in a row.',
+                    '<b>Robot rhythm</b>: 20 clicks in a row with almost perfectly equal gaps.'
+                ]) +
+                '<h4>What happens</h4>' +
+                gList([
+                    '🛑 You get a warning and <b>click damage is switched off for 45 seconds</b> (90 seconds the second time, then 135 and so on, up to 5 minutes).',
+                    'Your <b>teachers keep fighting</b> and everything else works. Only damage from clicking kebabs is off.',
+                    'Each catch is counted on your account.'
                 ]) },
 
             { id: 'account', group: 'more', icon: '👤', title: 'Accounts, Saving & Continue', html: () =>
@@ -7705,14 +7737,14 @@
             { id: 'maps', group: 'waves', icon: '🗺️', title: 'Maps & The Quad', html: () =>
                 '<p>Pressing <b>▶ PLAY</b> opens the map select with three cards. Both maps are drawn <b>smaller</b> (75%) with <b>8 rows</b>, so there is plenty of room for teachers.</p>' +
                 gTbl(['Map', 'How to get it', 'What is different'], [
-                    ['🏫 The School Grounds', 'Always open', 'The classic map: winding tracks, split track at wave 10, tri-track at wave 40. Kebabs gain 35 HP per wave.'],
-                    ['⚽ The Quad', 'Reach <b>level ' + QUAD_UNLOCK_LEVEL + '</b> (signed in)', 'A darker, evening soccer field drawn like a <b>TV picture from the stand</b> at <b>real size</b>: one whole pitch with all its real markings (no goals). A huge <b>grandstand</b> (grey roof, blue seats, light-blue tiers with UDR painted on) sits behind a big black criss-cross fence with open gates, and you cannot build on that top row. Kebabs run along the <b>painted lines</b>. They gain <b>25 HP per wave</b>. Two new kebabs: Soccer (wave 5) and OZ Tag (wave 10).', 'Not out yet', 'A new map is on the way.']
+                    ['🏫 The School Grounds', 'Always open', 'The classic map: winding tracks, split track at wave 10, tri-track at wave 40. Kebabs gain 35 HP per wave, +15 more every 30 waves.'],
+                    ['⚽ The Quad', 'Reach <b>level ' + QUAD_UNLOCK_LEVEL + '</b> (signed in)', 'A darker, evening soccer field drawn like a <b>TV picture from the stand</b> at <b>real size</b>: one whole pitch with all its real markings (no goals). A huge <b>grandstand</b> (grey roof, blue seats, light-blue tiers with UDR painted on) sits behind a big black criss-cross fence with open gates, and you cannot build on that top row. Kebabs run along the <b>painted lines</b>. They gain the <b>same HP per wave as the School Grounds</b> (35, +15 more every 30 waves). Two new kebabs: Soccer (wave 5) and OZ Tag (wave 10).', 'Not out yet', 'A new map is on the way.']
                 ]) +
                 '<h4>The Quad rules</h4>' +
                 gList([
                     'You start with your <b>free pick</b>. The teachers you did <b>not</b> pick (and the <b>Arabic Expert</b>) can all be hired from the <b>first shop</b> (wave 15). You can only buy one thing per shop, so choose your next teacher.',
                     'The Quad uses the <b>same wave milestones</b>: the second line of the field opens at <b>wave 10</b> and the third at <b>wave 40</b> (the field gets longer, just like the tri-track).',
-                    'Kebabs start at 100 HP on wave 1, then gain 25 HP every wave (wave 10 = 325 HP).',
+                    'Kebabs start at 100 HP on wave 1 and grow <b>exactly like the School Grounds</b>: 35 HP per wave, and <b>15 more per wave for every 30 waves</b> you survive (wave 10 = 415 HP).',
                     'You choose a <b>free teacher</b> before the battle: <b>Mathematician</b> or <b>Angry Teacher</b>. They are unlocked from the start and the <b>first one you place is free</b>. You still have Wise Sheikh. The one you did not pick can still be hired in the shop as normal.',
                     'The grandstand runs along the very top of the map: a grey roof, blue seats and light-blue concrete tiers with <b>UDR</b> painted on, with handrail stairs on the sides. A <b>big black criss-cross fence</b> hides the bottom of it, with <b>open gates</b> (just gaps in the fence). You cannot build on that top row, and the kebabs never walk there.',
                     'The pitch is drawn at <b>real size</b> like a TV picture from the stand: one whole soccer field with touchlines, a halfway line, centre circle, penalty areas, goal areas, penalty spots, penalty arcs and corner flags (no goals).',
@@ -8536,7 +8568,6 @@
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
             introAnim: true,        // the title letters pop in when the game is first opened
-            splashText: true,       // random splash text next to the main menu title
             guideMode: false,       // Guide Mode: circles and points at things while you play
             guideTeam: false,       // Guide Mode inside Team Up
             guideVs: false,         // Guide Mode inside VS
@@ -8748,12 +8779,13 @@
         // Arabic alphabet letters used for Wise Sheikh's thrown projectiles
         const ARABIC_LETTERS = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'];
 
-        // Health added per wave: a flat +35 every wave, forever.
+        // Health added per wave: +35, and every 30 waves that gain grows by +15 (so +50 from wave 30, +65 from wave 60...).
         const KEBAB_HEALTH_PER_WAVE = 35;
         const TEAM_HEALTH_PER_WAVE = 60;   // Team Up: two players, so kebabs gain 60 HP per wave
-        const QUAD_HEALTH_PER_WAVE = 25;   // the Quad's kebabs gain 25 HP per wave
+        const HEALTH_STEP_BONUS = 15, HEALTH_STEP_EVERY = 30;   // every 30 waves the per-wave gain grows by 15 (35 -> 50 -> 65 ...). The Quad uses the same numbers as the School Grounds.
         function kebabHealthStep(wave) {
-            return (typeof game !== 'undefined' && game.mapId === 'quad') ? QUAD_HEALTH_PER_WAVE : ((typeof game !== 'undefined' && game.mapId === 'teamup') ? TEAM_HEALTH_PER_WAVE : KEBAB_HEALTH_PER_WAVE);
+            if (typeof game !== 'undefined' && game.mapId === 'teamup') return TEAM_HEALTH_PER_WAVE;
+            return KEBAB_HEALTH_PER_WAVE + HEALTH_STEP_BONUS * Math.floor(wave / HEALTH_STEP_EVERY);
         }
         const _kebabHpCaches = { normal: [0, 100], quad: [0, 100], team: [0, 100] }; // cache[wave] = base health at that wave
         function kebabBaseHealth(wave) {
@@ -10188,50 +10220,17 @@
         document.addEventListener('keydown', () => titleIntroSkip());
         // ===== END GAME INTRO =====
 
-        // ===== TITLE SPLASH TEXT (like Minecraft) =====
-        const SPLASHES = ["Shebabs vs Kebabs!", "Now with 100% more kebabs!", "Class is in session!", "Homework not included!", "Press P to pause!", "Hold Alt to heal!",
-            "Mind the Kebab Man!", "Negative!", "SHEBAB!", "Shhhh!", "Tuck him in!", "Also try the Quad!", "Made with AI!", "Positives are good for you!", "Don't skip waves!",
-            "Two purchases per shop!", "UDR approved!", "Wise Sheikh says hi!", "Clock out!", "Link your Google!", "Eat your vegetables!", "The school is safe(ish)!", "Level up!",
-            "Mathematician approved!", "Arabic Expert is stuck on you!", "Remastered!", "Is it lunch yet?", "Zero calories!", "Click the kebabs!", "Sauce on the floor!",
-            "100% grammatical!", "Daily reward waiting!", "Boss kebab incoming!", "Now in HD (High Doner)!", "Kebabs hate this one trick!", "Check the leaderboard!"];
-        var _splashLast = -1;
-        function rollSplash(fromClick) {
-            const el = document.getElementById('mmSplash'); if (!el) return;
-            let i = 0;
-            do { i = Math.floor(Math.random() * SPLASHES.length); } while (i === _splashLast && SPLASHES.length > 1);
-            _splashLast = i;
-            const t = SPLASHES[i];
-            el.textContent = t;
-            el.style.fontSize = Math.max(12, Math.min(20, Math.round(380 / Math.max(t.length, 14)))) + 'px';
-            if (fromClick) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
-        }
-        // ===== END SPLASH TEXT =====
-
         // ===== LEADERBOARD (most waves survived / most Positives) =====
         // Public Firestore collection "leaderboard" (one document per Google-linked account, written by that account only).
         // Not ranked: accounts without Google (they only exist on one device), the admin, and test accounts.
         var LB_HIDDEN = ['jaiden'];
-        var _lbLastKey = '';
-        var LB = { tab: 'waves', data: { waves: null, positives: null }, loading: false, err: '' };
+                var LB = { tab: 'waves', data: { waves: null, positives: null }, loading: false, err: '' };
         function lbEligible(acc) {
             if (!acc || !acc.cloudUid || !acc.username) return false;                 // Google-linked accounts only
             const n = String(acc.username).toLowerCase();
             if (LB_HIDDEN.indexOf(n) >= 0) return false;                               // the admin is not ranked
             if (typeof PERK_ACCOUNTS !== 'undefined' && PERK_ACCOUNTS[n]) return false; // built-in test accounts
             return true;
-        }
-        function lbPublish(acc, force) {
-            if (!lbEligible(acc) || !cloudAuthReady) return;
-            const key = acc.cloudUid + '|' + acc.username + '|' + (acc.bestWave || 0) + '|' + (acc.positives || 0);
-            if (!force && key === _lbLastKey) return;
-            _lbLastKey = key;
-            try {
-                firebase.firestore().collection('leaderboard').doc(acc.cloudUid).set({
-                    username: acc.username, bestWave: acc.bestWave || 0, positives: acc.positives || 0,
-                    level: Math.max(1, Math.min(9999, Number(accLevel(acc)) || 1)),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(() => {});
-            } catch (e) {}
         }
         function openLeaderboard() {
             clearContinueModal();
@@ -10247,46 +10246,48 @@
         function lbSetTab(tab) { LB.tab = tab; lbLoad(); }
         function lbLoad() {
             const acc = getCurrentAccount();
-            if (acc) lbPublish(acc, true);                                             // make sure you are on the board
             LB.err = '';
             if (typeof firebase === 'undefined' || !firebase.firestore) { LB.err = 'offline'; lbRender(); return; }
+            if (!cloudAuthReady) { LB.err = 'signin'; lbRender(); return; }
             const field = LB.tab === 'positives' ? 'positives' : 'bestWave', tab = LB.tab;
             LB.loading = true; lbRender();
-            setTimeout(() => {
-                firebase.firestore().collection('leaderboard').orderBy(field, 'desc').limit(100).get().then(snap => {
-                    const rows = [];
-                    snap.forEach(d => {
-                        const v = d.data() || {}; if (!v.username) return;
-                        if (LB_HIDDEN.indexOf(String(v.username).toLowerCase()) >= 0) return;
-                        if (typeof PERK_ACCOUNTS !== 'undefined' && PERK_ACCOUNTS[String(v.username).toLowerCase()]) return;
-                        if ((Number(v[field]) || 0) <= 0) return;
-                        rows.push({ uid: d.id, name: String(v.username), wave: Number(v.bestWave) || 0, pos: Number(v.positives) || 0, level: Number(v.level) || 1 });
-                    });
-                    LB.data[tab] = rows.slice(0, 50); LB.loading = false; lbRender();
-                }).catch(err => { LB.loading = false; LB.err = (err && err.code === 'permission-denied') ? 'rules' : 'error'; lbRender(); });
-            }, acc ? 700 : 0);                                                         // a moment for your own entry to land
+            // Every Google-linked account lives in the "players" collection, so everyone shows up, no extra sign-up needed.
+            firebase.firestore().collection('players').orderBy(field, 'desc').limit(500).get().then(snap => {
+                const rows = [];
+                snap.forEach(d => {
+                    const v = d.data() || {}; if (!v.username) return;
+                    const n = String(v.username).toLowerCase();
+                    if (LB_HIDDEN.indexOf(n) >= 0) return;
+                    if (typeof PERK_ACCOUNTS !== 'undefined' && PERK_ACCOUNTS[n]) return;
+                    if ((Number(v[field]) || 0) <= 0) return;
+                    let lv = 1; try { lv = levelInfo(Number(v.xp) || 0).level; } catch (e) {}
+                    rows.push({ uid: d.id, name: String(v.username), wave: Number(v.bestWave) || 0, pos: Number(v.positives) || 0, level: lv });
+                });
+                LB.data[tab] = rows; LB.loading = false; lbRender();
+            }).catch(err => { LB.loading = false; LB.err = (err && err.code === 'permission-denied') ? 'signin' : 'error'; lbRender(); });
         }
         function lbRender() {
             document.getElementById('lbTabWaves').classList.toggle('active', LB.tab === 'waves');
             document.getElementById('lbTabPositives').classList.toggle('active', LB.tab === 'positives');
             const acc = getCurrentAccount(), list = document.getElementById('lbList'), note = document.getElementById('lbNote');
-            let msg = 'Only accounts linked to Google are ranked. The admin is not ranked.';
+            let msg = 'Every player with a Google-linked account is on the board. The admin is not ranked.';
             if (!acc) msg += ' Sign up and link Google to join the board.';
             else if (!acc.cloudUid && !isAdminAccount()) msg += ' Link your Google account in your profile to appear here.';
             note.textContent = msg;
             if (LB.loading) { list.innerHTML = '<div class="lb-empty">Loading…</div>'; return; }
             if (LB.err) {
-                list.innerHTML = '<div class="lb-empty">' + (LB.err === 'rules' && isAdminAccount() ? 'The leaderboard needs the new Firestore rules published (see the update notes).' : LB.err === 'offline' ? 'The leaderboard needs an internet connection. Open the game from its website or the desktop app.' : 'The leaderboard is not available right now. Try again in a moment.') + '</div>';
+                list.innerHTML = '<div class="lb-empty">' + (LB.err === 'signin' ? 'Sign in with Google to see the leaderboard.' : LB.err === 'offline' ? 'The leaderboard needs an internet connection. Open the game from its website or the desktop app.' : 'The leaderboard is not available right now. Try again in a moment.') + '</div>';
                 return;
             }
             const rows = LB.data[LB.tab];
             if (!rows) { list.innerHTML = ''; return; }
             if (!rows.length) { list.innerHTML = '<div class="lb-empty">Nobody is on this board yet. Be the first!</div>'; return; }
-            const medal = ['🥇', '🥈', '🥉'];
+            const crownCol = ['#FFD700', '#E3E8F0', '#E08A3C'];
+            const crown = i => '<svg class="lb-crown" viewBox="0 0 32 24" aria-hidden="true"><path d="M2 20 L5 6 L12 13 L16 3 L20 13 L27 6 L30 20 Z" fill="' + crownCol[i] + '" stroke="#3a2a00" stroke-width="1.6" stroke-linejoin="round"/><rect x="2" y="20" width="28" height="3" rx="1" fill="' + crownCol[i] + '" stroke="#3a2a00" stroke-width="1.2"/><circle cx="5" cy="6" r="1.8" fill="#fff"/><circle cx="16" cy="3" r="1.8" fill="#fff"/><circle cx="27" cy="6" r="1.8" fill="#fff"/></svg>';
             list.innerHTML = rows.map((r, i) => {
                 const me = acc && acc.cloudUid && acc.cloudUid === r.uid;
                 const val = LB.tab === 'positives' ? '💚 ' + r.pos.toLocaleString() : '🌊 ' + r.wave.toLocaleString();
-                return '<div class="lb-row' + (i < 3 ? ' r' + (i + 1) : '') + (me ? ' me' : '') + '"><span class="lb-rank">' + (i < 3 ? medal[i] : '#' + (i + 1)) + '</span><span class="lb-name">' + escapeHtml(r.name) + (me ? ' (you)' : '') + '</span><span class="lb-lv">Lv ' + r.level + '</span><span class="lb-val">' + val + '</span></div>';
+                return '<div class="lb-row' + (i < 3 ? ' r' + (i + 1) : '') + (me ? ' me' : '') + '"><span class="lb-rank">' + (i < 3 ? crown(i) + '<b>' + (i + 1) + '</b>' : '#' + (i + 1)) + '</span><span class="lb-name">' + escapeHtml(r.name) + (me ? ' (you)' : '') + '</span><span class="lb-lv">Lv ' + r.level + '</span><span class="lb-val">' + val + '</span></div>';
             }).join('');
         }
         // ===== END LEADERBOARD =====
@@ -10430,7 +10431,7 @@
               text: () => "The <b>Arabic Expert</b> has no attack and no ultimate. Every 8 seconds he says <b>Tuck your chair in, sit on the floor!</b> and <b>2 kebabs</b> sink half into the floor for <b>3 seconds</b> so your other teachers can hit them. Boss kebabs are too big to sit down. Each one you place costs <b>" + getArabicCost() + " 🪙</b>." },
             { id: 'math', next: true, title: 'New teacher: Mathematician', when: () => game.mathUnlocked && document.getElementById('mathBtn').style.display !== 'none',
               target: () => gmEl('#mathBtn'),
-              text: () => "The <b>Mathematician</b> is tough (125 HP). Every 6 seconds he shushes <b>3 kebabs</b>: they get blown back and take bonus damage. His ultimate is random: <b>Algebra Swarm</b> or <b>Beam Pull</b>. Each one you place costs <b>" + getMathCost() + " 🪙</b>." },
+              text: () => "The <b>Mathematician</b> is tough (125 HP). Every 6 seconds he shushes <b>3 kebabs</b>: they get blown back and take bonus damage. His ultimate has a chance to switch every cast: <b>Algebra Swarm</b> or <b>Beam Pull</b>. Each one you place costs <b>" + getMathCost() + " 🪙</b>." },
 
             // --- new upgrades (explained once you own them) ---
             { id: 'up_click', next: true, title: 'Upgrade: Click Power', when: () => gmHasUp('click'),
@@ -11631,6 +11632,7 @@
             if (online) teacherRows.sort((a, b) => (a.type === 'badui' ? 0 : 1) - (b.type === 'badui' ? 0 : 1));   // Team Up / VS: Angry Teacher first
             for (const r of teacherRows) {
                 if (r.type === 'arabic' && online) continue;
+                if (r.type === 'arabic' && !quadMap) { addMenuRow(teList, { name: r.name, desc: 'Only teaches on The Quad', price: r.price, off: true, priceLabel: '🔒', offLine: 'The Arabic Expert only teaches on The Quad (the soccer field). Not on this map!' }); continue; }
                 const w = unlockWave[r.type];
                 if (r.owned) addMenuRow(teList, { name: r.name, desc: r.desc, price: r.price, off: true, priceLabel: 'HIRED', offLine: r.hired });
                 else if (game.wave < w) addMenuRow(teList, { name: r.name, desc: 'Arrives at wave ' + w, price: r.price, off: true, priceLabel: '🔒', offLine: r.type === 'math' ? "The Mathematician only joins from wave " + w + ". He's still marking papers!" : (r.type === 'badui' ? "The Angry Teacher only joins from wave " + w + ". She is still marking papers!" : "The Arabic Expert only joins from wave " + w + ". He is still finding his chair!") });
@@ -12229,6 +12231,8 @@
             }
         }
 
+        const MATH_SWITCH_CHANCE = 0.6;     // Mathematician: chance his next ultimate is the OTHER one
+        const BEAM_PULL_SPEED = 1.0, BEAM_PULL_DAMAGE = 12;   // Beam Pull: slower pull (was 1.7 px/frame) and less damage (was 20/second)
         const SHEBAB_LOCKOUT_FRAMES = 60;   // Wise Sheikh cannot attack for 1 second after his ultimate
 
         class Tower {
@@ -12557,10 +12561,10 @@
                             continue;
                         }
                         beam.enemy.pulledBy = this;
-                        pushEnemyBack(beam.enemy, 1.7);
+                        pushEnemyBack(beam.enemy, BEAM_PULL_SPEED);
                         beam.tickTimer++;
                         if (beam.tickTimer >= 60) {
-                            beam.enemy.health -= 20 * game.damageMultiplier * (beam.enemy.nsDamageMultiplier || 1);
+                            beam.enemy.health -= BEAM_PULL_DAMAGE * game.damageMultiplier * (beam.enemy.nsDamageMultiplier || 1);
                             beam.tickTimer = 0;
                         }
                         beam.framesLeft--;
@@ -12817,7 +12821,12 @@
                     });
                 } else if (this.type === 'math') {
                     // Two possible ultimates, picked at random each cast.
-                    const firstUlt = Math.random() < 0.5;
+                    // The first cast is a coin flip. After that each cast has a MATH_SWITCH_CHANCE to switch to the other ultimate (and otherwise repeats).
+                    // Nothing else (buffs, targets, wave) decides it any more.
+                    let firstUlt;
+                    if (this.lastMathUlt === undefined) firstUlt = Math.random() < 0.5;
+                    else firstUlt = (Math.random() < MATH_SWITCH_CHANCE) ? !this.lastMathUlt : this.lastMathUlt;
+                    this.lastMathUlt = firstUlt;
                     if (firstUlt && hasBuff('math')) {
                         // Area Strike (buff, replaces Algebra Swarm): locks onto 3 kebabs, scans their area, then strikes
                         const targets = game.enemies
@@ -12875,7 +12884,7 @@
                     }
                 } else {
                     const ultimateRange = this.range * GRID_SIZE * 0.8;
-                    const ultimateFrac = 0.3;   // SHEBAB takes 30% of each kebab's CURRENT health
+                    const ultimateFrac = 0.15;   // SHEBAB takes 15% of each kebab's CURRENT health
 
                     let blasted = 0;
                     for (let enemy of game.enemies) {
@@ -14317,6 +14326,7 @@
         };
 
         function selectTower(type) {
+            if (type === 'arabic' && game.mapId !== 'quad' && !game.testMode) { showToast('🪑 The Arabic Expert only works on The Quad.', 2800); return; }
             const cost = getPlaceCost(type);
             if (!game.testMode && game.sentrals < cost) {
                 showToast('⚠️ Not enough coins!');
@@ -14348,7 +14358,39 @@
             };
         }
 
+        // ===== AUTOCLICKER DETECTOR =====
+        // Click damage is the only thing an autoclicker can abuse, so that is what gets switched off. It looks for:
+        //  - fake clicks made by scripts (not a real mouse or finger),
+        //  - a click speed no hand can keep up (about 18+ clicks a second for 20 clicks in a row),
+        //  - a robot-steady rhythm (20 clicks in a row where the gaps differ by only a few thousandths of a second).
+        // Caught: click damage is off for 45 s (90 s, 135 s... if it happens again). Teachers keep fighting. The admin and test modes are exempt.
+        const AC = { t: [], lockUntil: 0, strikes: 0, lastWarn: 0 };
+        function acExempt() { return !!(game.testMode || game.devMode || isAdminAccount()); }
+        function acLocked() { return performance.now() < AC.lockUntil; }
+        function acFlag() {
+            AC.strikes++;
+            const secs = Math.min(300, 45 * AC.strikes);
+            AC.lockUntil = performance.now() + secs * 1000; AC.t.length = 0;
+            try { updateCurrentAccount(a => { a.acFlags = (a.acFlags || 0) + 1; }); } catch (e) {}
+            showToast('🛑 Autoclicker detected! Click damage is off for ' + secs + ' seconds. Your teachers still fight.', 6000);
+        }
+        function acRecord(e) {
+            if (acExempt()) return;
+            if (e.isTrusted === false) { acFlag(); return; }
+            const t = AC.t, now = e.timeStamp || performance.now();
+            if (t.length && now - t[t.length - 1] > 1200) t.length = 0;     // a pause resets the count
+            t.push(now); if (t.length > 21) t.shift();
+            if (t.length < 21) return;
+            let sum = 0; const iv = [];
+            for (let i = 1; i < t.length; i++) { const d = t[i] - t[i - 1]; iv.push(d); sum += d; }
+            const mean = sum / iv.length;
+            let v = 0; for (const d of iv) v += (d - mean) * (d - mean);
+            const sd = Math.sqrt(v / iv.length);
+            if (mean < 55 || (mean < 700 && sd < 3.5)) acFlag();
+        }
+
         canvas.addEventListener('click', (e) => {
+            acRecord(e);
             let { x, y } = canvasPoint(e);
 
             // Check navigation arrows
@@ -14403,6 +14445,7 @@
                 for (let enemy of (game.vs || isGuest() ? [] : game.enemies)) {
                     const dist = Math.hypot(enemy.x - worldX, enemy.y - y);
                     if (dist < 25) {
+                        if (acLocked()) { const nw = performance.now(); if (nw - AC.lastWarn > 4000) { AC.lastWarn = nw; showToast('🛑 Click damage is off for ' + Math.ceil((AC.lockUntil - nw) / 1000) + ' s (autoclicker detected).', 2500); } return; }
                         enemy.health -= clickDamage() * (enemy.nsDamageMultiplier || 1);
                         playSound(300, 0.05, 'square');
                         return;
@@ -15704,7 +15747,6 @@
         setInterval(fitGame, 500);
         function applySettings() {
             applyMasterVolume();
-            document.body.classList.toggle('no-splash', settings.splashText === false);
             const wrap = document.getElementById('gameWrapper');
             fitGame(true);
             document.body.classList.remove('theme-classic', 'theme-halloween', 'theme-night', 'theme-candy');
@@ -15733,7 +15775,6 @@
             setVal('set_guideVs', settings.guideVs);
             setVal('set_menuAnim', settings.menuAnim);
             setVal('set_introAnim', settings.introAnim);
-            setVal('set_splashText', settings.splashText);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
             setVal('set_bgPlay', settings.bgPlay);
@@ -16888,7 +16929,6 @@
 
         updateLastUpdateDateDisplay();
         maybeShowTitleIntro(maybeShowDisclaimers);
-        rollSplash();
         gmRefreshBtn();
 
         applySettings();

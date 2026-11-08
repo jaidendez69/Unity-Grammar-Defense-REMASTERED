@@ -2586,25 +2586,12 @@
 
         /* GAME INTRO (title movie) */
         @keyframes giBlink { 50% { opacity: .35; } }
-        /* GAME INTRO LETTERS */
-        .title-intro { position: fixed; inset: 0; z-index: 99990; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: opacity .6s ease;
-            background: radial-gradient(ellipse at 50% 45%, #17503a 0%, #0e3a28 55%, #050f09 100%); }
-        .title-intro.hidden { display: none !important; }
-        .title-intro.out { opacity: 0; pointer-events: none; }
-        .title-intro-letters { text-align: center; }
-        .il-row { display: flex; justify-content: center; line-height: .95; }
-        .il { display: inline-block; opacity: 0; font-weight: 900; animation: ilPop .55s cubic-bezier(.2,1.7,.4,1) both; animation-delay: calc(350ms + var(--i) * 75ms); }
-        .il-a .il, .il-b .il { font-size: clamp(54px, 13vw, 118px); letter-spacing: 2px; color: #FFE066;
-            text-shadow: 4px 4px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 0 6px 0 #000, 0 12px 0 #8a5a00, 0 20px 30px rgba(0,0,0,.6); }
-        .il-b .il { color: #fff; }
-        .il-c { margin-top: 16px; }
-        .il-c .il { font-size: clamp(18px, 4vw, 34px); letter-spacing: 6px; color: #FFD700; text-shadow: 0 3px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000; }
-        .il-tag { margin-top: 20px; color: #cfe8d6; font-weight: 800; letter-spacing: 4px; font-size: clamp(11px, 2.2vw, 16px); opacity: 0; animation: ilFade .8s var(--d, 2s) ease-out both; }
-        .title-intro-skip { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.45); font-size: 12px; }
-        @keyframes ilPop { 0% { opacity: 0; transform: translateY(-90px) rotate(-14deg) scale(.4); } 60% { opacity: 1; transform: translateY(8px) rotate(3deg) scale(1.15); } 100% { opacity: 1; transform: none; } }
-        @keyframes ilFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        body.title-intro-hold #menuScreen, body.title-intro-hold #menuScreen * { animation-play-state: paused !important; }
-        @media (prefers-reduced-motion: reduce) { .il, .il-tag { animation: none; opacity: 1; } }
+        .cust-sub { margin: 8px 0 2px; font-size: 12px; font-weight: 800; color: #cfd8e6; }
+        .cust-sec small { font-weight: 600; opacity: .7; text-transform: none; letter-spacing: 0; }
+        .susp-overlay { position: fixed; inset: 0; z-index: 999999; background: rgba(0,0,0,.88); display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .susp-overlay.hidden { display: none !important; }
+        .susp-box { max-width: 460px; background: #2a0d12; border: 3px solid #ff5252; border-radius: 18px; padding: 24px 28px; text-align: center; color: #fff; line-height: 1.5; }
+        .susp-box h2 { margin: 0 0 10px; color: #ff8a80; }
         /* LEADERBOARD */
         .mm-top .lb-corner-btn { color: #ffd54f; border-color: #ffd54f; }
         .mm-top .lb-corner-btn:hover { background: #ffd54f; color: #111; }
@@ -3034,10 +3021,9 @@
 
     <div id="fpsCounter" style="display:none"></div>
 
-    <!-- GAME INTRO (the title letters pop in when the game is first opened) -->
-    <div class="title-intro hidden" id="titleIntro" onclick="titleIntroSkip()">
-        <div class="title-intro-letters" id="titleIntroLetters"></div>
-        <div class="title-intro-skip">click or press any key to skip</div>
+    <!-- SUSPENDED ACCOUNT -->
+    <div class="susp-overlay hidden" id="suspOverlay">
+        <div class="susp-box"><h2>🚫 Account suspended</h2><p id="suspText"></p><button class="back-btn" onclick="suspOk()">OK</button></div>
     </div>
 
     <!-- MAIN MENU -->
@@ -3141,6 +3127,21 @@
         <div class="updates-content">
             <h2>📜 Update Log</h2>
             <div class="update-list">
+                <div class="update-entry">
+                    <div class="update-date">November 8, 2026</div>
+                    <ul>
+                        <li><b>🚫 Suspensions (admin)</b>: the admin can suspend a Google-linked account for any number of days (editable) with a reason, and lift it again. A suspended player sees the reason and the end date and cannot play until it ends.</li>
+                        <li><b>Mathematician</b>: his ultimate now also builds up by shushing: <b>every kebab he shushes fills 2%</b>.</li>
+                        <li><b>Arabic Expert (Uniform Check buff)</b>: his ultimate also gains <b>5%</b> every time he tucks kebabs in, on top of the slow 75 second charge.</li>
+                        <li><b>Wise Sheikh</b>: his ultimate gains <b>+10% every wave you clear</b>, and still fills from killing blows.</li>
+                        <li><b>Save &amp; quit</b>: after loading a saved battle you cannot heal teachers until you beat 1 wave.</li>
+                        <li><b>Autoclicker detector improved</b>: it now catches clickers set anywhere from 0 to 100 ms (16+ clicks in a second, or an average gap under 100 ms over 20 clicks), and click damage can never exceed 11 hits a second.</li>
+                        <li><b>Quad kebabs</b>: the Soccer Kebab's ball and the OZ Tag Kebab's ribbons are gone. They still dodge and run fast.</li>
+                        <li><b>Skins</b>: in the <b>Customize</b> tab you can now pick your <b>profile picture's skin</b> and, separately, the <b>skin of each placed teacher</b> in battle. The two no longer affect each other.</li>
+                        <li><b>Removed</b>: the title-letters game intro and its setting.</li>
+                        <li><b>Guides updated</b>: Teacher Health &amp; Healing, All Teachers at a Glance, Wise Sheikh, Mathematician, Arabic Expert, Skins, Profile &amp; Customizing, Fair Play and the Quad kebabs.</li>
+                    </ul>
+                </div>
                 <div class="update-entry">
                     <div class="update-date">November 7, 2026</div>
                     <ul>
@@ -3983,8 +3984,6 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
-                <div class="set-row"><div class="set-label">Game intro (letters)<small>When you first open the game, the title letters pop in one by one before the menu appears. Plays once per visit.</small></div>
-                    <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode: Team Up<small>Points things out during Team Up matches (two maps, shared coins, chat, the bot panel, tracks and bosses). It also gets offered at the end of the Team Up how-to-play.</small></div>
@@ -4358,6 +4357,7 @@
 
     <script>
         function playGame() {
+            if (suspBlocked()) { suspShow(); return; }
             const acc = getCurrentAccount();
             if (acc && acc.savedGame) {
                 document.getElementById('continueChoiceModal').classList.add('show');
@@ -4431,6 +4431,9 @@
                 document.getElementById('arabicBtn').style.display = 'block';
             }
 
+            // Save & quit rule: no healing teachers until you beat 1 wave after loading a saved battle
+            game.healLock = !game.testMode;
+            if (game.healLock) setTimeout(() => showToast('🔒 Saved battle loaded: you cannot heal teachers until you beat 1 wave.', 4200), 600);
             // The Arabic Expert only works on The Quad. Old saves from other maps lose him (the coins come back).
             if (game.mapId !== 'quad' && (saved.arabicUnlocked || game.towers.some(t => t.type === 'arabic'))) {
                 const gone = game.towers.filter(t => t.type === 'arabic').length;
@@ -4624,7 +4627,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-07';
+        const LAST_UPDATE_DATE = '2026-11-08';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4726,6 +4729,7 @@
             try {
                 if (username) {
                     localStorage.setItem(CURRENT_USER_KEY, username);
+                    setTimeout(() => { try { suspCheck(); } catch (e) {} }, 900);
                 } else {
                     localStorage.removeItem(CURRENT_USER_KEY);
                 }
@@ -5279,7 +5283,7 @@
         const TEACHER_LABEL = { sheikh: 'Wise Sheikh', badui: 'Angry Teacher', math: 'Mathematician' };
         function getLook(acc) {
             const l = (acc && acc.look) || {};
-            return { avatar: ['sheikh', 'badui', 'math'].includes(l.avatar) ? l.avatar : 'sheikh', hat: l.hat || '', glasses: l.glasses || '', neck: l.neck || '', bg: PROFILE_BGS[l.bg] ? l.bg : 'hall' };
+            return { avatar: ['sheikh', 'badui', 'math'].includes(l.avatar) ? l.avatar : 'sheikh', hat: l.hat || '', glasses: l.glasses || '', neck: l.neck || '', bg: PROFILE_BGS[l.bg] ? l.bg : 'hall', skin: (typeof l.skin === 'string') ? l.skin : undefined };
         }
         function cosOwned(key) { const a = getCurrentAccount(); return !!(a && (a.items || []).includes(key)); }
         function bgOwned(id) { return id === 'hall' || cosOwned('bg:' + id); }
@@ -5384,8 +5388,10 @@
             acc = acc || getCurrentAccount();
             if (!acc) return;
             const look = getLook(acc);
-            const eq = (acc.equipped || {})[look.avatar];
-            const owned = eq && SKIN_DEFS[eq] && (acc.skins || []).includes(eq);
+            // Your profile picture has its own skin (Customize tab), separate from the skins your placed teachers wear in battle.
+            // Until you pick one, it keeps showing the skin you had equipped before (old behaviour).
+            const eq = look.skin === undefined ? (acc.equipped || {})[look.avatar] : look.skin;
+            const owned = eq && SKIN_DEFS[eq] && SKIN_DEFS[eq].type === look.avatar && (acc.skins || []).includes(eq);
             drawTeacherPreview(cv, look.avatar, owned ? eq : '', look);
         }
         function drawAvatarCanvases(root) { (root || document).querySelectorAll('canvas[data-avatar]').forEach(cv => drawAvatarCanvas(cv)); }
@@ -5409,6 +5415,18 @@
             let h = '<div class="cust-sec">CHARACTER</div><div class="cust-row">';
             ['sheikh', 'badui', 'math'].forEach(t => { h += '<button class="cust-chip' + (look.avatar === t ? ' on' : '') + '" onclick="setLook(\'avatar\',\'' + t + '\')">' + TEACHER_LABEL[t] + '</button>'; });
             h += '</div>';
+            // Skins: one set for your profile picture, another for the teachers you place in battle
+            const skinChip = (type, key, nm, on, fn) => '<button class="cust-chip' + (on ? ' on' : '') + '" onclick="' + fn + '"><canvas width="84" height="104" data-prev="' + type + '|' + key + '" style="width:42px;height:52px"></canvas>' + nm + '</button>';
+            const ownedSkins = type => Object.keys(SKIN_DEFS).filter(k => SKIN_DEFS[k].type === type && (acc.skins || []).includes(k));
+            const curAv = look.skin === undefined ? ((acc.equipped || {})[look.avatar] || '') : look.skin;
+            h += '<div class="cust-sec">AVATAR SKIN <small>(your profile picture only)</small></div><div class="cust-row">' + skinChip(look.avatar, '', 'Default', !curAv, "setLook('skin','')") +
+                ownedSkins(look.avatar).map(k => skinChip(look.avatar, k, SKIN_DEFS[k].name, curAv === k, "setLook('skin','" + k + "')")).join('') + '</div>';
+            h += '<div class="cust-sec">TEACHER SKINS IN BATTLE <small>(the teachers you place)</small></div>';
+            ['sheikh', 'badui', 'math', 'arabic'].forEach(t => {
+                const cur = EQUIPPED[t] || '';
+                h += '<div class="cust-sub">' + TEACHER_NAMES[t] + '</div><div class="cust-row">' + skinChip(t, '', 'Default', !cur, "equipSkin('" + t + "','')") +
+                    ownedSkins(t).map(k => skinChip(t, k, SKIN_DEFS[k].name, cur === k, "equipSkin('" + t + "','" + k + "')")).join('') + '</div>';
+            });
             COS_SLOTS.forEach(([slot, label]) => {
                 h += '<div class="cust-sec">' + label.toUpperCase() + '</div><div class="cust-row"><button class="cust-chip' + (!look[slot] ? ' on' : '') + '" onclick="setLook(\'' + slot + '\',\'\')">None</button>';
                 Object.keys(COSMETICS).filter(k => COSMETICS[k].slot === slot).forEach(k => {
@@ -5476,7 +5494,7 @@
         }
         function skinsHTML() {
             const a = getCurrentAccount();
-            let out = '';
+            let out = '<div class="account-hint">Skins you equip here are worn by the <b>teachers you place in battle</b>. Your profile picture has its own skin in the <b>Customize</b> tab.</div>';
             for (const type of ['sheikh', 'badui', 'math', 'arabic']) {
                 const eq = EQUIPPED[type] || '';
                 const tiles = [['', 'Default', true]].concat(Object.keys(SKIN_DEFS).filter(k => SKIN_DEFS[k].type === type).map(k => [k, SKIN_DEFS[k].name, (a.skins || []).includes(k)]));
@@ -7113,7 +7131,7 @@
                     ['Main attack', 'Throws Arabic letters (upright sentences with Long Shebab, 1 per second): 25 damage, 2 per second', 'None. Marks 1 kebab every 5 s so it takes 2.5× damage', 'None. "Shhhh!" every 6 s: 100 damage and knockback to 3 kebabs', 'None. "Tuck your chair in, sit on the floor!" every 8 s: 2 kebabs sink half into the floor for 3 s and cannot move'],
                     ['Ultimate', '🔥 SHEBAB: blast around him for 30% of each kebab\'s current health', '🔥 BOYS: 6 spinning pink circles', 'Random: 📐 Algebra Swarm or 📏 Beam Pull', 'None (🪪 Uniform Check with the buff)'],
                     ['Buff (1000 💚 each)', '📜 Long Shebab: sentences that hit 3 times', '📣 Whistle: replaces BOYS! (blasts the 3 kebabs nearest the school)', '🎯 Area Strike: replaces Algebra Swarm', '🪪 Uniform Check: gives him an ultimate'],
-                    ['Ultimate charges by', 'Killing blows (+20% each)', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds)', '- (with the buff: time, about 75 seconds)'],
+                    ['Ultimate charges by', 'Killing blows (+20% each) and +10% every wave you clear', 'Marking a kebab with Negative (+20% each)', 'Time (about 17 seconds) and each kebab he shushes (+2%)', '- (with the buff: time, about 75 seconds, and +5% every time he tucks)'],
                     ['Best at', 'Steady damage and finishing kebabs', 'Boosting everyone else\'s damage', 'Slowing kebabs and tanking hits', 'Freezing the leaders so everyone else can hit them']
                 ]) +
                 gTip('Each teacher has its own cap: up to <b>' + BASE_TOWER_CAP + ' Wise Sheikhs</b> (' + (BASE_TOWER_CAP + 6) + ' with both "More Teachers"), <b>5 Angry Teachers</b>, <b>7 Mathematicians</b> and <b>7 Arabic Experts</b>.') },
@@ -7140,7 +7158,7 @@
                 ]) +
                 '<h4>🔥 Ultimate: SHEBAB</h4>' +
                 gList([
-                    'Charges <b>only by landing killing blows</b>: each kebab he kills fills <b>20%</b>, so <b>5 kills</b> = full. Other teachers\' kills do not count.',
+                    'Charges by <b>landing killing blows</b>: each kebab he kills fills <b>20%</b>, so <b>5 kills</b> = full. Other teachers\' kills do not count. He also gains <b>+10% every wave you clear</b>.',
                     'When full he glows. Click him: he shakes, and a blast hits <b>every kebab within about 1.6 tiles</b> for <b>30% of its current health</b> (so it hurts big, healthy kebabs the most; damage upgrades do not change it, × 2.5 on marked kebabs).',
                     'After SHEBAB he is out of breath and <b>cannot attack for 1 second</b> (he shows "Catching breath..."). Plan your ultimate for when it is safe.',
                     'Click him anywhere inside the glowing ring. The click works even if you have a teacher selected to place.',
@@ -7193,7 +7211,7 @@
                 ]) +
                 '<h4>🎲 Ultimate (a chance every time)</h4>' +
                 gList([
-                    'Charges over time (about <b>17 seconds</b>). The first use is a <b>50/50</b>. After that, each use has a <b>60% chance to switch</b> to the other ultimate and a 40% chance to repeat the last one. The two are:',
+                    'Charges over time (about <b>17 seconds</b>), and <b>every kebab he shushes fills 2%</b> more. The first use is a <b>50/50</b>. After that, each use has a <b>60% chance to switch</b> to the other ultimate and a 40% chance to repeat the last one. The two are:',
                     '<b>📐 Algebra Swarm</b>: adds up to <b>6</b> math symbols that orbit him (90-140 px away, 20 max at once) <b>forever</b> until one touches a kebab. A touch removes <b>45% of that kebab\'s current health</b> (so it is great on tanky kebabs and bosses). It ignores damage upgrades but <b>is doubled on Negative-marked kebabs (70% of its current health)</b>.',
                     '<b>📏 Beam Pull</b>: ties a beam (a line, ray or segment) to the <b>3 kebabs closest to the school</b> and drags them back toward him for <b>5 seconds</b>, dealing <b>12 damage per second</b> (× damage upgrades). The pull is <b>slow</b>, so they only drift back a short way. Pulled kebabs cannot move forward.'
                 ]) +
@@ -7222,7 +7240,7 @@
                 '<h4>🪪 Buff: Uniform Check (' + BUFF_PRICE + ' 💚)</h4>' +
                 gList([
                     'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + ' (level 20, signed-in players). It gives him an <b>ultimate</b>.',
-                    'It <b>fills slowly</b>: about <b>75 seconds</b> by itself. When he glows, <b>click him</b>.',
+                    'It <b>fills slowly</b>: about <b>75 seconds</b> by itself, plus <b>5%</b> every time he tucks kebabs in. When he glows, <b>click him</b>.',
                     'He picks <b>5 random kebabs</b> anywhere on the map (bosses are never picked) and checks their uniform.',
                     'Each of the 5 has a <b>25% chance to be expelled</b> (🚫 it is removed and counts as a defeat, so you still get its coins).',
                     'The ones that pass are <b>sent to the second track</b>. The second track opens at <b>wave 10</b>, so before that nothing moves.',
@@ -7265,13 +7283,14 @@
                 gList([
                     '<b>Left-click</b> a hurt teacher <b>between waves</b>: they heal <b>5% of max HP</b> per click (green "+5% HP"). <b>Hold Alt and click</b> to heal a glowing teacher <b>without</b> using their ultimate.',
                     'You cannot heal during a wave. The game warns you if you try.',
-                    'If their ultimate is ready, clicking uses the ultimate instead of healing.'
+                    'If their ultimate is ready, clicking uses the ultimate instead of healing.',
+                    '<b>Save &amp; quit rule:</b> after you load a <b>saved battle</b> you <b>cannot heal teachers until you beat 1 wave</b>. A 🔒 message tells you, and the lock clears itself when the wave is cleared.'
                 ]) },
 
             { id: 'ults', group: 'teachers', icon: '⚡', title: 'Ultimates (all of them)', html: () =>
                 gTbl(['', 'SHEBAB', 'BOYS! (Whistle with the buff)', 'Algebra Swarm / Beam Pull'], [
                     ['Teacher', 'Wise Sheikh', 'Angry Teacher', 'Mathematician'],
-                    ['Charges by', 'Killing blows, +20% each', 'Marking a kebab, +20% each', 'Time (~17 s)'],
+                    ['Charges by', 'Killing blows, +20% each, and +10% per wave cleared', 'Marking a kebab, +20% each', 'Time (~17 s) + 2% per kebab shushed'],
                     ['Duration', 'Instant blast, then Wise Sheikh cannot attack for 1 s', '2 seconds', 'Swarm: until orbs hit. Area Strike: 1.25 s scan. Beam: 5 s'],
                     ['Damage', '30% of current HP to all within 1.6 tiles', '25 per blast to the 3 kebabs nearest the school, ~5 blasts a second', 'Swarm: 45% current HP each. Area Strike: 30% current HP. Beam: 12 per second'],
                     ['Scales with damage upgrades?', 'No', 'Yes', 'Swarm and Area Strike: no. Beam: yes'],
@@ -7612,7 +7631,6 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
-                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('intro', 'Game Intro') + ' page.'],
                     ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
@@ -7651,18 +7669,13 @@
                     'It needs an internet connection and a Google sign-in. Offline, the board just says it is unavailable.'
                 ]) },
 
-            { id: 'intro', group: 'more', icon: '✨', title: 'Game Intro', html: () =>
-                '<p>A small touch when you open the game. It can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
-                gTbl(['What', 'Details'], [
-                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.']
-                ]) },
-
             { id: 'fairplay', group: 'more', icon: '🛑', title: 'Fair Play (Autoclickers)', html: () =>
                 '<p>The game watches how you click kebabs. <b>Playing normally is never affected.</b> It only reacts to things a hand cannot do:</p>' +
                 gList([
                     '<b>Script clicks</b>: fake clicks made by a program instead of a real mouse or finger.',
-                    '<b>Impossible speed</b>: about 18+ clicks a second for 20 clicks in a row.',
-                    '<b>Robot rhythm</b>: 20 clicks in a row with almost perfectly equal gaps.'
+                    '<b>Impossible speed</b>: 16 or more clicks inside one second, or <b>20 clicks in a row with an average gap under 100 ms</b> (that catches autoclickers set anywhere from 0 to 100 ms).',
+                    '<b>Robot rhythm</b>: 20 clicks in a row with almost perfectly equal gaps.',
+                    '<b>Speed limit</b>: even if a clicker slips through, click damage can never land more than <b>11 times a second</b>.'
                 ]) +
                 '<h4>What happens</h4>' +
                 gList([
@@ -7775,11 +7788,12 @@
             { id: 'newkebabs', group: 'kebabs', icon: '⚽', title: 'Soccer & OZ Tag Kebabs (Quad)', html: () =>
                 '<p>The Quad adds two kebab variants. The plain kebabs are still there too.</p>' +
                 gTbl(['Kebab', 'Appears', 'Special'], [
-                    ['⚽ Soccer Kebab (the last piece of meat on its stick is a soccer ball)', 'Wave ' + SOCCER_KEBAB_WAVE + '+', 'Every second it has a <b>' + Math.round(SOCCER_DODGE_CHANCE * 100) + '% chance to dodge</b>. While dodging (<b>2 seconds</b>) it takes <b>no damage</b> and looks see-through with a DODGE! label. Then it needs a <b>5 second cooldown</b> before it can dodge again.'],
-                    ['🏉 OZ Tag Kebab (two coloured ribbons on its lower body)', 'Wave ' + OZ_KEBAB_WAVE + '+', 'It runs a <b>little faster than the other kebabs</b> of its wave (<b>+0.1</b> speed at the start, and <b>another +0.1</b> every time the kebab speed level goes up, so it is never too fast: 1.1, 1.7, 2.3, 2.9 and at most 3.5). Its two random-coloured ribbons are blown backwards by the wind, opposite to the way it runs.']
+                    ['⚽ Soccer Kebab (looks like a normal kebab)', 'Wave ' + SOCCER_KEBAB_WAVE + '+', 'Every second it has a <b>' + Math.round(SOCCER_DODGE_CHANCE * 100) + '% chance to dodge</b>. While dodging (<b>2 seconds</b>) it takes <b>no damage</b> and looks see-through with a DODGE! label. Then it needs a <b>5 second cooldown</b> before it can dodge again.'],
+                    ['🏉 OZ Tag Kebab (looks like a normal kebab)', 'Wave ' + OZ_KEBAB_WAVE + '+', 'It runs a <b>little faster than the other kebabs</b> of its wave (<b>+0.1</b> speed at the start, and <b>another +0.1</b> every time the kebab speed level goes up, so it is never too fast: 1.1, 1.7, 2.3, 2.9 and at most 3.5).']
                 ]) +
                 gList([
                     'Both have the same health, coin reward and XP as a normal kebab of that wave.',
+                    'They <b>wear nothing extra</b> (no ball, no ribbons), so tell them apart by how they move: the Soccer Kebab flickers see-through with a DODGE! label, and the OZ Tag Kebab is faster.',
                     'Tip: time your ultimates and Shhhh! for when a Soccer Kebab is <b>not</b> see-through.',
                     'Test Mode has buttons to spawn each variant.'
                 ]) },
@@ -7787,14 +7801,15 @@
             { id: 'profile', group: 'more', icon: '🎨', title: 'Profile & Customizing', html: () =>
                 '<p>Your profile (the button with your name, top right of the menu) has a banner with your character, plus five tabs: Overview, Achievements, Skins, ✨ Buffs (equip your Teacher Buffs here) and <b>Customize</b>.</p>' +
                 gList([
-                    '<b>Character</b>: pick Wise Sheikh, Angry Teacher or Mathematician. They wear the skin you have equipped.',
+                    '<b>Character</b>: pick Wise Sheikh, Angry Teacher or Mathematician. Your profile picture has its own <b>Avatar skin</b> (separate from the skins your placed teachers wear in battle).',
+                    '<b>Avatar skin</b> and <b>Teacher skins in battle</b>: in Customize, pick the skin your profile picture wears, and (separately) the skin each placed teacher wears in battle. You can only choose skins you own.',
                     '<b>Accessories</b>: a hat, glasses and a neck item. Buy them in the menu Shop under <b>Style</b>, then wear them here. Hats: Party, Beanie, Sports Cap, Top Hat, Graduation Cap, Golden Crown. Glasses: Round, Cool Shades, Heart. Neck: Bow Tie, Striped Scarf, Gold Medal.',
                     '<b>Backgrounds</b>: School Hall (free), Sunset, Galaxy, Soccer Pitch, Kebab Shop, Ocean and Candy Land. The background colours your banner and the whole profile screen.',
                     'Your look is saved on your account and syncs to the cloud. Your character also shows next to your level on the main menu.'
                 ]) },
 
             { id: 'skins', group: 'more', icon: '🎽', title: 'Skins', html: () =>
-                '<p>Skins change how a teacher looks. Every teacher of that type wears the skin you equip, and it shows in the main menu scene too.</p>' +
+                '<p>Skins change how a teacher looks. Every <b>placed teacher</b> of that type wears the skin you equip, and it shows in the main menu scene too. Your <b>profile picture</b> has its own skin, picked in the Customize tab, so the two are separate.</p>' +
                 gList([
                     '<b>Fancy Suit</b> (all 4 teachers): black suit with a white shirt and red tie. Bought in the main menu shop for <b>' + SKIN_PRICE_SUIT + ' 💚</b> each.',
                     '<b>Field Trip</b> (Wise Sheikh): green jacket. Earned by lining up 4 Wise Sheikhs.',
@@ -8056,6 +8071,62 @@
             adminRender();
         }
         function adminSet(k, v) { _adm[k] = v; adminRender(); }
+        // ----- Suspensions (admin): a custom number of days and a reason, stored on the player's cloud document -----
+        function admSuspendHtml(v) {
+            const on = v.suspendedUntil && v.suspendedUntil > Date.now();
+            const id = String(v._id).replace(/[^A-Za-z0-9_-]/g, '');
+            let h = '<div style="margin-top:10px;padding:10px;border-radius:10px;background:rgba(255,80,80,.12);border:1px solid rgba(255,120,120,.4)"><b>🚫 Suspension</b>';
+            if (on) h += '<div style="margin:4px 0;color:#ffb3b3">Suspended until <b>' + new Date(v.suspendedUntil).toLocaleString() + '</b>' + (v.suspendReason ? ' · Reason: ' + escapeHtml(v.suspendReason) : '') + '</div>';
+            h += '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px">Days: <input id="admSDays" type="number" min="0.01" step="any" value="7" class="account-input" style="width:90px;margin:0"> ' +
+                [1, 3, 7, 30, 365].map(d => '<button class="back-btn" style="padding:4px 10px;margin:0" onclick="document.getElementById(\'admSDays\').value=' + d + '">' + d + 'd</button>').join('') + '</div>';
+            h += '<input id="admSReason" class="account-input" maxlength="200" placeholder="Reason (shown to the player)" style="width:100%;margin:6px 0 0" value="' + escapeHtml(on ? (v.suspendReason || '') : '') + '">';
+            h += '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="back-btn" style="margin:0" onclick="adminSuspend(\'' + id + '\')">' + (on ? 'Update suspension' : 'Suspend') + '</button>' + (on ? '<button class="back-btn" style="margin:0" onclick="adminUnsuspend(\'' + id + '\')">Lift suspension</button>' : '') + '</div></div>';
+            return h;
+        }
+        function adminSuspend(uid) {
+            if (!isAdminAccount()) return;
+            const days = parseFloat((document.getElementById('admSDays') || {}).value);
+            if (!(days > 0)) { showToast('Enter a number of days above 0', 2400); return; }
+            const p = (_adm.players || []).find(x => x._id === uid);
+            if (p && String(p.username || '').toLowerCase() === 'jaiden') { showToast('You cannot suspend the admin account', 2400); return; }
+            const reason = ((document.getElementById('admSReason') || {}).value || '').trim().slice(0, 200);
+            const until = Date.now() + Math.round(days * 864e5);
+            firebase.firestore().collection('players').doc(uid).set({ suspendedUntil: until, suspendReason: reason, suspendedAt: Date.now() }, { merge: true }).then(() => {
+                if (p) { p.suspendedUntil = until; p.suspendReason = reason; }
+                showToast('🚫 Suspended for ' + days + ' day(s)', 2600); adminRender();
+            }).catch(e => showToast('Could not suspend (' + (e && e.code || 'error') + '). Check the Firestore rules.', 4200));
+        }
+        function adminUnsuspend(uid) {
+            if (!isAdminAccount()) return;
+            firebase.firestore().collection('players').doc(uid).set({ suspendedUntil: 0, suspendReason: '' }, { merge: true }).then(() => {
+                const p = (_adm.players || []).find(x => x._id === uid); if (p) { p.suspendedUntil = 0; p.suspendReason = ''; }
+                showToast('✅ Suspension lifted', 2200); adminRender();
+            }).catch(e => showToast('Could not lift it (' + (e && e.code || 'error') + ')', 3000));
+        }
+        // ----- Enforcement: a suspended Google-linked account is blocked while it is online -----
+        var SUSP = { uid: '', until: 0, reason: '' };
+        function suspCheck() {
+            try {
+                const acc = getCurrentAccount();
+                if (!acc || !acc.cloudUid || isAdminAccount() || typeof firebase === 'undefined' || !cloudAuthReady || !firebase.auth().currentUser) return;
+                firebase.firestore().collection('players').doc(acc.cloudUid).get().then(d => {
+                    const v = (d && d.data && d.data()) || {};
+                    if (v.suspendedUntil && v.suspendedUntil > Date.now()) { SUSP = { uid: acc.cloudUid, until: v.suspendedUntil, reason: v.suspendReason || '' }; suspShow(); }
+                    else SUSP = { uid: '', until: 0, reason: '' };
+                }).catch(() => {});
+            } catch (e) {}
+        }
+        function suspBlocked() { const a = getCurrentAccount(); return !!(a && a.cloudUid && SUSP.uid === a.cloudUid && SUSP.until > Date.now()); }
+        function suspShow() {
+            const el = document.getElementById('suspOverlay'); if (!el) return;
+            const left = Math.max(1, Math.ceil((SUSP.until - Date.now()) / 864e5));
+            document.getElementById('suspText').innerHTML = 'Your account is suspended until <b>' + new Date(SUSP.until).toLocaleString() + '</b> (' + left + ' day' + (left === 1 ? '' : 's') + ' left).' + (SUSP.reason ? '<br><br><b>Reason:</b> ' + escapeHtml(SUSP.reason) : '');
+            try { if (game.waveInProgress) game.paused = true; } catch (e) {}
+            el.classList.remove('hidden');
+        }
+        function suspOk() { document.getElementById('suspOverlay').classList.add('hidden'); try { logOutAccount(); } catch (e) {} }
+        setTimeout(suspCheck, 4000);
+        setInterval(suspCheck, 120000);
         function adminRender() {
             const el = document.getElementById('adminBody'); if (!el) return;
             const fmt = ms => ms ? new Date(ms).toLocaleString() : '-';
@@ -8072,7 +8143,7 @@
             if (!_adm.players) { el.innerHTML = h + '<div>Loading...</div>'; return; }
             const now = Date.now(), DAY = 864e5;
             const rows = _adm.players.map(v => ({
-                v: v, name: v.username || '?', xp: v.xp || 0, lvl: levelInfo(v.xp || 0).level, best: v.bestWave || 0, pos: v.positives || 0,
+                v: v, name: ((v.suspendedUntil && v.suspendedUntil > Date.now()) ? '🚫 ' : '') + (v.username || '?'), xp: v.xp || 0, lvl: levelInfo(v.xp || 0).level, best: v.bestWave || 0, pos: v.positives || 0,
                 ach: Object.keys((v.ach && v.ach.done) || {}).length, skins: (v.skins || []).length, buffs: Object.keys(v.buffs || {}).length,
                 made: adminTs(v.createdAt), last: adminTs(v.updatedAt)
             }));
@@ -8086,7 +8157,7 @@
                 '<select class="account-input" style="max-width:200px;margin:0" onchange="adminSet(\'sort\',this.value)">' + [['last', 'Last active'], ['made', 'Newest'], ['best', 'Best wave'], ['xp', 'Level'], ['pos', 'Positives'], ['ach', 'Achievements'], ['name', 'Name A-Z']].map(o => '<option value="' + o[0] + '"' + (key === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></div>';
             h += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:#9fb3c8"><th>Player</th><th>Lvl</th><th>Best wave</th><th>💚</th><th>🏆</th><th>🎽</th><th>✨</th><th>Joined</th><th>Last active</th></tr>' +
                 list.map(r => '<tr style="border-top:1px solid rgba(255,255,255,.12);cursor:pointer" onclick="adminSet(\'open\',_adm.open===\'' + r.v._id + '\'?\'\':\'' + r.v._id + '\')"><td><b>' + escapeHtml(r.name) + '</b>' + (r.v.earlyAccess ? ' <span style="color:#FFD700;font-size:10px">EARLY</span>' : '') + '</td><td>' + r.lvl + '</td><td>' + r.best + '</td><td>' + r.pos + '</td><td>' + r.ach + '</td><td>' + r.skins + '</td><td>' + r.buffs + '</td><td>' + (r.made ? new Date(r.made).toLocaleDateString() : '-') + '</td><td>' + (r.last ? new Date(r.last).toLocaleString() : '-') + '</td></tr>' +
-                    (_adm.open === r.v._id ? '<tr><td colspan="9" style="background:rgba(0,0,0,.25);padding:8px 12px;color:#cfe0ee">XP ' + r.xp + ' · saved battle: ' + (r.v.savedGame ? 'yes (wave ' + (r.v.savedGame.wave || '?') + ')' : 'no') + ' · buffs: ' + (Object.keys(r.v.buffs || {}).join(', ') || 'none') + ' · skins: ' + ((r.v.skins || []).join(', ') || 'none') + ' · daily streak: ' + ((r.v.daily && r.v.daily.streak) || 0) + '</td></tr>' : '')).join('') + '</table></div>' +
+                    (_adm.open === r.v._id ? '<tr><td colspan="9" style="background:rgba(0,0,0,.25);padding:8px 12px;color:#cfe0ee">XP ' + r.xp + ' · saved battle: ' + (r.v.savedGame ? 'yes (wave ' + (r.v.savedGame.wave || '?') + ')' : 'no') + ' · buffs: ' + (Object.keys(r.v.buffs || {}).join(', ') || 'none') + ' · skins: ' + ((r.v.skins || []).join(', ') || 'none') + ' · daily streak: ' + ((r.v.daily && r.v.daily.streak) || 0) + admSuspendHtml(r.v) + '</td></tr>' : '')).join('') + '</table></div>' +
                 (list.length ? '' : '<div style="color:#9fb3c8;margin-top:8px">No players match.</div>');
             el.innerHTML = h;
             if (_adm.focus) { _adm.focus = 0; const inp = el.querySelector('input'); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }
@@ -8586,7 +8657,6 @@
             sfx: true,
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
-            introAnim: true,        // the title letters pop in when the game is first opened
             guideMode: false,       // Guide Mode: circles and points at things while you play
             guideTeam: false,       // Guide Mode inside Team Up
             guideVs: false,         // Guide Mode inside VS
@@ -10041,6 +10111,7 @@
             mergedWaves: 1,
             spawnQueue: [],
             freeTeachersLeft: 2,
+            healLock: false,
             paused: false,
             autoStartFrames: 0,
             hover: null,
@@ -10066,6 +10137,7 @@
             arabic: { icon: '🪪', name: 'Uniform Check', teacher: 'Arabic Expert', price: BUFF_PRICE,
                 desc: 'Gives him an <b>ultimate</b> that fills slowly (about <b>75 seconds</b>). He picks <b>5 random kebabs</b> and checks their uniform: each has a <b>25% chance to be expelled</b>. The others are sent to the <b>second track</b>.' }
         };
+        const MATH_SHUSH_CHARGE = 2, ARABIC_TUCK_CHARGE = 5, SHEIKH_WAVE_CHARGE = 10;   // % of an ultimate: per kebab Math shushes, per Arabic Expert tuck (needs his buff), per cleared wave for each Wise Sheikh
         const ARABIC_ULT_RATE = 100 / (75 * 60);   // Uniform Check charges slowly: about 75 seconds
         const UNIFORM_PICKS = 5, UNIFORM_EXPEL_CHANCE = 0.25;
         const SHEBAB_SENTENCES = ['يا شباب', 'السلام عليكم', 'ما شاء الله', 'بسم الله', 'الحمد لله', 'هيا بنا يا شباب', 'أحسنت يا شباب', 'العلم نور'];
@@ -10206,45 +10278,6 @@
         }
         // ===== END WELCOME GUIDE =====
 
-        // ===== GAME INTRO (the title letters pop in when the game is first opened) =====
-        // Plays once per visit (per browser tab session), before the disclaimer / Welcome Guide. Click or any key skips it.
-        // The main menu waits (its slide-in animations are paused) and then slides in as the intro fades away.
-        const TITLE_INTRO_KEY = 'ugd_intro_seen';
-        var _tiTimers = [], _tiCb = null, _tiOn = false;
-        function tiLater(fn, ms) { _tiTimers.push(setTimeout(fn, ms)); }
-        function maybeShowTitleIntro(done) {
-            _tiCb = done;
-            let seen = false;
-            try { seen = sessionStorage.getItem(TITLE_INTRO_KEY) === '1'; } catch (e) {}
-            const ov = document.getElementById('titleIntro'), menu = document.getElementById('menuScreen');
-            if (!ov || seen || settings.introAnim === false || !menu || menu.classList.contains('hidden')) { _tiCb = null; if (done) done(); return; }
-            try { sessionStorage.setItem(TITLE_INTRO_KEY, '1'); } catch (e) {}
-            const box = document.getElementById('titleIntroLetters');
-            let n = 0, h = '';
-            [['UNITY', 'il-a'], ['DEFENSE', 'il-b'], ['REMASTERED', 'il-c']].forEach(r => {
-                h += '<div class="il-row ' + r[1] + '">';
-                r[0].split('').forEach(ch => { h += '<span class="il" style="--i:' + (n++) + '">' + ch + '</span>'; });
-                h += '</div>';
-            });
-            const landed = 350 + n * 75 + 500;
-            box.innerHTML = h + '<div class="il-tag" style="--d:' + landed + 'ms">SHEBABS VS KEBABS</div>';
-            document.body.classList.add('title-intro-hold');
-            ov.classList.remove('hidden', 'out'); _tiOn = true;
-            tiLater(titleIntroFinish, landed + 1300);
-        }
-        function titleIntroFinish() {
-            if (!_tiOn) return;
-            _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
-            const ov = document.getElementById('titleIntro');
-            ov.classList.add('out');
-            document.body.classList.remove('title-intro-hold');          // the menu slides in underneath the fading intro
-            setTimeout(() => { ov.classList.add('hidden'); ov.classList.remove('out'); }, 650);
-            const cb = _tiCb; _tiCb = null;
-            if (cb) setTimeout(cb, 700);
-        }
-        function titleIntroSkip() { if (_tiOn) titleIntroFinish(); }
-        document.addEventListener('keydown', () => titleIntroSkip());
-        // ===== END GAME INTRO =====
 
         // ===== LEADERBOARD (most waves survived / most Positives) =====
         // Public Firestore collection "leaderboard" (one document per Google-linked account, written by that account only).
@@ -12634,7 +12667,7 @@
                         this.shebabCharge = Math.min(this.shebabCharge + 0.1, this.shebabMax);
                     }
                 }
-                // Wise Sheikh charges his ultimate only by landing killing blows (see shoot())
+                // Wise Sheikh charges his ultimate by landing killing blows (see shoot()) and +10% every wave cleared
 
                 this.tryShoot();
             }
@@ -12663,6 +12696,7 @@
             tuck() {
                 const targets = this.getTuckTargets();
                 if (!targets.length) return false;
+                if (hasBuff('arabic') && this.shebabCharge < this.shebabMax) this.shebabCharge = Math.min(this.shebabCharge + ARABIC_TUCK_CHARGE, this.shebabMax);
                 this.tuckT = 50; this.leanTimer = 14; this.leanDir = targets[0].x >= this.x ? 1 : -1;
                 for (const e of targets) {
                     e.stuckT = 180;   // 3 seconds half in the floor
@@ -12677,6 +12711,7 @@
                 const targets = this.getShushTargets();
                 if (targets.length === 0) return false; // nothing in range: no shush at all
                 achStat('shushes', targets.length);
+                if (this.shebabCharge < this.shebabMax) this.shebabCharge = Math.min(this.shebabCharge + MATH_SHUSH_CHARGE * targets.length, this.shebabMax);   // every kebab he shushes fills a little of his ultimate
                 this.gestureTimer = 40;
                 this.gestureType = 'shh';
                 this.shushT = 40; this.shushDir = targets[0].x >= this.x ? 1 : -1;   // leans in and sticks his head up into the kebab
@@ -14086,7 +14121,7 @@
             Object.assign(game, { health: 30, maxHealth: 30, sentrals: 0, wave: 1, selectedTower: null, towers: [], enemies: [], particles: [], gameOver: false, waveInProgress: false, waveSpawned: 0,
                 frameCount: 0, purchasedUpgrades: {}, medicHeal: 0, damageMultiplier: 1, attackSpeedMultiplier: 1, schoolHurt: false, towerCapBonus: 0, mathUnlocked: false,
                 kills: 0, bossKills: 0, coinsEarned: 0, placed: 0, lose: null, lastStand: null, lastStandUsed: false, lastStandRes: null, freeTeacher: null, freeTeacherLeft: 0,
-                shopsOpened: 0, mergedWaves: 1, spawnQueue: [], freeTeachersLeft: vs ? 0 : 2, freeGuest: vs ? 0 : 2, paused: false, autoStartFrames: 0, trackAnim: null, introActive: false, testMode: false, devMode: false, guideHold: false });
+                shopsOpened: 0, mergedWaves: 1, spawnQueue: [], freeTeachersLeft: vs ? 0 : 2, healLock: false, freeGuest: vs ? 0 : 2, paused: false, autoStartFrames: 0, trackAnim: null, introActive: false, testMode: false, devMode: false, guideHold: false });
             game.teamUp = !vs; game.vs = null;
             applyMap(vs ? 'vs' : 'teamup');
             if (vs) {
@@ -14438,7 +14473,7 @@
         //  - a click speed no hand can keep up (about 18+ clicks a second for 20 clicks in a row),
         //  - a robot-steady rhythm (20 clicks in a row where the gaps differ by only a few thousandths of a second).
         // Caught: click damage is off for 45 s (90 s, 135 s... if it happens again). Teachers keep fighting. The admin and test modes are exempt.
-        const AC = { t: [], lockUntil: 0, strikes: 0, lastWarn: 0 };
+        const AC = { t: [], hits: [], lockUntil: 0, strikes: 0, lastWarn: 0 };
         function acExempt() { return !!(game.testMode || game.devMode || isAdminAccount()); }
         function acLocked() { return performance.now() < AC.lockUntil; }
         function acFlag() {
@@ -14451,16 +14486,26 @@
         function acRecord(e) {
             if (acExempt()) return;
             if (e.isTrusted === false) { acFlag(); return; }
-            const t = AC.t, now = e.timeStamp || performance.now();
-            if (t.length && now - t[t.length - 1] > 1200) t.length = 0;     // a pause resets the count
-            t.push(now); if (t.length > 21) t.shift();
-            if (t.length < 21) return;
-            let sum = 0; const iv = [];
-            for (let i = 1; i < t.length; i++) { const d = t[i] - t[i - 1]; iv.push(d); sum += d; }
-            const mean = sum / iv.length;
-            let v = 0; for (const d of iv) v += (d - mean) * (d - mean);
-            const sd = Math.sqrt(v / iv.length);
-            if (mean < 55 || (mean < 700 && sd < 3.5)) acFlag();
+            const now = performance.now(), t = AC.t;           // our own clock, so batched or fake-timed clicks cannot hide
+            if (t.length && now - t[t.length - 1] > 1200) t.length = 0;   // a pause resets the count
+            t.push(now); if (t.length > 40) t.shift();
+            let inSec = 0; for (let i = t.length - 1; i >= 0 && now - t[i] <= 1000; i--) inSec++;
+            if (inSec >= 16) { acFlag(); return; }                       // 16+ clicks inside one second
+            if (t.length >= 20) {
+                const w = t.slice(-20), iv = []; let sum = 0;
+                for (let i = 1; i < w.length; i++) { const d = w[i] - w[i - 1]; iv.push(d); sum += d; }
+                const mean = sum / iv.length;
+                let v = 0; for (const d of iv) v += (d - mean) * (d - mean);
+                const sd = Math.sqrt(v / iv.length);
+                if (mean < 100 || (mean < 700 && sd < 3.5)) acFlag();    // an average gap under 100 ms (0-100 ms autoclickers), or a robot-steady rhythm
+            }
+        }
+        // Even if something slips through, click damage can never go faster than a very fast human: 11 hits a second at most.
+        function acRateOk() {
+            const now = performance.now();
+            AC.hits = AC.hits.filter(x => now - x < 1000);
+            if (AC.hits.length >= 11) return false;
+            AC.hits.push(now); return true;
         }
 
         canvas.addEventListener('click', (e) => {
@@ -14520,6 +14565,7 @@
                     const dist = Math.hypot(enemy.x - worldX, enemy.y - y);
                     if (dist < 25) {
                         if (acLocked()) { const nw = performance.now(); if (nw - AC.lastWarn > 4000) { AC.lastWarn = nw; showToast('🛑 Click damage is off for ' + Math.ceil((AC.lockUntil - nw) / 1000) + ' s (autoclicker detected).', 2500); } return; }
+                        if (!acRateOk()) return;
                         enemy.health -= clickDamage() * (enemy.nsDamageMultiplier || 1);
                         playSound(300, 0.05, 'square');
                         return;
@@ -14593,6 +14639,7 @@
         // Left-click a hurt teacher: heal 5% of their max HP per click
         function healTower(tower) {
             if (isGuest()) { netAct({ t: 'heal', col: tower.col, row: tower.row }); return; }
+            if (game.healLock) { if (tower.hp < tower.maxHp) showToast('🔒 You cannot heal teachers until you beat 1 wave after loading a saved battle.', 2800); return; }
             if (game.waveInProgress) {
                 if (tower.hp < tower.maxHp) showToast('⚠️ You can only heal teachers between waves!');
                 return;
@@ -15094,6 +15141,8 @@
                 const prevWave = game.wave;
                 game.wave += wavesCleared;
                 { const wb = WAVE_COIN_BONUS * wavesCleared; if (!game.testMode) game.sentrals += wb; game.coinsEarned += wb; setHudText('sentrals', game.testMode ? '∞' : Math.floor(game.sentrals)); showToast('🪙 Wave bonus +' + wb + ' coins', 1800); }
+                for (const tw of game.towers) if (tw.type === 'sheikh' && tw.shebabCharge < tw.shebabMax) tw.shebabCharge = Math.min(tw.shebabCharge + SHEIKH_WAVE_CHARGE * wavesCleared, tw.shebabMax);   // Wise Sheikh: +10% every wave cleared
+                if (game.healLock) { game.healLock = false; showToast('🩹 You can heal your teachers again.', 2600); }
                 if (game.medicHeal > 0 && game.health < game.maxHealth) {   // Medic: heal the school each wave
                     game.health = Math.min(game.maxHealth, game.health + game.medicHeal * wavesCleared);
                     setHudText('health', game.health);
@@ -15848,7 +15897,6 @@
             setVal('set_guideTeam', settings.guideTeam);
             setVal('set_guideVs', settings.guideVs);
             setVal('set_menuAnim', settings.menuAnim);
-            setVal('set_introAnim', settings.introAnim);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
             setVal('set_bgPlay', settings.bgPlay);
@@ -16450,40 +16498,6 @@
                     }
                 }
 
-                if (kind === 'soccer') {
-                    // the last kebab meat on the stick is a soccer ball
-                    const bx = x + positions[2], by = y - 5 + 2 * 10;
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.beginPath(); ctx.arc(bx, by, 10.5, 0, Math.PI * 2); ctx.fill();
-                    ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke();
-                    ctx.fillStyle = '#111';
-                    ctx.beginPath();
-                    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * Math.PI * 2 / 5; ctx.lineTo(bx + Math.cos(a) * 4.3, by + Math.sin(a) * 4.3); }
-                    ctx.closePath(); ctx.fill();
-                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.4;
-                    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * Math.PI * 2 / 5; ctx.beginPath(); ctx.moveTo(bx + Math.cos(a) * 4.3, by + Math.sin(a) * 4.3); ctx.lineTo(bx + Math.cos(a) * 9.6, by + Math.sin(a) * 9.6); ctx.stroke(); }
-                    if (enemy.hitFlash > 0) { ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; ctx.beginPath(); ctx.arc(bx, by, 10, 0, Math.PI * 2); ctx.fill(); }
-                } else if (kind === 'oz') {
-                    // Oz Tag: just two random-coloured ribbons on the lower body, blown
-                    // back (the opposite way to where it is running) by the wind
-                    const cols = enemy.ozColors || ['#FF3B3B', '#38D84A'];
-                    const bdx = -(enemy.mdx === undefined ? 1 : enemy.mdx), bdy = -(enemy.mdy || 0);   // blowing direction
-                    const px = -bdy, py = bdx;                                                          // sideways to it
-                    const anchors = [[x + positions[2] - 2, y - 5 + 20 - 1], [x - 5, y + 19]];
-                    ctx.lineCap = 'round';
-                    for (let r = 0; r < 2; r++) {
-                        const ax = anchors[r][0], ay = anchors[r][1];
-                        const len = 30 - r * 4, fl = lowFx() ? 0 : Math.sin(animT * 0.55 + r * 2.1);
-                        const ex = ax + bdx * len + px * fl * 2.5, ey = ay + bdy * len + py * fl * 2.5 + 3;     // droops a touch
-                        const mx = ax + bdx * len * 0.5 + px * fl * 5, my = ay + bdy * len * 0.5 + py * fl * 5 + 1;
-                        ctx.strokeStyle = '#000'; ctx.lineWidth = 7;
-                        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke();
-                        ctx.strokeStyle = cols[r]; ctx.lineWidth = 4;
-                        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke();
-                    }
-                    ctx.lineCap = 'butt';
-                }
-
                 ctx.restore();
                 if (buried) {
                     ctx.restore();
@@ -17002,7 +17016,7 @@
         requestAnimationFrame(menuBgLoop);
 
         updateLastUpdateDateDisplay();
-        maybeShowTitleIntro(maybeShowDisclaimers);
+        maybeShowDisclaimers();
         gmRefreshBtn();
 
         applySettings();

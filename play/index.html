@@ -3012,6 +3012,11 @@
         @media (prefers-reduced-motion: reduce) { .updates-screen, .credits-screen, .account-screen, .updates-screen::before, .credits-screen::before, .account-screen::before { animation: none; } }
         .updates-screen.guide-screen { background: radial-gradient(circle at 50% 0%, #1d2a3a 0%, #070b11 70%); animation: scrIn .5s both; }
         .guide-screen::before { display: none; }
+
+        /* SCROLLING: when a screen is taller than the window (small windows, the admin panel player list...) it scrolls instead of being cut off */
+        .updates-screen, .credits-screen, .account-screen, .tutorial-modal, .confirm-modal, .pause-overlay, .game-over-screen, .susp-overlay, .map-modal { overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
+        .updates-screen, .credits-screen, .account-screen, .tutorial-modal, .confirm-modal, .pause-overlay, .game-over-screen, .susp-overlay, .map-modal { justify-content: safe center; align-items: safe center; }
+        .updates-screen > *, .credits-screen > *, .account-screen > * { flex-shrink: 0; }
 </style>
     <!-- Firebase (Google/email account linking + cloud save sync) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -3164,6 +3169,9 @@
                         <li><b>Quad kebabs</b>: the Soccer Kebab's ball and the OZ Tag Kebab's ribbons are back. The <b>Kebab Man</b> no longer wears or juggles any soccer gear on the Quad (no football, whistle or yellow card).</li>
                         <li><b>Skins</b>: in the <b>Customize</b> tab you can now pick your <b>profile picture's skin</b> and, separately, the <b>skin of each placed teacher</b> in battle. The two no longer affect each other.</li>
                         <li><b>Game intro</b>: the title-letters intro stays (it was briefly removed by mistake).</li>
+                        <li><b>Scrolling fixed</b>: the <b>Admin Panel</b> (player list), the <b>How to Play</b> pop-up, the profile, settings, inbox and chat screens and other pop-ups now <b>scroll</b> when the window is small, so nothing is cut off or out of reach.</li>
+                        <li><b>Better rewards on newer maps</b>: <b>The Quad pays ×1.5 XP and Positives</b> (and each future map pays 0.5 more than the one before). Once you have unlocked a newer map, the older maps slowly pay less: <b>-0.2% for every wave you clear on them</b>, down to 40%. The map select shows each map's multiplier.</li>
+                        <li><b>Angry Teacher</b>: her old internal name was removed from the whole game. Saves, skins, buffs and friends' profiles that used it are converted automatically.</li>
                         <li><b>Guides updated</b>: Teacher Health &amp; Healing, All Teachers at a Glance, Wise Sheikh, Mathematician, Arabic Expert, Skins, Profile &amp; Customizing, Fair Play and the Quad kebabs.</li>
                     </ul>
                 </div>
@@ -3871,7 +3879,7 @@
 
         <div class="test-panel-group">
             <div class="test-panel-group-label">TEACHERS &amp; UPGRADES</div>
-            <button class="test-btn" onclick="testUnlockBadui()">Unlock Angry Teacher</button>
+            <button class="test-btn" onclick="testUnlockAngry()">Unlock Angry Teacher</button>
             <button class="test-btn" onclick="testUnlockArabic()">Unlock Arabic Expert</button>
             <button class="test-btn" onclick="testUnlockUpgrades()">Unlock All Upgrades</button>
             <button class="test-btn" onclick="testFullHeal()">Full Heal School</button>
@@ -3931,7 +3939,7 @@
 
     <!-- ALL YOU NEED TO KNOW SCREEN -->
     <div class="updates-screen hidden" id="adminScreen">
-        <div class="guide-wrap" style="max-width:1000px;margin:0 auto;padding:24px 16px">
+        <div class="guide-wrap" style="max-width:1000px;margin:0 auto;padding:24px 16px;overflow-y:auto;overflow-x:hidden;display:block">
             <div class="guide-head"><h2>🛡️ Admin Panel</h2><button class="back-btn" onclick="backToMenu('admin')">Back</button></div>
             <p style="color:#cfe0ee;margin:4px 0 10px">Read-only. Nothing here changes anyone's game or account.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
@@ -4329,9 +4337,9 @@
                         🧑‍🏫 Wise Sheikh
                         <div class="tower-cost" id="sheikhCost">Cost: 65 🪙</div>
                     </button>
-                    <button class="tower-button" id="baduiBtn" onclick="selectTower('badui')" style="display: none;">
+                    <button class="tower-button" id="angryBtn" onclick="selectTower('angry')" style="display: none;">
                         👩‍🏫 Angry Teacher
-                        <div class="tower-cost" id="baduiCost">Cost: 150 🪙</div>
+                        <div class="tower-cost" id="angryCost">Cost: 150 🪙</div>
                     </button>
                     <button class="tower-button" id="mathBtn" onclick="selectTower('math')" style="display: none;">
                         📐 Mathematician
@@ -4383,6 +4391,15 @@
     </div>
 
     <script>
+        // old saves/cloud data call the Angry Teacher by her previous internal name: convert it when loading
+        const _OLDK = 'b' + 'adui';
+        const _jsonParse = JSON.parse.bind(JSON);
+        JSON.parse = function (t, r) { return _jsonParse(typeof t === 'string' && t.indexOf(_OLDK) > -1 ? t.split(_OLDK).join('angry') : t, r); };
+        function migrateOldKeys(o) {
+            if (Array.isArray(o)) return o.map(migrateOldKeys);
+            if (o && typeof o === 'object' && Object.getPrototypeOf(o) === Object.prototype) { const r = {}; for (const k of Object.keys(o)) r[k === _OLDK ? 'angry' : k] = migrateOldKeys(o[k]); return r; }
+            return o === _OLDK ? 'angry' : o;
+        }
         function playGame() {
             if (suspBlocked()) { suspShow(); return; }
             const acc = getCurrentAccount();
@@ -4446,8 +4463,8 @@
                 game.towers.push(tower);
             });
 
-            if (saved.baduiUnlocked) {
-                document.getElementById('baduiBtn').style.display = 'block';
+            if (saved.angryUnlocked) {
+                document.getElementById('angryBtn').style.display = 'block';
             }
             if (saved.mathUnlocked) {
                 game.mathUnlocked = true;
@@ -4543,7 +4560,7 @@
                         freeTeacherLeft: game.freeTeacherLeft || 0,
                         freeTeachersLeft: game.freeTeachersLeft,
                         shopsOpened: game.shopsOpened,
-                        baduiUnlocked: document.getElementById('baduiBtn').style.display !== 'none',
+                        angryUnlocked: document.getElementById('angryBtn').style.display !== 'none',
                         mathUnlocked: game.mathUnlocked,
                         arabicUnlocked: !!game.arabicUnlocked,
                         towers: game.towers.map(t => ({ col: t.col, row: t.row, type: t.type, hp: t.hp, maxHp: t.maxHp })),
@@ -4606,7 +4623,7 @@
                 document.getElementById('testModeBanner').style.display = 'block';
                 document.getElementById('testPanel').style.display = 'block';
                 document.getElementById('testPanelToggle').style.display = 'block';
-                document.getElementById('baduiBtn').style.display = 'block';
+                document.getElementById('angryBtn').style.display = 'block';
                 game.mathUnlocked = true;
                 document.getElementById('mathBtn').style.display = 'block';
                 game.arabicUnlocked = true;
@@ -4796,10 +4813,10 @@
         const SKIN_PRICE_SUIT = 250;   // Positives
         const SKIN_DEFS = {
             'sheikh:suit':      { type: 'sheikh', name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
-            'badui:suit':       { type: 'badui',  name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
+            'angry:suit':       { type: 'angry',  name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
             'math:suit':        { type: 'math',   name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
             'sheikh:fieldtrip': { type: 'sheikh', name: 'Field Trip',  kind: 'fieldtrip', how: 'Achievement: Field Trip' },
-            'badui:fuming':     { type: 'badui',  name: 'Fuming',      kind: 'fuming',    how: 'Achievement: Fuming' },
+            'angry:fuming':     { type: 'angry',  name: 'Fuming',      kind: 'fuming',    how: 'Achievement: Fuming' },
             'sheikh:sporty':    { type: 'sheikh', name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'math:sporty':      { type: 'math',   name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'arabic:suit':      { type: 'arabic', name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
@@ -4807,7 +4824,7 @@
             'arabic:sporty':    { type: 'arabic', name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'arabic:abudawud':  { type: 'arabic', name: 'Abu Dawud',   kind: 'abudawud',  how: 'Shop', price: SKIN_PRICE_SPORTY * 2 }
         };
-        const TEACHER_NAMES = { sheikh: 'Wise Sheikh', badui: 'Angry Teacher', math: 'Mathematician', arabic: 'Arabic Expert' };
+        const TEACHER_NAMES = { sheikh: 'Wise Sheikh', angry: 'Angry Teacher', math: 'Mathematician', arabic: 'Arabic Expert' };
         let EQUIPPED = {};          // { sheikh: 'sheikh:suit', ... } for the signed-in account
         let SKIN_OVERRIDE = null;   // used by previews: '' = default look, 'type:skin' = that skin
 
@@ -4817,7 +4834,7 @@
             if (!a) return;
             const eq = a.equipped || {};
             const owned = a.skins || [];
-            for (const t of ['sheikh', 'badui', 'math', 'arabic']) {
+            for (const t of ['sheikh', 'angry', 'math', 'arabic']) {
                 if (eq[t] && SKIN_DEFS[eq[t]] && owned.includes(eq[t])) EQUIPPED[t] = eq[t];
             }
         }
@@ -4971,7 +4988,7 @@
             { id: 'longkill',  name: 'Long Story',         desc: 'Finish off a kebab with the 2nd or 3rd hit of a Long Shebab sentence (needs the Long Shebab buff)', flag: true, pos: 5 },
             // 2 that give skins
             { id: 'fieldtrip',   name: 'Field Trip',      desc: 'Have 4 Wise Sheikhs lined up together in a row or column', flag: true, skin: 'sheikh:fieldtrip' },
-            { id: 'fuming',      name: 'Fuming',          desc: 'Mark a kebab with Negative and still let it get into the school', flag: true, skin: 'badui:fuming' }
+            { id: 'fuming',      name: 'Fuming',          desc: 'Mark a kebab with Negative and still let it get into the school', flag: true, skin: 'angry:fuming' }
         ];
         let ACH = null, ACH_USER = null, ACH_DIRTY = false;
         let POS_PENDING = 0, POS_WAVE = 0; // 1 Positive per kebab: saved in batches, not on every kill
@@ -5029,11 +5046,44 @@
         }
         const lvlText = l => l === Infinity ? '∞' : (l >= 1000 ? Number(l).toLocaleString('en-US') : l);
         function accLevel(acc) { return acc ? levelInfoAcc(acc).level : 0; }
-        let XP_PENDING = 0, XP_RUN = 0;
+        let XP_PENDING = 0, XP_RUN = 0, XP_FRAC = 0, POS_FRAC = 0;
+        // ===== MAP REWARDS: newer maps give more XP and Positives, older maps give less the more you play them =====
+        // MAP_TIERS is in unlock order. Add a future map at the end and it automatically pays 0.5 more than the one before it.
+        const MAP_TIERS = ['normal', 'quad'], MAP_BONUS_STEP = 0.5;
+        const MAP_DECAY_PER_WAVE = 0.002, MAP_DECAY_FLOOR = 0.4;   // an older map loses 0.2% per wave you clear on it, down to 40%
+        function mapNewestTier(acc) { return accLevel(acc) >= QUAD_UNLOCK_LEVEL ? 1 : 0; }   // the newest map you have unlocked (the Quad needs level 25)
+        let _mrCache = { t: 0, key: '', v: 1 };
+        function mapRewardMult(id, acc) {
+            id = id || game.mapId || 'normal'; acc = acc || getCurrentAccount();
+            const tier = Math.max(0, MAP_TIERS.indexOf(id)), base = 1 + MAP_BONUS_STEP * tier;
+            if (!acc) return base;
+            const now = performance.now(), key = id + '|' + (acc.username || '');
+            if (_mrCache.key === key && now - _mrCache.t < 1500) return _mrCache.v;
+            let v = base;
+            if (tier < mapNewestTier(acc)) {   // an older map: its bonus fades with every wave you clear on it
+                const waves = (acc.mapWaves && acc.mapWaves[id]) || 0;
+                v = base * Math.max(MAP_DECAY_FLOOR, 1 - MAP_DECAY_PER_WAVE * waves);
+            }
+            _mrCache = { t: now, key: key, v: v };
+            return v;
+        }
+        function mapRewardTagHTML(id) {
+            const acc = getCurrentAccount(), m = mapRewardMult(id, acc), tier = MAP_TIERS.indexOf(id);
+            const old = acc && tier < mapNewestTier(acc);
+            return '<span class="map-tag" style="margin-left:6px">⭐ XP &amp; 💚 ×' + (Math.round(m * 100) / 100) + (old ? ' (older map, fades as you play it)' : (tier > 0 ? ' (newer map bonus)' : '')) + '</span>';
+        }
+        function mapWavesAdd(n) {
+            if (!achActive() || game.teamUp || game.vs || game.devMode || game.testMode || NET.active) return;
+            const id = game.mapId || 'normal';
+            updateCurrentAccount(a => { a.mapWaves = Object.assign({}, a.mapWaves); a.mapWaves[id] = (a.mapWaves[id] || 0) + n; });
+            _mrCache.t = -1e9;
+        }
+        function mergeMapWaves(a, b) { const r = Object.assign({}, a); for (const k in (b || {})) r[k] = Math.max(r[k] || 0, b[k]); return r; }
         function addXp(n) {
             if (!achActive()) return;
             if (game.teamUp || game.vs || game.devMode || game.testMode || NET.active) return;   // XP only comes from the main game (the Play button)
-            XP_PENDING += Math.round(n); XP_RUN += Math.round(n);
+            XP_FRAC += n * mapRewardMult(); const w = Math.floor(XP_FRAC); XP_FRAC -= w;
+            XP_PENDING += w; XP_RUN += w;
         }
         function showLevelUp(level) {
             const el = document.getElementById('lvlToast');
@@ -5112,6 +5162,7 @@
                 '<div class="map-card ' + (quadOpen ? 'pick' : 'locked') + '"' + (quadOpen ? ' onclick="chooseMap(\'quad\')"' : '') + '><canvas width="640" height="224" id="mapCv_quad"></canvas>' + (quadOpen ? '' : '<div class="map-lock-ico">🔒</div>') +
                 '<div class="map-info"><h3>⚽ The Quad</h3><p>A soccer field! Kebabs run along the painted lines and get <b>35 HP</b> tougher every wave (+15 more every 30 waves), same as the School Grounds. Meet the <b>Soccer Kebab</b> (wave 5) and the <b>OZ Tag Kebab</b> (wave 10). Choose a free teacher!</p>' + quadStatus + '</div></div>' +
                 '<div class="map-card locked"><canvas width="640" height="224" id="mapCv_soon"></canvas><div class="map-lock-ico">❓</div><div class="map-info"><h3>🚧 Coming Soon</h3><p>A brand new map is on its way. Keep levelling up!</p><span class="map-tag soon">COMING SOON</span></div></div>';
+            for (const mid of MAP_TIERS) { const cv = document.getElementById('mapCv_' + mid); const inf = cv && cv.parentNode.querySelector('.map-info'); if (inf) inf.insertAdjacentHTML('beforeend', mapRewardTagHTML(mid)); }
             mapThumb(document.getElementById('mapCv_normal'), 'normal');
             mapThumb(document.getElementById('mapCv_quad'), 'quad');
             const sc = document.getElementById('mapCv_soon').getContext('2d');
@@ -5131,8 +5182,8 @@
             proceedToPlay();
         }
         function openFreeTeacherPick() {
-            const info = { badui: ['Angry Teacher', 'Writes Negative: marked kebabs take 2.5x damage'], math: ['Mathematician', 'Shushes kebabs back, two random ultimates'] };
-            document.getElementById('freeTeacherCards').innerHTML = ['math', 'badui'].map(t =>
+            const info = { angry: ['Angry Teacher', 'Writes Negative: marked kebabs take 2.5x damage'], math: ['Mathematician', 'Shushes kebabs back, two random ultimates'] };
+            document.getElementById('freeTeacherCards').innerHTML = ['math', 'angry'].map(t =>
                 '<div class="free-card" onclick="pickFreeTeacher(\'' + t + '\')"><canvas width="240" height="300" data-prev="' + t + '|"></canvas><b>' + info[t][0] + '</b><span>' + info[t][1] + '</span></div>').join('');
             drawAllPreviews(document.getElementById('freeTeacherCards'));
             document.getElementById('freeTeacherModal').classList.add('show');
@@ -5146,7 +5197,7 @@
         function grantFreeTeacher(type) {
             game.freeTeacher = type;
             game.freeTeacherLeft = 1;
-            if (type === 'badui') document.getElementById('baduiBtn').style.display = 'block';
+            if (type === 'angry') document.getElementById('angryBtn').style.display = 'block';
             else { game.mathUnlocked = true; document.getElementById('mathBtn').style.display = 'block'; }
             refreshTowerCostLabels();
         }
@@ -5183,13 +5234,13 @@
             if (!achActive()) return;
             achStat('kills');
             if (game.health === 1) achUnlock('clutch');
-            POS_PENDING += 1; POS_WAVE += 1;
+            POS_FRAC += mapRewardMult(); { const pw = Math.floor(POS_FRAC); POS_FRAC -= pw; POS_PENDING += pw; POS_WAVE += pw; }   // 1 Positive per kebab x the map bonus
             addXp(enemy.isBoss ? 70 : 4);
             if (enemy.isBoss) achStat('bosses');
         }
         function achCheckDice(kx, ky) {
             if (!achLoad()) return;
-            for (const type of ['sheikh', 'badui', 'math']) {
+            for (const type of ['sheikh', 'angry', 'math']) {
                 const id = 'dice_' + type;
                 if (ACH.done[id]) continue;
                 const ts = game.towers.filter(t => t.type === type);
@@ -5208,15 +5259,15 @@
             game.ultStamp = game.ultStamp || {};
             game.ultStamp[type] = game.frameCount;
             const t = game.ultStamp;
-            if (t.sheikh !== undefined && t.badui !== undefined && t.math !== undefined &&
-                Math.max(t.sheikh, t.badui, t.math) - Math.min(t.sheikh, t.badui, t.math) <= 300) achUnlock('triple');
+            if (t.sheikh !== undefined && t.angry !== undefined && t.math !== undefined &&
+                Math.max(t.sheikh, t.angry, t.math) - Math.min(t.sheikh, t.angry, t.math) <= 300) achUnlock('triple');
         }
         function achOnPlace() {
             if (!achActive()) return;
             achStat('placed');
             const has = t => game.towers.some(x => x.type === t);
-            if (has('sheikh') && has('badui') && has('math')) achUnlock('fullclass');
-            for (const ty of ['sheikh', 'badui', 'math']) if (game.towers.filter(x => x.type === ty).length >= Math.min(BASE_TOWER_CAP, getTowerCap(ty))) achUnlock('maxstaff');
+            if (has('sheikh') && has('angry') && has('math')) achUnlock('fullclass');
+            for (const ty of ['sheikh', 'angry', 'math']) if (game.towers.filter(x => x.type === ty).length >= Math.min(BASE_TOWER_CAP, getTowerCap(ty))) achUnlock('maxstaff');
             const sh = game.towers.filter(t => t.type === 'sheikh');
             const at = (x, y) => sh.some(t => Math.abs(t.x - x) < 2 && Math.abs(t.y - y) < 2);
             for (const a of sh) {
@@ -5307,10 +5358,10 @@
             ocean:  { name: 'Ocean',        price: 120, a: '#0a4a6a', b: '#05122a', e: '🌊' },
             candy:  { name: 'Candy Land',   price: 180, a: '#7a2a65', b: '#2a2a7a', e: '🍬' }
         };
-        const TEACHER_LABEL = { sheikh: 'Wise Sheikh', badui: 'Angry Teacher', math: 'Mathematician' };
+        const TEACHER_LABEL = { sheikh: 'Wise Sheikh', angry: 'Angry Teacher', math: 'Mathematician' };
         function getLook(acc) {
             const l = (acc && acc.look) || {};
-            return { avatar: ['sheikh', 'badui', 'math'].includes(l.avatar) ? l.avatar : 'sheikh', hat: l.hat || '', glasses: l.glasses || '', neck: l.neck || '', bg: PROFILE_BGS[l.bg] ? l.bg : 'hall', skin: (typeof l.skin === 'string') ? l.skin : undefined };
+            return { avatar: ['sheikh', 'angry', 'math'].includes(l.avatar) ? l.avatar : 'sheikh', hat: l.hat || '', glasses: l.glasses || '', neck: l.neck || '', bg: PROFILE_BGS[l.bg] ? l.bg : 'hall', skin: (typeof l.skin === 'string') ? l.skin : undefined };
         }
         function cosOwned(key) { const a = getCurrentAccount(); return !!(a && (a.items || []).includes(key)); }
         function bgOwned(id) { return id === 'hall' || cosOwned('bg:' + id); }
@@ -5321,7 +5372,7 @@
         // neckY/nK = where the neck accessory sits and how big, skin = face colour (to cover Sheikh's own sunglasses)
         const COS_GEOM = {
             sheikh: { hatTop: -35, hatK: 1.12, eyeY: -16.6, eyeDX: 6.5, gK: 1.0, neckY: 9.5, nK: 1.05, skin: '#C08850', coverSunglasses: true },
-            badui:  { hatTop: -44, hatK: 1.32, eyeY: -27,   eyeDX: 5.2, gK: 0.95, neckY: -7,  nK: 1.0,  skin: '#E0923E' },
+            angry:  { hatTop: -44, hatK: 1.32, eyeY: -27,   eyeDX: 5.2, gK: 0.95, neckY: -7,  nK: 1.0,  skin: '#E0923E' },
             math:   { hatTop: -47, hatK: 1.08, eyeY: -30,   eyeDX: 5.8, gK: 1.0, neckY: -3.5, nK: 1.2,  skin: '#A0672D' }
         };
         function drawCosmetics(c, x, y, type, look) {
@@ -5440,7 +5491,7 @@
         function customizeHTML(acc) {
             const look = getLook(acc);
             let h = '<div class="cust-sec">CHARACTER</div><div class="cust-row">';
-            ['sheikh', 'badui', 'math'].forEach(t => { h += '<button class="cust-chip' + (look.avatar === t ? ' on' : '') + '" onclick="setLook(\'avatar\',\'' + t + '\')">' + TEACHER_LABEL[t] + '</button>'; });
+            ['sheikh', 'angry', 'math'].forEach(t => { h += '<button class="cust-chip' + (look.avatar === t ? ' on' : '') + '" onclick="setLook(\'avatar\',\'' + t + '\')">' + TEACHER_LABEL[t] + '</button>'; });
             h += '</div>';
             // Skins: one set for your profile picture, another for the teachers you place in battle
             const skinChip = (type, key, nm, on, fn) => '<button class="cust-chip' + (on ? ' on' : '') + '" onclick="' + fn + '"><canvas width="84" height="104" data-prev="' + type + '|' + key + '" style="width:42px;height:52px"></canvas>' + nm + '</button>';
@@ -5449,7 +5500,7 @@
             h += '<div class="cust-sec">AVATAR SKIN <small>(your profile picture only)</small></div><div class="cust-row">' + skinChip(look.avatar, '', 'Default', !curAv, "setLook('skin','')") +
                 ownedSkins(look.avatar).map(k => skinChip(look.avatar, k, SKIN_DEFS[k].name, curAv === k, "setLook('skin','" + k + "')")).join('') + '</div>';
             h += '<div class="cust-sec">TEACHER SKINS IN BATTLE <small>(the teachers you place)</small></div>';
-            ['sheikh', 'badui', 'math', 'arabic'].forEach(t => {
+            ['sheikh', 'angry', 'math', 'arabic'].forEach(t => {
                 const cur = EQUIPPED[t] || '';
                 h += '<div class="cust-sub">' + TEACHER_NAMES[t] + '</div><div class="cust-row">' + skinChip(t, '', 'Default', !cur, "equipSkin('" + t + "','')") +
                     ownedSkins(t).map(k => skinChip(t, k, SKIN_DEFS[k].name, cur === k, "equipSkin('" + t + "','" + k + "')")).join('') + '</div>';
@@ -5522,7 +5573,7 @@
         function skinsHTML() {
             const a = getCurrentAccount();
             let out = '<div class="account-hint">Skins you equip here are worn by the <b>teachers you place in battle</b>. Your profile picture has its own skin in the <b>Customize</b> tab.</div>';
-            for (const type of ['sheikh', 'badui', 'math', 'arabic']) {
+            for (const type of ['sheikh', 'angry', 'math', 'arabic']) {
                 const eq = EQUIPPED[type] || '';
                 const tiles = [['', 'Default', true]].concat(Object.keys(SKIN_DEFS).filter(k => SKIN_DEFS[k].type === type).map(k => [k, SKIN_DEFS[k].name, (a.skins || []).includes(k)]));
                 out += '<div class="skin-sec"><h3>' + TEACHER_NAMES[type] + '</h3><div class="skin-tiles">' + tiles.map(([k, nm, owned]) =>
@@ -6253,7 +6304,7 @@
                 }
 
                 if (doc.exists) {
-                    const cloud = doc.data();
+                    const cloud = migrateOldKeys(doc.data());
                     if (!localUsername) {
                         localUsername = cloud.username || (firebaseUser.displayName || firebaseUser.email || 'Player').split(' ')[0];
                         let uniqueName = localUsername, n = 1;
@@ -6271,6 +6322,7 @@
                         savedGame: cloud.savedGame || null,
                         positives: Math.max(cloud.positives || 0, (accounts[key] && accounts[key].positives) || 0),
                         xp: Math.max(cloud.xp || 0, (accounts[key] && accounts[key].xp) || 0),
+                        mapWaves: mergeMapWaves(cloud.mapWaves, accounts[key] && accounts[key].mapWaves),
                         items: Array.from(new Set([].concat(cloud.items || [], (accounts[key] && accounts[key].items) || []))),
                         look: cloud.look || (accounts[key] && accounts[key].look) || {},
                         earlyAccess: !!(cloud.earlyAccess || (accounts[key] && accounts[key].earlyAccess)),
@@ -6348,6 +6400,7 @@
                     savedGame: acc.savedGame,
                     positives: acc.positives || 0,
                     xp: acc.xp || 0,
+                    mapWaves: acc.mapWaves || {},
                     items: acc.items || [],
                     look: acc.look || {},
                     earlyAccess: !!acc.earlyAccess,
@@ -6753,7 +6806,7 @@
             if (!link || !link.uid || !cloudSocialUser()) { friendProfileErr = 'Sign in with Google to see online profiles.'; renderChatScreen(); return; }
             firebase.firestore().collection('players').doc(link.uid).get().then(d => {
                 if (friendProfileName !== name) return;
-                if (d.exists) friendProfileData = d.data(); else friendProfileErr = name + ' has not saved an online profile yet.';
+                if (d.exists) friendProfileData = migrateOldKeys(d.data()); else friendProfileErr = name + ' has not saved an online profile yet.';
                 renderChatScreen();
             }).catch(e => { if (friendProfileName !== name) return; friendProfileErr = 'Could not load the profile (' + ((e && e.code) || 'error') + '). The game owner needs to publish the newest Firebase rules.'; renderChatScreen(); });
         }
@@ -7151,7 +7204,7 @@
             // ---------------------------------------------------------- TEACHERS
             { id: 'compare', group: 'teachers', icon: '📋', title: 'All Teachers at a Glance', html: () =>
                 gTbl(['', '🧑‍🏫 Wise Sheikh', '👩‍🏫 Angry Teacher', '📐 Mathematician', '🪑 Arabic Expert'], [
-                    ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.badui + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', '<b>The Quad only</b>: hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
+                    ['How you get them', 'Available from the start', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.angry + ' 🪙', 'Hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.math + ' 🪙', '<b>The Quad only</b>: hire in the shop (any shop from the 1st, wave 15) for ' + SHOP_PRICES.arabic + ' 🪙'],
                     ['Cost to place', 'First 2 free, then about 65 + 2.6 per wave (max 163)', 'about 150 + 3 per wave (no max)', getMathCost() + ' 🪙 each (flat)', getArabicCost() + ' 🪙 each (flat)'],
                     ['Health', '10', '8', '125', '12'],
                     ['Range', '2 tiles', '2 tiles (no throwing)', '2 tiles', '2 tiles (no throwing)'],
@@ -7193,12 +7246,12 @@
                 ]) +
                 gTip('Put Wise Sheikhs where several kebabs pass close by (corners and where two tracks run side by side) so he lands lots of killing blows and recharges fast.') },
 
-            { id: 'badui', group: 'teachers', icon: '👩‍🏫', title: 'Angry Teacher', html: () =>
+            { id: 'angry', group: 'teachers', icon: '👩‍🏫', title: 'Angry Teacher', html: () =>
                 gStats([['Health', '8'], ['Attack', 'None'], ['Ability cooldown', '5 s'], ['Marks', '1 kebab'], ['Damage on marked', '2.5×']]) +
                 '<h4>How to get her</h4>' +
                 gList([
-                    'Hire her in the shop for a flat <b>' + SHOP_PRICES.badui + ' 🪙</b> (she is available from the <b>first shop at wave 15</b>). Hiring only unlocks her. You can place up to <b>5</b> Angry Teachers.',
-                    'Then each one you place costs <b>about 150 🪙 + 3 per wave</b> with no cap. Right now: <b>' + getBaduiCost() + ' 🪙</b>.'
+                    'Hire her in the shop for a flat <b>' + SHOP_PRICES.angry + ' 🪙</b> (she is available from the <b>first shop at wave 15</b>). Hiring only unlocks her. You can place up to <b>5</b> Angry Teachers.',
+                    'Then each one you place costs <b>about 150 🪙 + 3 per wave</b> with no cap. Right now: <b>' + getAngryCost() + ' 🪙</b>.'
                 ]) +
                 '<h4>Negative</h4>' +
                 gList([
@@ -7466,7 +7519,7 @@
                     'They work in <b>every battle while you are signed in</b>, including Test Mode. If you are signed out you do not get them.',
                     'Buying one does <b>not</b> use up the in-game shop. It is a different shop that uses Positives, not coins.',
                     'Earn Positives from kebabs (1 each), achievements and the ' + gLink('daily', '🎁 Daily Reward') + '.',
-                    'More details on each teacher\'s page: ' + gLink('sheikh', 'Wise Sheikh') + ', ' + gLink('badui', 'Angry Teacher') + ', ' + gLink('math', 'Mathematician') + ', ' + gLink('arabic', 'Arabic Expert') + '.'
+                    'More details on each teacher\'s page: ' + gLink('sheikh', 'Wise Sheikh') + ', ' + gLink('angry', 'Angry Teacher') + ', ' + gLink('math', 'Mathematician') + ', ' + gLink('arabic', 'Arabic Expert') + '.'
                 ]) },
 
             { id: 'daily', group: 'shop', icon: '🎁', title: 'Daily Rewards', html: () =>
@@ -7523,7 +7576,7 @@
 
             { id: 'shopteachers', group: 'shop', icon: '👩‍🏫', title: 'Teachers Menu', html: () =>
                 gTbl(['Item', 'What it does', 'Price'], [
-                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (wave 15+, any shop)', SHOP_PRICES.badui + ' 🪙 (flat)'],
+                    ['👩‍🏫 Angry Teacher', 'Unlocks Angry Teacher in the right panel (wave 15+, any shop)', SHOP_PRICES.angry + ' 🪙 (flat)'],
                     ['📐 Mathematician', 'Unlocks Mathematician (first shop, wave 15+). Each one you place then costs ' + getMathCost() + ' 🪙', SHOP_PRICES.math + ' 🪙 (flat)'],
                     ['🪑 Arabic Expert', 'Unlocks Arabic Expert (The Quad only, wave 15+, any shop). Each one you place then costs ' + getArabicCost() + ' 🪙', SHOP_PRICES.arabic + ' 🪙 (flat)'],
                     ['🏫 More Teachers', '<b>+3 max Wise Sheikhs</b> (' + BASE_TOWER_CAP + ' → ' + (BASE_TOWER_CAP + 3) + ' → ' + (BASE_TOWER_CAP + 6) + ')', SHOP_PRICES.cap + ' 🪙 the first time, ' + (SHOP_PRICES.cap + SHOP_PRICES.capStep) + ' 🪙 the second (× shop multiplier)']
@@ -7542,7 +7595,7 @@
                 }
                 return '<p>The price multiplier is <b>1 + 0.5 per shop already reached</b>:</p>' +
                     gTbl(['Shop', 'Multiplier', 'Damage / Speed / Health', '🩺 Medic', 'Mega upgrades', 'More Teachers #1', 'More Teachers #2'], rows) +
-                    gTip('Teacher unlocks stay at ' + SHOP_PRICES.badui + ' / ' + SHOP_PRICES.math + ' forever. Hiring a teacher is one of the cheapest things you can buy in a late shop.');
+                    gTip('Teacher unlocks stay at ' + SHOP_PRICES.angry + ' / ' + SHOP_PRICES.math + ' forever. Hiring a teacher is one of the cheapest things you can buy in a late shop.');
             } },
 
             { id: 'npc', group: 'shop', icon: '🧣', title: 'The Shop Teacher', html: () =>
@@ -7795,6 +7848,9 @@
                 gList([
                     'Going from level 1 to 2 needs <b>70 XP</b>, and each next level needs <b>20 XP more</b> than the last (level 2 to 3 needs 90, and so on). The cap is level ' + LEVEL_CAP + '.',
                     '<b>Level ' + QUAD_UNLOCK_LEVEL + ' unlocks The Quad</b> (see ' + gLink('maps', 'Maps') + ').',
+                    '<b>Map bonus</b>: newer maps pay more. The School Grounds pays <b>×1</b> and The Quad pays <b>×1.5</b> XP (and Positives, see below). Each future map will pay <b>0.5 more</b> than the one before it.',
+                    '<b>Older maps fade</b>: once you unlock a newer map, the older maps lose <b>0.2% of their XP and Positives for every wave you clear on them</b>, down to <b>40%</b> of their normal pay (after about 300 waves). So the School Grounds slowly pays less once you have the Quad. The newest map you have unlocked never fades.',
+                    'The map select screen shows the current multiplier on every map card.',
                     'XP is saved on your account and syncs to the cloud with Google. <b>XP only comes from the main game</b> (the Play button): Test Mode, Developer Mode and Online Mode (Team Up, VS and bots) give no XP.',
                     'A gold <b>LEVEL UP!</b> banner appears when you level up (turn it off with <b>Level-up pop-ups</b> in Settings).',
                     'You are not signed in? Your run earns no XP and no Positives. The game over screen and the main menu remind you to sign up.'
@@ -7816,7 +7872,8 @@
                     'The pitch is drawn at <b>real size</b> like a TV picture from the stand: one whole soccer field with touchlines, a halfway line, centre circle, penalty areas, goal areas, penalty spots, penalty arcs and corner flags (no goals).',
                     'Quad battles save and continue just like the normal map.',
                     'Test Mode follows the same rule: the Quad stays <b>locked until you reach level ' + QUAD_UNLOCK_LEVEL + '</b>. Sign in and level up to try it there.',
-                    gLink('newkebabs', 'Soccer and OZ Tag kebabs') + ' only appear on the Quad.'
+                    gLink('newkebabs', 'Soccer and OZ Tag kebabs') + ' only appear on the Quad.',
+                    '<b>Better rewards on newer maps</b>: the Quad pays <b>×1.5 XP and Positives</b>. Once you have unlocked the Quad, the School Grounds slowly pays less the more you play it (see ' + gLink('levels', 'Levels & XP') + ').'
                 ]) },
 
             { id: 'newkebabs', group: 'kebabs', icon: '⚽', title: 'Soccer & OZ Tag Kebabs (Quad)', html: () =>
@@ -8393,7 +8450,7 @@
             ['boss', 'crown', 'giant', 'big'],
             ['teacher', 'teachers', 'tower', 'towers', 'unit'],
             ['sheikh', 'wise', 'walid'],
-            ['badui', 'angry'],
+            ['angry', 'whistle', 'boys'],
             ['mathematician', 'math'],
             ['shh', 'shush', 'shhhh'],
             ['mark', 'marked', 'ns', 'negative', 'sentrals', 'sentral'],
@@ -8931,7 +8988,7 @@
         }
 
         // Angry Teacher costs 230 to place, +5 for every wave.
-        function getBaduiCost() {
+        function getAngryCost() {
             return cheap(230 + (game.wave - 1) * 5);
         }
 
@@ -8942,7 +8999,7 @@
         // v1.0.32: every coin price is 35% cheaper (teacher hiring, placing and the in-battle upgrades)
         const PRICE_CUT = 0.65;
         const cheap = n => Math.round(n * PRICE_CUT);
-        const SHOP_PRICES = { medic: cheap(500), upgrade: cheap(300), mega: cheap(600), badui: cheap(200), math: cheap(600), arabic: cheap(500), cap: cheap(500), capStep: cheap(200) };
+        const SHOP_PRICES = { medic: cheap(500), upgrade: cheap(300), mega: cheap(600), angry: cheap(200), math: cheap(600), arabic: cheap(500), cap: cheap(500), capStep: cheap(200) };
         const BASE_TOWER_CAP = 10;   // max of EACH teacher (More Teachers adds +3 per purchase)
         function getMathUnlockCost() {
             return SHOP_PRICES.math;
@@ -8952,7 +9009,7 @@
         }
         function getPlaceCost(type) {
             if (game.freeTeacher === type && game.freeTeacherLeft > 0) return 0;   // the Quad's free teacher
-            if (type === 'badui') return getBaduiCost();
+            if (type === 'angry') return getAngryCost();
             if (type === 'math') return getMathCost();
             if (type === 'arabic') return getArabicCost();
             if (type === 'tuff') return 0;   // admin character: free
@@ -8963,7 +9020,7 @@
         // the shop's "More Teachers" upgrade adds +3 per purchase.
         // Solo battles: at most 5 Angry Teachers, 7 Mathematicians and 7 Arabic Experts. The Wise Sheikh keeps the
         // normal cap (More Teachers adds +3 to it). Team Up and VS keep the old cap for everyone.
-        const SOLO_CAPS = { badui: 5, math: 7, arabic: 7, tuff: 3 };
+        const SOLO_CAPS = { angry: 5, math: 7, arabic: 7, tuff: 3 };
         function getTowerCap(type) {
             if (type === 'tuff') return 3;   // admin character: 3 in every mode
             if (type && SOLO_CAPS[type] && !game.teamUp && !game.vs) return SOLO_CAPS[type];
@@ -8972,24 +9029,24 @@
         function getArabicCost() { return cheap(350); }
 
         function towerName(type) {
-            if (type === 'badui') return 'Angry Teacher';
+            if (type === 'angry') return 'Angry Teacher';
             if (type === 'math') return 'Mathematician';
             if (type === 'arabic') return 'Arabic Expert';
             if (type === 'tuff') return 'Tuff Sheikh';
             return 'Wise Sheikh';
         }
 
-        let _lastCostLabels = { sheikh: '', badui: '', math: '', arabic: '', tuff: '' };
+        let _lastCostLabels = { sheikh: '', angry: '', math: '', arabic: '', tuff: '' };
         function refreshTowerCostLabels() {
             const cap = getTowerCap('sheikh');
             const sCount = ownTowerCount('sheikh');
-            const bCount = ownTowerCount('badui');
+            const bCount = ownTowerCount('angry');
             const mCount = ownTowerCount('math');
             const aCount = ownTowerCount('arabic');
             const sText = (game.freeTeachersLeft > 0
                 ? 'Cost: FREE x' + game.freeTeachersLeft
                 : 'Cost: ' + getSheikhCost() + ' 🪙') + ' (' + sCount + '/' + cap + ')';
-            const bText = (getPlaceCost('badui') === 0 ? 'Cost: FREE' : 'Cost: ' + getBaduiCost() + ' 🪙') + ' (' + bCount + '/' + getTowerCap('badui') + ')';
+            const bText = (getPlaceCost('angry') === 0 ? 'Cost: FREE' : 'Cost: ' + getAngryCost() + ' 🪙') + ' (' + bCount + '/' + getTowerCap('angry') + ')';
             const mText = (getPlaceCost('math') === 0 ? 'Cost: FREE' : 'Cost: ' + getMathCost() + ' 🪙') + ' (' + mCount + '/' + getTowerCap('math') + ')';
             const aText = 'Cost: ' + getArabicCost() + ' 🪙 (' + aCount + '/' + getTowerCap('arabic') + ')';
             const tText = 'FREE · Admin only (' + ownTowerCount('tuff') + '/' + getTowerCap('tuff') + ')';
@@ -8999,9 +9056,9 @@
                 document.getElementById('sheikhCost').textContent = sText;
                 _lastCostLabels.sheikh = sText;
             }
-            if (bText !== _lastCostLabels.badui) {
-                document.getElementById('baduiCost').textContent = bText;
-                _lastCostLabels.badui = bText;
+            if (bText !== _lastCostLabels.angry) {
+                document.getElementById('angryCost').textContent = bText;
+                _lastCostLabels.angry = bText;
             }
             if (mText !== _lastCostLabels.math) {
                 document.getElementById('mathCost').textContent = mText;
@@ -9846,7 +9903,7 @@
         // what the teachers say back to the Kebab Man (line 1: when they meet him, 2: the argument, 3: during the rumble)
         const INTRO_REPLY = {
             sheikh: ['Excuse me, sir. What are you cooking?', 'School lunch is for everyone. This is NOT okay!', 'STOP! You will bring the whole shop down!'],
-            badui: ['A kebab shop on MY field? Absolutely not.', 'Detention. For you. Forever.', 'Put. The. Meat. DOWN.'],
+            angry: ['A kebab shop on MY field? Absolutely not.', 'Detention. For you. Forever.', 'Put. The. Meat. DOWN.'],
             math: ['By my calculations, this is unwise.', 'The odds of you winning are 0.003%.', 'Silence! ...Please. Shhh!'],
             team2: ['Wait for me! Who is this guy?', 'Together we can stop you!', 'Hold on, friend!']
         };
@@ -9874,7 +9931,7 @@
         function drawIntroTeachers(c, ms) {
             const quad = game.mapId === 'quad', team = game.teamUp;
             const roster = team ? [{ type: 'sheikh', ring: '#4aa3ff' }, { type: 'sheikh', ring: '#ff5a5a' }]
-                : quad ? [{ type: 'sheikh' }, { type: game.freeTeacher === 'math' ? 'math' : 'badui' }] : [{ type: 'sheikh' }];
+                : quad ? [{ type: 'sheikh' }, { type: game.freeTeacher === 'math' ? 'math' : 'angry' }] : [{ type: 'sheikh' }];
             _introRoster.length = 0; roster.forEach(r => _introRoster.push(r));
             const order = roster.map((r, i) => i).reverse();
             for (const i of order) {   // the second one is drawn first so the Sheikh stands in front
@@ -10116,7 +10173,7 @@
             teamUp: false, vs: null, freeGuest: 4,   // online modes
             lastStand: null, lastStandUsed: false, lastStandRes: null,   // the Last Stand swarm when the school first falls
             mapId: 'normal',      // 'normal' or 'quad' (the soccer field)
-            freeTeacher: null,    // Quad: the free teacher you picked ('badui' or 'math')
+            freeTeacher: null,    // Quad: the free teacher you picked ('angry' or 'math')
             freeTeacherLeft: 0,
             shopsOpened: 0,
             mergedWaves: 1,
@@ -10141,7 +10198,7 @@
         const TEACHER_BUFFS = {
             sheikh: { icon: '📜', name: 'Long Shebab', teacher: 'Wise Sheikh', price: BUFF_PRICE,
                 desc: 'His throws become upright Arabic <b>sentences</b>. Each sentence hits the kebab <b>3 times</b> (3x the damage of a normal throw). His main attack then has a <b>1 second cooldown</b>.' },
-            badui:  { icon: '🔥', name: 'Whistle', teacher: 'Angry Teacher', price: BUFF_PRICE,
+            angry:  { icon: '🔥', name: 'Whistle', teacher: 'Angry Teacher', price: BUFF_PRICE,
                 desc: 'Replaces <b>BOYS!</b>: she blows a whistle that blasts the <b>3 kebabs nearest the school</b>.' },
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
                 desc: 'Replaces <b>Algebra Swarm</b>. Locks onto 3 kebabs, scans their area, then strikes for <b>30%</b> of their health.' },
@@ -10532,8 +10589,8 @@
               text: () => "Your coins are shown here. Prices go <b>up every shop</b> you reach. Rows you can't afford shake, and the shop teacher tells you." },
 
             // --- new teachers ---
-            { id: 'badui', next: true, title: 'New teacher: Angry Teacher', when: () => document.getElementById('baduiBtn').style.display !== 'none',
-              target: () => gmEl('#baduiBtn'),
+            { id: 'angry', next: true, title: 'New teacher: Angry Teacher', when: () => document.getElementById('angryBtn').style.display !== 'none',
+              target: () => gmEl('#angryBtn'),
               text: () => "<b>Angry Teacher</b> has no attack of her own. She writes <b>Negative</b> on a kebab every 5 seconds, so it takes <b>2.5× damage</b> from everyone else. Her ultimate, <b>BOYS!</b> (the <b>Whistle</b> with her buff), and it only charges when she <b>marks</b> a kebab. Put her near your Wise Sheikhs." },
             { id: 'arabic', next: true, title: 'New teacher: Arabic Expert', when: () => game.arabicUnlocked && document.getElementById('arabicBtn').style.display !== 'none',
               target: () => gmEl('#arabicBtn'),
@@ -10572,7 +10629,7 @@
               target: () => gmTowerShape(game.towers.find(t => t.shebabCharge >= t.shebabMax), 56),
               text: () => {
                   const t = game.towers.find(x => x.shebabCharge >= x.shebabMax);
-                  const nm = t ? (t.type === 'badui' ? (hasBuff('badui') ? 'Whistle' : 'BOYS!') : t.type === 'math' ? (hasBuff('math') ? 'Area Strike' : 'a random ultimate') : 'SHEBAB') : 'their ultimate';
+                  const nm = t ? (t.type === 'angry' ? (hasBuff('angry') ? 'Whistle' : 'BOYS!') : t.type === 'math' ? (hasBuff('math') ? 'Area Strike' : 'a random ultimate') : 'SHEBAB') : 'their ultimate';
                   return "A <b>glowing</b> teacher has their ultimate ready. <b>Click them</b> to unleash <b>" + nm + "</b>! It charges again as they fight.";
               } },
             { id: 'heal', next: true, title: 'Heal your teachers', when: () => !game.waveInProgress && game.towers.some(t => t.hp < t.maxHp * 0.9),
@@ -10592,9 +10649,9 @@
               text: () => "The <b>Soccer Kebab</b> can <b>dodge</b> your attacks for a moment, then has to rest. Keep hitting it." },
             { id: 'oz', next: true, title: 'OZ Tag Kebab', when: () => !!gmFirstEnemy(e => e.kind === 'oz'), target: () => gmEnemyShape(gmFirstEnemy(e => e.kind === 'oz')),
               text: () => "The <b>OZ Tag Kebab</b> is <b>much faster</b> than the others. Put teachers near the end of the track." },
-            { id: 'cap', next: true, title: 'Teacher limit', when: () => ['sheikh', 'badui', 'math', 'arabic'].some(t => gmCount(t) >= getTowerCap(t)),
+            { id: 'cap', next: true, title: 'Teacher limit', when: () => ['sheikh', 'angry', 'math', 'arabic'].some(t => gmCount(t) >= getTowerCap(t)),
               target: () => gmEl('.tower-selector'),
-              text: () => "You have the <b>maximum</b> of one teacher type. Wise Sheikhs: up to " + getTowerCap('sheikh') + " (the shop's <b>More Teachers</b> adds +3). Angry Teachers: " + getTowerCap('badui') + ", Mathematicians and Arabic Experts: " + getTowerCap('math') + "." },
+              text: () => "You have the <b>maximum</b> of one teacher type. Wise Sheikhs: up to " + getTowerCap('sheikh') + " (the shop's <b>More Teachers</b> adds +3). Angry Teachers: " + getTowerCap('angry') + ", Mathematicians and Arabic Experts: " + getTowerCap('math') + "." },
             { id: 'lowhp', next: true, title: 'School in danger!', when: () => game.health > 0 && game.health <= game.maxHealth * 0.3,
               target: () => gmEl(document.getElementById('health').closest('.stat-box')),
               text: () => "Your school's health is <b>low</b>. Add teachers where the kebabs get through, use ultimates, and buy <b>School Health</b> in the next shop." }
@@ -10632,7 +10689,7 @@
             { id: 'tu_start', after: 'tu_botlog', title: 'Start the first wave', done: () => game.waveInProgress || game.wave > 1, target: () => gmEl('#waveBtn'),
               text: () => "Ready? <b>Either of you</b> can press this to send <b>wave " + game.wave + "</b>." },
         ].concat(
-            GM_TIPS.filter(t => ['shop1', 'shop2', 'shop3', 'badui', 'math', 'up_damage', 'up_speed', 'up_health', 'up_medic', 'up_mega', 'up_cap', 'kebab', 'ult', 'heal', 'hitter', 'soccer', 'oz', 'cap', 'lowhp'].indexOf(t.id) >= 0)
+            GM_TIPS.filter(t => ['shop1', 'shop2', 'shop3', 'angry', 'math', 'up_damage', 'up_speed', 'up_health', 'up_medic', 'up_mega', 'up_cap', 'kebab', 'ult', 'heal', 'hitter', 'soccer', 'oz', 'cap', 'lowhp'].indexOf(t.id) >= 0)
                 .map(t => Object.assign({}, t, { id: 'tu_' + t.id, after: t.after ? 'tu_' + t.after : undefined })),
             [
                 { id: 'tu_boss', next: true, title: 'Boss kebab!', when: () => !!gmFirstEnemy(e => e.isBoss), target: () => gmEnemyShape(gmFirstEnemy(e => e.isBoss)),
@@ -10672,7 +10729,7 @@
             { id: 'vs_lane', next: true, after: 'vs_turn', title: 'Pick a track', target: () => gmVsBoxes(['vsLane0', 'vsLane1']),
               text: () => "You have <b>two tracks</b>. Pick the <b>Top</b> or <b>Bottom</b> one here, then everything you send walks along it. Their placed teachers guard both, so mix it up." },
             { id: 'vs_units', next: true, after: 'vs_lane', title: 'Teachers to send', target: () => gmVsBoxes(Object.keys(VS_UNITS).map(k => 'vsSend_' + k)),
-              text: () => "<b>Scout Sheikh</b> (" + VS_UNITS.sheikh.cost + " coins) is fast and cheap. <b>Angry Rusher</b> (" + VS_UNITS.badui.cost + ") is tougher and hits harder. <b>Math Tank</b> (" + VS_UNITS.math.cost + ") is slow, huge and takes <b>" + VS_UNITS.math.school + " school health</b> when it gets in." },
+              text: () => "<b>Scout Sheikh</b> (" + VS_UNITS.sheikh.cost + " coins) is fast and cheap. <b>Angry Rusher</b> (" + VS_UNITS.angry.cost + ") is tougher and hits harder. <b>Math Tank</b> (" + VS_UNITS.math.cost + ") is slow, huge and takes <b>" + VS_UNITS.math.school + " school health</b> when it gets in." },
             { id: 'vs_send', after: 'vs_units', title: 'Send one!', when: () => gmMine() && game.sentrals >= VS_UNITS.sheikh.cost, done: () => game.vs && game.vs.sent[myPl()] > 0,
               valid: () => gmMine(), target: () => gmEl('#vsSend_sheikh', 4),
               text: () => "It's <b>your turn</b>. Press <b>Scout Sheikh</b> to send one down your track." },
@@ -10967,7 +11024,7 @@
             },
             v_send(c) {
                 hRound(c, 20, 8, 140, 28, 8, '#1b4a9a', HOWC.gold); hTxt(c, '⬆ Top track', 90, 22, 13); hRound(c, 180, 8, 140, 28, 8, '#333', '#888'); hTxt(c, '⬇ Bottom track', 250, 22, 13);
-                [['🧑‍🏫', 'Scout Sheikh', VS_UNITS.sheikh.cost, 'Fast and cheap'], ['👩‍🏫', 'Angry Rusher', VS_UNITS.badui.cost, 'Tougher, hits harder'], ['📐', 'Math Tank', VS_UNITS.math.cost, 'Slow, huge']].forEach((u, i) => {
+                [['🧑‍🏫', 'Scout Sheikh', VS_UNITS.sheikh.cost, 'Fast and cheap'], ['👩‍🏫', 'Angry Rusher', VS_UNITS.angry.cost, 'Tougher, hits harder'], ['📐', 'Math Tank', VS_UNITS.math.cost, 'Slow, huge']].forEach((u, i) => {
                     const y = 46 + i * 46; hRound(c, 20, y, 300, 40, 10, 'rgba(255,255,255,.1)', '#fff'); hEm(c, u[0], 44, y + 20, 24); hTxt(c, u[1], 70, y + 14, 13, '#fff', 'left'); hTxt(c, u[3], 70, y + 30, 10, '#cfd8e6', 'left'); hTxt(c, u[2] + ' 🪙', 305, y + 20, 14, HOWC.gold, 'right');
                 });
             },
@@ -11732,19 +11789,19 @@
             // Team Up and VS keep the old order (Angry Teacher always, Mathematician from wave 30, no Arabic Expert).
             const online = game.teamUp || game.vs;
             const quadMap = game.mapId === 'quad';
-            const unlockWave = online ? { badui: 0, math: 30, arabic: 9999 } : { math: 15, badui: 15, arabic: 15 };   // solo: every teacher is hireable from the FIRST shop (wave 15); you still buy one thing per shop visit
+            const unlockWave = online ? { angry: 0, math: 30, arabic: 9999 } : { math: 15, angry: 15, arabic: 15 };   // solo: every teacher is hireable from the FIRST shop (wave 15); you still buy one thing per shop visit
             const teacherRows = [
                 { type: 'math', name: '📐 Mathematician', desc: 'Shushes kebabs back · two random ultimates', price: getMathUnlockCost(), owned: game.mathUnlocked, hired: "He's already on your team!" },
-                { type: 'badui', name: '👩‍🏫 Angry Teacher', desc: 'Writes Negative: marked kebabs take 2.5x damage', price: SHOP_PRICES.badui, owned: document.getElementById('baduiBtn').style.display !== 'none', hired: "She's already on your team!" },
+                { type: 'angry', name: '👩‍🏫 Angry Teacher', desc: 'Writes Negative: marked kebabs take 2.5x damage', price: SHOP_PRICES.angry, owned: document.getElementById('angryBtn').style.display !== 'none', hired: "She's already on your team!" },
                 { type: 'arabic', name: '🪑 Arabic Expert', desc: 'Sits 2 kebabs on the floor for 3 seconds · no ultimate', price: SHOP_PRICES.arabic, owned: !!game.arabicUnlocked, hired: "He's already on your team!" }
             ];
-            if (online) teacherRows.sort((a, b) => (a.type === 'badui' ? 0 : 1) - (b.type === 'badui' ? 0 : 1));   // Team Up / VS: Angry Teacher first
+            if (online) teacherRows.sort((a, b) => (a.type === 'angry' ? 0 : 1) - (b.type === 'angry' ? 0 : 1));   // Team Up / VS: Angry Teacher first
             for (const r of teacherRows) {
                 if (r.type === 'arabic' && online) continue;
                 if (r.type === 'arabic' && !quadMap) { addMenuRow(teList, { name: r.name, desc: 'Only teaches on The Quad', price: r.price, off: true, priceLabel: '🔒', offLine: 'The Arabic Expert only teaches on The Quad (the soccer field). Not on this map!' }); continue; }
                 const w = unlockWave[r.type];
                 if (r.owned) addMenuRow(teList, { name: r.name, desc: r.desc, price: r.price, off: true, priceLabel: 'HIRED', offLine: r.hired });
-                else if (game.wave < w) addMenuRow(teList, { name: r.name, desc: 'Arrives at wave ' + w, price: r.price, off: true, priceLabel: '🔒', offLine: r.type === 'math' ? "The Mathematician only joins from wave " + w + ". He's still marking papers!" : (r.type === 'badui' ? "The Angry Teacher only joins from wave " + w + ". She is still marking papers!" : "The Arabic Expert only joins from wave " + w + ". He is still finding his chair!") });
+                else if (game.wave < w) addMenuRow(teList, { name: r.name, desc: 'Arrives at wave ' + w, price: r.price, off: true, priceLabel: '🔒', offLine: r.type === 'math' ? "The Mathematician only joins from wave " + w + ". He's still marking papers!" : (r.type === 'angry' ? "The Angry Teacher only joins from wave " + w + ". She is still marking papers!" : "The Arabic Expert only joins from wave " + w + ". He is still finding his chair!") });
                 else addMenuRow(teList, { name: r.name, desc: r.desc, price: r.price, buy: () => buyTeacher(r.type, r.price) });
             }
             const capCost = Math.round((SHOP_PRICES.cap + SHOP_PRICES.capStep * upgradeCount('towercap')) * priceMult);
@@ -11793,8 +11850,8 @@
         function applyTeacherBuy(type, cost) {
             if (!shopCanAfford(cost)) return false;
             if (!game.testMode) game.sentrals -= cost;
-            if (type === 'badui') {
-                document.getElementById('baduiBtn').style.display = 'block';
+            if (type === 'angry') {
+                document.getElementById('angryBtn').style.display = 'block';
             } else if (type === 'math') {
                 game.mathUnlocked = true;
                 document.getElementById('mathBtn').style.display = 'block';
@@ -11833,11 +11890,11 @@
         }
         // ===== END SHOP =====
 
-        // Sheikh's attacks/ultimate render blue, Badui's render pink,
+        // Sheikh's attacks/ultimate render blue, the Angry Teacher's render pink,
         // Mathematician's render teal - used for projectiles, ultimate
         // effects, charge bars, and glows.
         // Briefly shows a small hand (not an arm) acting out each teacher's
-        // attack: Badui scribbling a mark, Mathematician
+        // attack: the Angry Teacher scribbling a mark, Mathematician
         // shushing with a finger to his lips. Fades out as gestureTimer runs down.
         // Small hands (no arms) that reach toward a neighbour during a chat:
         // high five, fist bump, handshake, wave, pat on the head, passing a paper.
@@ -11954,7 +12011,7 @@
                 return;
             }
 
-            if (tower.type === 'badui') {
+            if (tower.type === 'angry') {
                 // Typing on her laptop in the seconds BEFORE Negative,
                 // fading away the moment the ability fires.
                 const TYPE_FRAMES = 180; // she types for the last 3 seconds before her Negative fires
@@ -12096,13 +12153,13 @@
         // Each variant is a list of [teacherType, line] plus an optional hand
         // gesture name at the end: highfive, fistbump, handshake, wave, pat, pass.
         const INTERACT_SCRIPTS = {
-            'badui+sheikh': [
-                [['badui', 'Eyes on the board!'], ['sheikh', 'Yes, Miss! 😅']],
-                [['sheikh', 'Great marking!'], ['badui', 'Hmph. Fine. 🙄']],
-                [['badui', 'Posture!'], ['sheikh', '*sits up straight*'], 'pat'],
-                [['sheikh', 'Teamwork!'], ['badui', 'Fine. Teamwork. 🙄'], 'fistbump'],
-                [['badui', 'Pass me that pen.'], ['sheikh', 'Here, Miss!'], 'pass'],
-                [['sheikh', 'Good job today!'], ['badui', "Don't get used to it."], 'handshake']
+            'angry+sheikh': [
+                [['angry', 'Eyes on the board!'], ['sheikh', 'Yes, Miss! 😅']],
+                [['sheikh', 'Great marking!'], ['angry', 'Hmph. Fine. 🙄']],
+                [['angry', 'Posture!'], ['sheikh', '*sits up straight*'], 'pat'],
+                [['sheikh', 'Teamwork!'], ['angry', 'Fine. Teamwork. 🙄'], 'fistbump'],
+                [['angry', 'Pass me that pen.'], ['sheikh', 'Here, Miss!'], 'pass'],
+                [['sheikh', 'Good job today!'], ['angry', "Don't get used to it."], 'handshake']
             ],
             'math+sheikh': [
                 [['math', 'What is 2+2?'], ['sheikh', 'Fish? 🐟']],
@@ -12113,13 +12170,13 @@
                 [['sheikh', 'Check my homework?'], ['math', 'Perfect. 💯'], 'pass'],
                 [['math', 'Formula time!'], ['sheikh', 'Oh no... 😅'], 'pat']
             ],
-            'badui+math': [
-                [['badui', 'Check my marking?'], ['math', 'All correct ✔']],
-                [['math', 'Show your working!'], ['badui', 'Always! 📝']],
-                [['badui', 'Quiet please!'], ['math', 'Shhhh!']],
-                [['math', 'Good teaching today.'], ['badui', 'Agreed.'], 'handshake'],
-                [['badui', 'Staff room later?'], ['math', 'Bring the tea. ☕'], 'fistbump'],
-                [['math', 'Pass the marker?'], ['badui', 'Here.'], 'pass']
+            'angry+math': [
+                [['angry', 'Check my marking?'], ['math', 'All correct ✔']],
+                [['math', 'Show your working!'], ['angry', 'Always! 📝']],
+                [['angry', 'Quiet please!'], ['math', 'Shhhh!']],
+                [['math', 'Good teaching today.'], ['angry', 'Agreed.'], 'handshake'],
+                [['angry', 'Staff room later?'], ['math', 'Bring the tea. ☕'], 'fistbump'],
+                [['math', 'Pass the marker?'], ['angry', 'Here.'], 'pass']
             ],
             'sheikh+sheikh': [
                 [['sheikh', 'High five! ✋'], ['sheikh', '✋ Yes!'], 'highfive'],
@@ -12127,10 +12184,10 @@
                 [['sheikh', 'Salam!'], ['sheikh', 'Wa alaykum salam! 👋'], 'wave'],
                 [['sheikh', 'Fist bump!'], ['sheikh', '💥'], 'fistbump']
             ],
-            'badui+badui': [
-                [['badui', 'Staff meeting?'], ['badui', 'Always. ☕']],
-                [['badui', 'Marking done?'], ['badui', 'Never. 😤'], 'fistbump'],
-                [['badui', 'Nice work.'], ['badui', 'Hmph. You too.'], 'handshake']
+            'angry+angry': [
+                [['angry', 'Staff meeting?'], ['angry', 'Always. ☕']],
+                [['angry', 'Marking done?'], ['angry', 'Never. 😤'], 'fistbump'],
+                [['angry', 'Nice work.'], ['angry', 'Hmph. You too.'], 'handshake']
             ],
             'math+math': [
                 [['math', 'Great minds!'], ['math', 'Think alike! 🧠']],
@@ -12139,7 +12196,7 @@
                 [['math', 'x = 7?'], ['math', 'x = 7 ✔'], 'fistbump']
             ]
         };
-        const HAND_SKIN = { sheikh: '#E0A870', math: '#A0672D', badui: '#E0923E' };
+        const HAND_SKIN = { sheikh: '#E0A870', math: '#A0672D', angry: '#E0923E' };
         // Teachers only chat between waves, and not often: a global gap between
         // chats, a long personal cooldown and a coin-flip each time they could.
         const INTERACT_GLOBAL_GAP = 900; // frames (15 s) between any two chats
@@ -12368,7 +12425,7 @@
                 this.onTrack = false;
                 this.damageTimer = 0;
 
-                if (type === 'badui') {
+                if (type === 'angry') {
                     this.lastNS = 0;
                     this.nsFireAt = -1;      // frame her next Negative fires (scheduled so she never waits around typing)
                     this.markedEnemy = null; // she only has ONE marked kebab at a time
@@ -12515,7 +12572,7 @@
                 if (this.shushT > 0) this.shushT--;
                 if (this.shakeTimer > 0) this.shakeTimer--;
 
-                if (this.type === 'badui') {
+                if (this.type === 'angry') {
                     this.lastNS++;
                     
                     // Her Negative is SCHEDULED: after the 5 second cooldown she picks a time slot (two Angry Teachers never
@@ -12540,7 +12597,7 @@
                         if (this.nsFireAt > game.frameCount + 3000) this.nsFireAt = -1;      // stale (e.g. after a rewind)
                         if (this.nsFireAt < 0) {
                             if ((game.nsNextSlot || 0) > game.frameCount + 3000) game.nsNextSlot = 0;
-                            const n = Math.max(1, game.towers.filter(t => t.type === 'badui').length);
+                            const n = Math.max(1, game.towers.filter(t => t.type === 'angry').length);
                             const gap = Math.max(60, Math.min(NS_SLOT_GAP, Math.floor(NS_COOLDOWN_FRAMES / n)));
                             let at = game.frameCount + Math.max(NS_ENTER_FRAMES, NS_COOLDOWN_FRAMES - this.lastNS);
                             at = Math.max(at, (game.nsNextSlot || 0) + gap);
@@ -12559,7 +12616,7 @@
                             for (const e of near) {
                                 e.health -= 25 * game.damageMultiplier * (e.nsDamageMultiplier || 1);
                                 if (this.boysHit) { this.boysHit.add(e); if (this.boysHit.size >= 5) achUnlock('boys5'); }
-                                game.particles.push({ type: 'whistle', owner: 'badui', x: this.x, y: this.y - 14, tx: e.x, ty: e.y, vx: 0, vy: 0, life: 16 });
+                                game.particles.push({ type: 'whistle', owner: 'angry', x: this.x, y: this.y - 14, tx: e.x, ty: e.y, vx: 0, vy: 0, life: 16 });
                             }
                             if (near.length) playSound(1500 + Math.random() * 500, 0.06, 'sine');
                         }
@@ -12817,7 +12874,7 @@
                 playSound(600, 0.2, 'sine');
                 game.particles.push({
                     type: 'text',
-                    owner: 'badui',
+                    owner: 'angry',
                     x: this.x,
                     y: this.y - 50,
                     text: 'Negative!',
@@ -12829,7 +12886,7 @@
             tryShoot() {
                 // Angry Teacher and Mathematician don't throw anything - they
                 // only use their periodic ability and their ultimate.
-                if (this.type === 'badui' || this.type === 'math' || this.type === 'arabic' || this.type === 'tuff') return;
+                if (this.type === 'angry' || this.type === 'math' || this.type === 'arabic' || this.type === 'tuff') return;
                 if (this.ultLockout > 0) return;    // out of breath after his ultimate
                 if (!game.waveInProgress || this.lastShot < this.fireRate || game.enemies.length === 0) return;
 
@@ -12859,7 +12916,7 @@
 
                 target.health -= dmg;
 
-                if (this.type === 'badui') {
+                if (this.type === 'angry') {
                     // she does not attack: her ultimate fills from marking kebabs only
                 } else if (isKillingBlow) {
                     // Sheikh's ultimate fills 20% per kebab killed
@@ -12938,12 +12995,12 @@
                 achOnUltimate(this.type);
                 if (this.type === 'sheikh') this.shakeTimer = 50;
                 const boysLife = 120;
-                if (this.type === 'badui') this.shakeTimer = boysLife; // head swells and shakes during her ultimate
+                if (this.type === 'angry') this.shakeTimer = boysLife; // head swells and shakes during her ultimate
                 playSound(1200, 0.3, 'sine');
 
-                if (this.type === 'badui') {
+                if (this.type === 'angry') {
                     this.boysHit = new Set();
-                    if (hasBuff('badui')) {
+                    if (hasBuff('angry')) {
                         this.whistle = { life: boysLife, next: 0 };   // Whistle buff: she blows a whistle that hits the kebabs nearest the school
                     } else {
                         for (let i = 0; i < 6; i++) {                  // BOYS!: 6 spinning pink circles
@@ -12953,10 +13010,10 @@
 
                     game.particles.push({
                         type: 'text',
-                        owner: 'badui',
+                        owner: 'angry',
                         x: this.x,
                         y: this.y - 80,
-                        text: hasBuff('badui') ? '📣 WHISTLE! 📣' : '🔥 BOYS! 🔥',
+                        text: hasBuff('angry') ? '📣 WHISTLE! 📣' : '🔥 BOYS! 🔥',
                         life: 60,
                         size: 24
                     });
@@ -13086,7 +13143,7 @@
                     ctx.stroke();
                 }
 
-                if (this.type === 'badui') {
+                if (this.type === 'angry') {
                     // Brown leather coat body
                     ctx.fillStyle = '#8B4513';
                     ctx.beginPath();
@@ -13562,7 +13619,7 @@
             const ls = g.lastStand;
             return { n: ++NET.snapN, e: NET.evs.slice(-20), E: E, T: T,
                 g: { health: g.health, maxHealth: g.maxHealth, sentrals: vs ? vs.gc : g.sentrals, wave: g.wave, wip: g.waveInProgress, pz: NET.pzEnd ? Math.max(1, Math.round(NET.pzEnd - performance.now())) : 0, mw: g.mergedWaves, as: g.autoStartFrames, pu: g.purchasedUpgrades,
-                    med: g.medicHeal, dm: g.damageMultiplier, am: g.attackSpeedMultiplier, tcb: g.towerCapBonus, mu: g.mathUnlocked, so: g.shopsOpened, fg: g.freeGuest, bu: document.getElementById('baduiBtn').style.display === 'block' ? 1 : 0,
+                    med: g.medicHeal, dm: g.damageMultiplier, am: g.attackSpeedMultiplier, tcb: g.towerCapBonus, mu: g.mathUnlocked, so: g.shopsOpened, fg: g.freeGuest, bu: document.getElementById('angryBtn').style.display === 'block' ? 1 : 0,
                     k: g.kills, bk: g.bossKills, ce: g.coinsEarned, pl: g.placed, fc: g.frameCount, go: g.gameOver ? 1 : 0,
                     ls: ls ? { total: ls.total, killed: ls.killed, hits: ls.hits, max: ls.max, ago: ls.hitAt ? Math.round(performance.now() - ls.hitAt) : -1, age: Math.round(performance.now() - ls.t0) } : null, lsu: g.lastStandUsed ? 1 : 0 },
                 vs: vs ? { s1: vs.school.p1, s2: vs.school.p2, hc: Math.floor(game.sentrals), gc: Math.floor(vs.gc), turn: vs.turn, tl: vs.turnLeft, up: vs.up, sent: vs.sent, over: vs.over } : null };
@@ -13580,7 +13637,7 @@
             g.purchasedUpgrades = G.pu || {}; g.medicHeal = G.med; g.damageMultiplier = G.dm; g.attackSpeedMultiplier = G.am; g.towerCapBonus = G.tcb; g.mathUnlocked = !!G.mu; g.shopsOpened = G.so;
             g.freeTeachersLeft = G.fg || 0;
             netGuestPause(G.pz || 0); g.kills = G.k; g.bossKills = G.bk; g.coinsEarned = G.ce; g.placed = G.pl;
-            document.getElementById('baduiBtn').style.display = (G.bu || g.vs) ? 'block' : 'none';
+            document.getElementById('angryBtn').style.display = (G.bu || g.vs) ? 'block' : 'none';
             document.getElementById('mathBtn').style.display = (G.mu || g.vs) ? 'block' : 'none';
             if (G.ls) { const L = g.lastStand || (g.lastStand = {}); L.total = G.ls.total; L.killed = G.ls.killed; L.hits = G.ls.hits; L.max = G.ls.max; L.t0 = now - G.ls.age; L.hitAt = G.ls.ago >= 0 ? now - G.ls.ago : 0; } else g.lastStand = null;
             g.lastStandUsed = !!G.lsu;
@@ -13843,12 +13900,12 @@
                 const cols = []; for (let c = WORLD_COLS - 3; c >= 18; c--) cols.push(c);
                 const foeRows = [0, 0]; game.enemies.forEach(e => { if (e.pl === foe) foeRows[e.y > 3 * LANE_HEIGHT - 20 ? 1 : 0]++; });
                 const rows = foeRows[1] > foeRows[0] ? [4, 1] : [1, 4];
-                const type = (coins > 260 && mine.some(t => t.type === 'sheikh') && Math.random() < 0.25) ? 'badui' : 'sheikh';
+                const type = (coins > 260 && mine.some(t => t.type === 'sheikh') && Math.random() < 0.25) ? 'angry' : 'sheikh';
                 for (const r of rows) for (const c of cols.filter((_, i) => i % 2 === 0 || Math.random() < 0.3)) { const b = cc(); if (vsPlace(me, type, c, r)) { botLog('Placed ' + towerName(type) + ' (' + (r === 1 ? 'top' : 'bottom') + ' row, column ' + c + ')', Math.round(b - cc())); return; } }
                 for (const r of rows) for (const c of cols) { const b = cc(); if (vsPlace(me, 'sheikh', c, r)) { botLog('Placed ' + towerName('sheikh') + ' (' + (r === 1 ? 'top' : 'bottom') + ' row, column ' + c + ')', Math.round(b - cc())); return; } }
             }
             if (V.turn === me && bc.focus !== 'def' || (V.turn === me && mine.length >= wantDefs)) {
-                const kinds = ['sheikh', 'badui', 'math'];
+                const kinds = ['sheikh', 'angry', 'math'];
                 let k = bc.unit || kinds[botPick(D.sendMix)];
                 while (k !== 'sheikh' && VS_UNITS[k].cost > coins - reserve) k = kinds[kinds.indexOf(k) - 1];
                 if (VS_UNITS[k].cost <= coins - (mine.length < 2 ? 70 : 0) && coins >= reserve * 0.5) {
@@ -13882,13 +13939,13 @@
             if (game.frameCount < NET.botPlaceAt) return;
             const free = game.freeGuest > 0, mine = game.towers.filter(t => t.pl === me);
             if (!free && mine.length >= D.defs[1] * 4 + Math.floor(game.wave / 3)) return;
-            const baduiOk = document.getElementById('baduiBtn').style.display === 'block';
+            const angryOk = document.getElementById('angryBtn').style.display === 'block';
             let type = 'sheikh';
             if (!free) {
-                if (bc.type === 'badui' && baduiOk) type = 'badui'; else if (bc.type === 'math' && game.mathUnlocked) type = 'math';
-                else if (!bc.type) { if (game.mathUnlocked && game.sentrals > getMathCost() + reserve + 200 && Math.random() < 0.3) type = 'math'; else if (baduiOk && Math.random() < 0.4) type = 'badui'; }
+                if (bc.type === 'angry' && angryOk) type = 'angry'; else if (bc.type === 'math' && game.mathUnlocked) type = 'math';
+                else if (!bc.type) { if (game.mathUnlocked && game.sentrals > getMathCost() + reserve + 200 && Math.random() < 0.3) type = 'math'; else if (angryOk && Math.random() < 0.4) type = 'angry'; }
             }
-            const cost = (type === 'sheikh' && free) ? 0 : (type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
+            const cost = (type === 'sheikh' && free) ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             if (!free && game.sentrals < cost + reserve) return;
             const lo = bc.map === 1 ? 6 : 0, hi = bc.map === 0 ? 6 : TEAM_ROWS;
             const perMap = [0, 0]; game.towers.forEach(t => perMap[t.row >= 6 ? 1 : 0]++);
@@ -13935,7 +13992,7 @@
                 else if (has('back', 'near school', 'near the school', 'end', 'school side')) { bc.side = 'back'; out.push("I'll set up near the school."); }
                 else if (has('anywhere', 'spread')) { bc.side = null; out.push("I'll spread out."); }
                 if (has('sheikh', 'wise')) { bc.type = 'sheikh'; out.push("Only Wise Sheikhs from now on."); }
-                else if (has('angry', 'badui', 'laptop')) { bc.type = 'badui'; out.push(baduiOkText('Angry Teachers')); }
+                else if (has('angry', 'angry', 'laptop')) { bc.type = 'angry'; out.push(angryOkText('Angry Teachers')); }
                 else if (has('math')) { bc.type = 'math'; out.push(game.mathUnlocked ? 'Mathematicians it is!' : "Mathematician isn't unlocked yet, I'll use him once he is."); }
                 else if (has('any teacher', 'any type', 'mix')) { bc.type = null; out.push('A mix of teachers.'); }
                 if (has('ult', 'special')) { let n = 0; for (const tw of game.towers) if (tw.pl === 'p2' && tw.shebabCharge >= tw.shebabMax) { tw.ultimate(); n++; } out.push(n ? 'Ultimate used on ' + n + ' teacher' + (n > 1 ? 's' : '') + '!' : 'None of my teachers are charged yet.'); if (n) botLog('Used ' + n + ' ultimate' + (n > 1 ? 's' : '') + ' (you asked)', 0); }
@@ -13946,7 +14003,7 @@
                 else if (has('bottom lane', 'bottom track', 'bottom')) { bc.lane = 1; out.push('Everything goes down the bottom track.'); }
                 if (has('math', 'tank')) { bc.unit = 'math'; out.push('Math Tanks when I can afford them!'); }
                 else if (has('scout', 'cheap', 'spam')) { bc.unit = 'sheikh'; out.push('Scout spam!'); }
-                else if (has('rusher', 'angry')) { bc.unit = 'badui'; out.push('Angry Rushers it is.'); }
+                else if (has('rusher', 'angry')) { bc.unit = 'angry'; out.push('Angry Rushers it is.'); }
             }
             if (has('status', 'what are you', 'doing', 'report')) {
                 const mine = game.towers.filter(x => x.pl === 'p2').length;
@@ -13958,16 +14015,16 @@
             setTimeout(() => { out.forEach(o => netAddChat('bot', '🤖 Bot', o)); }, 500);
             if (out.length && out[0].indexOf("didn't get") < 0) botLog('You told me: "' + text.slice(0, 40) + '"', 0);
         }
-        function baduiOkText(n) { return document.getElementById('baduiBtn').style.display === 'block' ? 'Only ' + n + ' from now on.' : "Angry Teacher isn't unlocked yet, I'll use her once she is."; }
+        function angryOkText(n) { return document.getElementById('angryBtn').style.display === 'block' ? 'Only ' + n + ' from now on.' : "Angry Teacher isn't unlocked yet, I'll use her once she is."; }
 
         // ---------- Team Up helpers ----------
         function teamPlaceFor(pl, type, col, row) {
             if (!(col >= 1 && col < WORLD_COLS - 1 && row >= 0 && row < rowsN())) return false;
             if (game.towers.find(t => t.col === col && t.row === row)) return false;
             if (game.towers.filter(t => t.type === type).length >= getTowerCap(type)) return false;
-            if (type === 'badui' && document.getElementById('baduiBtn').style.display !== 'block') return false;
+            if (type === 'angry' && document.getElementById('angryBtn').style.display !== 'block') return false;
             if (type === 'math' && !game.mathUnlocked) return false;
-            let cost = type === 'tuff' ? 0 : (type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
+            let cost = type === 'tuff' ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             const mine = pl === 'p2' ? 'freeGuest' : 'freeTeachersLeft';
             let usedFree = false;
             if (type === 'sheikh' && game[mine] > 0) { cost = 0; usedFree = true; }
@@ -13996,7 +14053,7 @@
         const VS_SCHOOL_HP = 30, VS_START_COINS = 300, VS_INCOME = 8, VS_TURN_FRAMES = 1200;
         const VS_UNITS = {
             sheikh: { name: 'Scout Sheikh', icon: '🧑‍🏫', cost: 60, hp: 150, spd: 1.7, dmg: 1, cd: 40, range: 110, school: 1, blurb: 'Fast and cheap' },
-            badui:  { name: 'Angry Rusher', icon: '👩‍🏫', cost: 120, hp: 320, spd: 1.3, dmg: 2, cd: 45, range: 110, school: 2, blurb: 'Tougher, hits harder' },
+            angry:  { name: 'Angry Rusher', icon: '👩‍🏫', cost: 120, hp: 320, spd: 1.3, dmg: 2, cd: 45, range: 110, school: 2, blurb: 'Tougher, hits harder' },
             math:   { name: 'Math Tank', icon: '📐', cost: 260, hp: 1000, spd: 0.9, dmg: 4, cd: 60, range: 130, school: 4, blurb: 'Slow, huge, breaks schools' }
         };
         const VS_UPGRADES = [
@@ -14031,7 +14088,7 @@
             if (!vsCanPlace(pl, col, row)) return false;
             if (game.towers.find(t => t.col === col && t.row === row)) return false;
             if (game.towers.filter(t => t.type === type && t.pl === pl).length >= getTowerCap(type)) return false;
-            const cost = type === 'tuff' ? 0 : (type === 'badui' ? getBaduiCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
+            const cost = type === 'tuff' ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             if (vsCoins(pl) < cost) return false;
             vsAddCoins(pl, -cost);
             const tw = new Tower(col, row, type); tw.pl = pl; game.towers.push(tw);
@@ -14192,7 +14249,7 @@
             menuScreen.classList.add('hidden');
             const wrapper = document.getElementById('gameWrapper'); wrapper.style.display = 'block'; wrapper.style.animation = 'fadeIn 1.2s ease-out';
             game.active = true;
-            document.getElementById('baduiBtn').style.display = vs ? 'block' : 'none';
+            document.getElementById('angryBtn').style.display = vs ? 'block' : 'none';
             document.getElementById('mathBtn').style.display = vs ? 'block' : 'none';
             document.getElementById('pauseBtn').style.display = '';
             document.getElementById('skipWaveBtn').style.display = vs ? 'none' : (role === 'guest' ? '' : '');
@@ -14789,8 +14846,8 @@
             game.enemies = [];
         }
 
-        function testUnlockBadui() {
-            document.getElementById('baduiBtn').style.display = 'block';
+        function testUnlockAngry() {
+            document.getElementById('angryBtn').style.display = 'block';
         }
         function testUnlockArabic() {
             game.arabicUnlocked = true;
@@ -14890,7 +14947,7 @@
             for (const k of Object.keys(game)) if (!DEV_META.has(k)) sub[k] = game[k];
             devHistory.push({
                 state: devClone(sub, new Map()),
-                badui: document.getElementById('baduiBtn').style.display !== 'none',
+                angry: document.getElementById('angryBtn').style.display !== 'none',
                 math: document.getElementById('mathBtn').style.display !== 'none'
             });
             if (devHistory.length > DEV_MAX_SNAPS) devHistory.shift();
@@ -14903,7 +14960,7 @@
             setHudText('wave', 'Wave ' + game.wave);
             setHudText('kebabHp', 'Kebab HP: ' + kebabBaseHealth(topWave()));
             setHudText('kebabSpeed', 'Kebab Speed: ' + kebabSpeedFor(topWave()).toFixed(1));
-            document.getElementById('baduiBtn').disabled = false;
+            document.getElementById('angryBtn').disabled = false;
             updateWaveButtons();
             refreshTowerCostLabels();
         }
@@ -14915,7 +14972,7 @@
             game.frameAccumulator = 0;
             game.lose = null; _schoolWreck = 0; _schoolCollapse = 0; document.getElementById('loseSkip').style.display = 'none';
             document.getElementById('gameOverScreen').style.display = game.gameOver ? 'flex' : 'none';
-            document.getElementById('baduiBtn').style.display = snap.badui ? 'block' : 'none';
+            document.getElementById('angryBtn').style.display = snap.angry ? 'block' : 'none';
             document.getElementById('mathBtn').style.display = snap.math ? 'block' : 'none';
             devRefreshHud();
         }
@@ -15204,6 +15261,7 @@
                 achStatMax('bestCleared', game.wave - 1);
                 if (game.wave - 1 >= 10 && !game.schoolHurt && game.health >= game.maxHealth) achUnlock('spotless');
                 for (let k = 0; k < wavesCleared; k++) addXp(25 + 4 * (prevWave + k));
+                mapWavesAdd(wavesCleared);
                 achSave();
                 if (POS_WAVE > 0) { const pw = POS_WAVE; POS_WAVE = 0; setTimeout(() => showToast('💚 +' + pw + ' Positives  ·  ⭐ ' + XP_RUN + ' XP this battle', 2400), 700); }
                 else if (!getCurrentAccount() && !game.testMode && game.wave > 3 && !window._nudgedSignIn) { window._nudgedSignIn = true; setTimeout(() => showToast('💡 Sign in to earn Positives, XP and levels (new maps unlock at level ' + QUAD_UNLOCK_LEVEL + ')', 5200), 900); }
@@ -15274,14 +15332,14 @@
             const cost = getSheikhPlaceCost();
             const cap = getTowerCap('sheikh');
             const sheikhCount = ownTowerCount('sheikh');
-            const baduiCount = ownTowerCount('badui');
+            const angryCount = ownTowerCount('angry');
             const canAfford = (game.testMode || game.sentrals >= cost) && sheikhCount < cap;
             document.getElementById('sheikhBtn').disabled = !canAfford;
 
-            const baduiBtnElem = document.getElementById('baduiBtn');
-            if (baduiBtnElem.style.display !== 'none') {
-                const canAffordBadui = (game.testMode || game.sentrals >= getPlaceCost('badui')) && baduiCount < getTowerCap('badui');
-                baduiBtnElem.disabled = !canAffordBadui;
+            const angryBtnElem = document.getElementById('angryBtn');
+            if (angryBtnElem.style.display !== 'none') {
+                const canAffordAngry = (game.testMode || game.sentrals >= getPlaceCost('angry')) && angryCount < getTowerCap('angry');
+                angryBtnElem.disabled = !canAffordAngry;
             }
 
             const mathBtnElem = document.getElementById('mathBtn');
@@ -16084,14 +16142,14 @@
                     ctx.translate(-x, -(y + 28));
                 }
 
-                if (tower.type === 'badui') {
+                if (tower.type === 'angry') {
                     // Brown leather coat body
                     ctx.fillStyle = '#8B4513';
                     ctx.beginPath();
                     ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.stroke();
-                    drawSkinBody('badui', x, y, 20, 28);
+                    drawSkinBody('angry', x, y, 20, 28);
 
                     // Coat buttons
                     ctx.fillStyle = '#3D2410';
@@ -16113,7 +16171,7 @@
                         ctx.scale(sc, sc);
                         ctx.translate(-x, -(y - 14));
                     }
-                    const fuming = skinKind('badui') === 'fuming';
+                    const fuming = skinKind('angry') === 'fuming';
                     if (fuming) drawFumingFlames(x, y, animT);
                     // Thick pink circle around head (hijab) - bigger head
                     ctx.fillStyle = fuming ? '#E8330F' : '#FF1493';
@@ -16948,7 +17006,7 @@
             MB.wctx = MB.world.getContext('2d');
             // teachers stand on the grass just beside the track
             // (off to the sides, so the menu in the middle does not cover them)
-            const types = [['sheikh', 150], ['badui', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760]];
+            const types = [['sheikh', 150], ['angry', 330], ['math', 1090], ['sheikh', 1290], ['arabic', 760]];
             const used = [];
             for (const [type, wantX] of types) {
                 let best = null, bd = 1e9;
@@ -16998,13 +17056,13 @@
                     t.cd = 38 + Math.random() * 26; t.leanTimer = 14; t.leanDir = near.x >= t.x ? 1 : -1;
                     P.push({ type: 'projectile', owner: 'sheikh', x: t.x, y: t.y, targetX: near.x, targetY: near.y, progress: 0, duration: 15,
                         letter: ARABIC_LETTERS[Math.floor(Math.random() * ARABIC_LETTERS.length)], hit: near, dmg: 25 * (near.nsDamageMultiplier || 1) });
-                } else if (t.type === 'badui') {
+                } else if (t.type === 'angry') {
                     t.cd = 200 + Math.random() * 80;
                     const mark = E.filter(e => !e.hasNS).sort((a, b) => (b.pathIndex - a.pathIndex) || (b.progress - a.progress))[0];
                     if (mark) {
                         mark.hasNS = true; mark.nsDamageMultiplier = 2.5;
                         t.gestureTimer = 18; t.gestureType = 'write';
-                        P.push({ type: 'text', owner: 'badui', x: t.x, y: t.y - 50, text: 'Negative!', life: 30, size: 16 });
+                        P.push({ type: 'text', owner: 'angry', x: t.x, y: t.y - 50, text: 'Negative!', life: 30, size: 16 });
                     }
                 } else if (t.type === 'arabic') {
                     t.cd = 260 + Math.random() * 80;

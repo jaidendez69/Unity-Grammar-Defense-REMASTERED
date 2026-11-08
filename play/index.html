@@ -2592,6 +2592,25 @@
         .susp-overlay.hidden { display: none !important; }
         .susp-box { max-width: 460px; background: #2a0d12; border: 3px solid #ff5252; border-radius: 18px; padding: 24px 28px; text-align: center; color: #fff; line-height: 1.5; }
         .susp-box h2 { margin: 0 0 10px; color: #ff8a80; }
+        /* GAME INTRO LETTERS */
+        .title-intro { position: fixed; inset: 0; z-index: 99990; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: opacity .6s ease;
+            background: radial-gradient(ellipse at 50% 45%, #17503a 0%, #0e3a28 55%, #050f09 100%); }
+        .title-intro.hidden { display: none !important; }
+        .title-intro.out { opacity: 0; pointer-events: none; }
+        .title-intro-letters { text-align: center; }
+        .il-row { display: flex; justify-content: center; line-height: .95; }
+        .il { display: inline-block; opacity: 0; font-weight: 900; animation: ilPop .55s cubic-bezier(.2,1.7,.4,1) both; animation-delay: calc(350ms + var(--i) * 75ms); }
+        .il-a .il, .il-b .il { font-size: clamp(54px, 13vw, 118px); letter-spacing: 2px; color: #FFE066;
+            text-shadow: 4px 4px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 0 6px 0 #000, 0 12px 0 #8a5a00, 0 20px 30px rgba(0,0,0,.6); }
+        .il-b .il { color: #fff; }
+        .il-c { margin-top: 16px; }
+        .il-c .il { font-size: clamp(18px, 4vw, 34px); letter-spacing: 6px; color: #FFD700; text-shadow: 0 3px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000; }
+        .il-tag { margin-top: 20px; color: #cfe8d6; font-weight: 800; letter-spacing: 4px; font-size: clamp(11px, 2.2vw, 16px); opacity: 0; animation: ilFade .8s var(--d, 2s) ease-out both; }
+        .title-intro-skip { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.45); font-size: 12px; }
+        @keyframes ilPop { 0% { opacity: 0; transform: translateY(-90px) rotate(-14deg) scale(.4); } 60% { opacity: 1; transform: translateY(8px) rotate(3deg) scale(1.15); } 100% { opacity: 1; transform: none; } }
+        @keyframes ilFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        body.title-intro-hold #menuScreen, body.title-intro-hold #menuScreen * { animation-play-state: paused !important; }
+        @media (prefers-reduced-motion: reduce) { .il, .il-tag { animation: none; opacity: 1; } }
         /* LEADERBOARD */
         .mm-top .lb-corner-btn { color: #ffd54f; border-color: #ffd54f; }
         .mm-top .lb-corner-btn:hover { background: #ffd54f; color: #111; }
@@ -3026,6 +3045,12 @@
         <div class="susp-box"><h2>🚫 Account suspended</h2><p id="suspText"></p><button class="back-btn" onclick="suspOk()">OK</button></div>
     </div>
 
+    <!-- GAME INTRO (the title letters pop in when the game is first opened) -->
+    <div class="title-intro hidden" id="titleIntro" onclick="titleIntroSkip()">
+        <div class="title-intro-letters" id="titleIntroLetters"></div>
+        <div class="title-intro-skip">click or press any key to skip</div>
+    </div>
+
     <!-- MAIN MENU -->
     <div class="menu-screen" id="menuScreen">
         <div class="hw-deco"><span style="left:6%;top:12%">🦇</span><span style="left:84%;top:8%">🦇</span><span style="left:12%;top:72%">🎃</span><span style="left:88%;top:70%">🎃</span><span style="left:24%;top:28%">👻</span><span style="left:72%;top:34%">🕸️</span><span style="left:48%;top:90%">🪦</span></div>
@@ -3134,11 +3159,11 @@
                         <li><b>Mathematician</b>: his ultimate now also builds up by shushing: <b>every kebab he shushes fills 2%</b>.</li>
                         <li><b>Arabic Expert (Uniform Check buff)</b>: his ultimate also gains <b>5%</b> every time he tucks kebabs in, on top of the slow 75 second charge.</li>
                         <li><b>Wise Sheikh</b>: his ultimate gains <b>+10% every wave you clear</b>, and still fills from killing blows.</li>
-                        <li><b>Save &amp; quit</b>: after loading a saved battle you cannot heal teachers until you beat 1 wave.</li>
+                        <li><b>Save &amp; quit</b>: after loading a saved battle you cannot heal teachers <b>and their ultimates cannot charge</b> until you beat 1 wave.</li>
                         <li><b>Autoclicker detector improved</b>: it now catches clickers set anywhere from 0 to 100 ms (16+ clicks in a second, or an average gap under 100 ms over 20 clicks), and click damage can never exceed 11 hits a second.</li>
-                        <li><b>Quad kebabs</b>: the Soccer Kebab's ball and the OZ Tag Kebab's ribbons are gone. They still dodge and run fast.</li>
+                        <li><b>Quad kebabs</b>: the Soccer Kebab's ball and the OZ Tag Kebab's ribbons are back. The <b>Kebab Man</b> no longer wears or juggles any soccer gear on the Quad (no football, whistle or yellow card).</li>
                         <li><b>Skins</b>: in the <b>Customize</b> tab you can now pick your <b>profile picture's skin</b> and, separately, the <b>skin of each placed teacher</b> in battle. The two no longer affect each other.</li>
-                        <li><b>Removed</b>: the title-letters game intro and its setting.</li>
+                        <li><b>Game intro</b>: the title-letters intro stays (it was briefly removed by mistake).</li>
                         <li><b>Guides updated</b>: Teacher Health &amp; Healing, All Teachers at a Glance, Wise Sheikh, Mathematician, Arabic Expert, Skins, Profile &amp; Customizing, Fair Play and the Quad kebabs.</li>
                     </ul>
                 </div>
@@ -3984,6 +4009,8 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Game intro (letters)<small>When you first open the game, the title letters pop in one by one before the menu appears. Plays once per visit.</small></div>
+                    <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode: Team Up<small>Points things out during Team Up matches (two maps, shared coins, chat, the bot panel, tracks and bosses). It also gets offered at the end of the Team Up how-to-play.</small></div>
@@ -7579,7 +7606,7 @@
                 '<p>The villain behind it all lives in the <b>kebab shop</b>. He appears in a cutscene before the <b>split track</b>, the <b>tri-track</b> and <b>boss kebabs</b>.</p>' +
                 gList([
                     'He has <b>lots of different lines</b> for every cutscene, picked at random, so he rarely says the same thing twice.',
-                    'He acts differently on <b>each map</b>: on the <b>School Grounds</b> he grills kebabs and pounds the counter; on <b>The Quad</b> he is a referee who juggles a football, wears a whistle and holds up cards.',
+                    'He acts differently on <b>each map</b>: on the <b>School Grounds</b> he grills kebabs and pounds the counter; on <b>The Quad</b> he says soccer-themed lines but wears nothing extra.',
                     'You can skip any of his cutscenes by clicking or pressing a key, or turn them off with <b>Skip intro animation</b> in Settings.'
                 ]) },
             { id: 'mainmenu', group: 'basics', icon: '🏠', title: 'The Main Menu', html: () =>
@@ -7631,6 +7658,7 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
+                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('intro', 'Game Intro') + ' page.'],
                     ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
@@ -7667,6 +7695,12 @@
                     '<b>Everyone</b> with a Google-linked account is listed (up to 500). Your own row is highlighted green and says <b>(you)</b>. The <b>top 3 wear a 👑 crown</b>: gold, silver and bronze.',
                     'Your numbers update by themselves whenever your account saves. <b>🔄 Refresh</b> reloads the list. You need to be signed in with Google to look at it.',
                     'It needs an internet connection and a Google sign-in. Offline, the board just says it is unavailable.'
+                ]) },
+
+            { id: 'intro', group: 'more', icon: '✨', title: 'Game Intro', html: () =>
+                '<p>A small touch when you open the game. It can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
+                gTbl(['What', 'Details'], [
+                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.']
                 ]) },
 
             { id: 'fairplay', group: 'more', icon: '🛑', title: 'Fair Play (Autoclickers)', html: () =>
@@ -7788,12 +7822,11 @@
             { id: 'newkebabs', group: 'kebabs', icon: '⚽', title: 'Soccer & OZ Tag Kebabs (Quad)', html: () =>
                 '<p>The Quad adds two kebab variants. The plain kebabs are still there too.</p>' +
                 gTbl(['Kebab', 'Appears', 'Special'], [
-                    ['⚽ Soccer Kebab (looks like a normal kebab)', 'Wave ' + SOCCER_KEBAB_WAVE + '+', 'Every second it has a <b>' + Math.round(SOCCER_DODGE_CHANCE * 100) + '% chance to dodge</b>. While dodging (<b>2 seconds</b>) it takes <b>no damage</b> and looks see-through with a DODGE! label. Then it needs a <b>5 second cooldown</b> before it can dodge again.'],
-                    ['🏉 OZ Tag Kebab (looks like a normal kebab)', 'Wave ' + OZ_KEBAB_WAVE + '+', 'It runs a <b>little faster than the other kebabs</b> of its wave (<b>+0.1</b> speed at the start, and <b>another +0.1</b> every time the kebab speed level goes up, so it is never too fast: 1.1, 1.7, 2.3, 2.9 and at most 3.5).']
+                    ['⚽ Soccer Kebab (the last piece of meat on its stick is a soccer ball)', 'Wave ' + SOCCER_KEBAB_WAVE + '+', 'Every second it has a <b>' + Math.round(SOCCER_DODGE_CHANCE * 100) + '% chance to dodge</b>. While dodging (<b>2 seconds</b>) it takes <b>no damage</b> and looks see-through with a DODGE! label. Then it needs a <b>5 second cooldown</b> before it can dodge again.'],
+                    ['🏉 OZ Tag Kebab (two coloured ribbons on its lower body)', 'Wave ' + OZ_KEBAB_WAVE + '+', 'It runs a <b>little faster than the other kebabs</b> of its wave (<b>+0.1</b> speed at the start, and <b>another +0.1</b> every time the kebab speed level goes up, so it is never too fast: 1.1, 1.7, 2.3, 2.9 and at most 3.5). Its two random-coloured ribbons are blown backwards by the wind, opposite to the way it runs.']
                 ]) +
                 gList([
                     'Both have the same health, coin reward and XP as a normal kebab of that wave.',
-                    'They <b>wear nothing extra</b> (no ball, no ribbons), so tell them apart by how they move: the Soccer Kebab flickers see-through with a DODGE! label, and the OZ Tag Kebab is faster.',
                     'Tip: time your ultimates and Shhhh! for when a Soccer Kebab is <b>not</b> see-through.',
                     'Test Mode has buttons to spawn each variant.'
                 ]) },
@@ -8657,6 +8690,7 @@
             sfx: true,
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
+            introAnim: true,        // the title letters pop in when the game is first opened
             guideMode: false,       // Guide Mode: circles and points at things while you play
             guideTeam: false,       // Guide Mode inside Team Up
             guideVs: false,         // Guide Mode inside VS
@@ -9482,7 +9516,7 @@
                 ],
                 quad: [
                     ['Welcome to the big match! ⚽', 'Kebabs versus Teachers!', 'KICK OFF! MWAHAHAHA!', 'Score on that school! 🏫'],
-                    ['Warming up the pitch...', 'No offside for kebabs!', 'I AM THE REFEREE!', 'Red card for the school! 🟥'],
+                    ['Warming up the pitch...', 'No offside for kebabs!', 'THIS IS MY PITCH!', 'Full time for the school! ⚽'],
                     ['Nice grass. Shame about it.', 'This is MY stadium now.', 'PHWEEET! RISE, KEBABS!', 'Tackle that school! ⚽'],
                     ['Sizzling on the sideline...', 'Half-time? Never.', 'GOOOAL FOR EVIL!', 'Run the field, my kebabs!'],
                     ['Training day, kebabs...', 'Pass, shoot, SCORE!', 'THE WHISTLE HAS BLOWN!', 'Dribble past the teachers!'],
@@ -9757,11 +9791,6 @@
                 c.beginPath(); c.arc(cx - 5.5 * K, ey, er, 0, Math.PI * 2); c.arc(cx + 5.5 * K, ey, er, 0, Math.PI * 2); c.fill();
                 if (rage > 0) { c.lineWidth = 0.9; c.stroke(); }
             }
-            if (_introMap === 'quad') {   // referee whistle on a lanyard
-                c.strokeStyle = '#222'; c.lineWidth = 1.2; c.beginPath(); c.moveTo(cx - 5 * K, by - 22 * K); c.lineTo(cx + 3 * K, by - 8 * K); c.lineTo(cx + 9 * K, by - 22 * K); c.stroke();
-                c.fillStyle = '#C9CED6'; c.strokeStyle = '#000'; c.lineWidth = 1.2;
-                c.beginPath(); c.ellipse(cx + 3 * K, by - 7 * K, 4 * K, 2.6 * K, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-            }
             // evil eyebrows: always slanted, much angrier during the rumble
             c.strokeStyle = '#000'; c.lineWidth = 2.1; c.lineCap = 'round';
             const slant = (2.2 + 2.6 * rage) * K;
@@ -9817,7 +9846,7 @@
         // what the teachers say back to the Kebab Man (line 1: when they meet him, 2: the argument, 3: during the rumble)
         const INTRO_REPLY = {
             sheikh: ['Excuse me, sir. What are you cooking?', 'School lunch is for everyone. This is NOT okay!', 'STOP! You will bring the whole shop down!'],
-            badui: ['A referee on MY field? Absolutely not.', 'Detention. For you. Forever.', 'Put. The. Cards. DOWN.'],
+            badui: ['A kebab shop on MY field? Absolutely not.', 'Detention. For you. Forever.', 'Put. The. Meat. DOWN.'],
             math: ['By my calculations, this is unwise.', 'The odds of you winning are 0.003%.', 'Silence! ...Please. Shhh!'],
             team2: ['Wait for me! Who is this guy?', 'Together we can stop you!', 'Hold on, friend!']
         };
@@ -9936,18 +9965,8 @@
                 drawIntroCook(c, ox, oy, ms, ft, shaking, sp);
 
                 // grill: one skewer flips every second (the flames are part of the shop)
-                // On the Quad he is a referee instead: he juggles a football on the grill and blows his whistle.
                 const act = Math.floor(ft) % 2, u = ft % 1, gy = oy + 46;
-                if (_introMap === 'quad') {
-                    const bx = ox + 52, by2 = gy - (shaking ? Math.abs(Math.sin(ms / 90)) * 9 : Math.abs(Math.sin(ft * 4.2)) * 14), br = 5.2;
-                    c.fillStyle = '#fff'; c.strokeStyle = '#000'; c.lineWidth = 1.2;
-                    c.beginPath(); c.arc(bx, by2, br, 0, Math.PI * 2); c.fill(); c.stroke();
-                    c.fillStyle = '#111'; c.beginPath(); c.arc(bx, by2, 1.9, 0, Math.PI * 2); c.fill();
-                    for (let q = 0; q < 5; q++) { const an = q * Math.PI * 2 / 5 + ft * 2; c.beginPath(); c.arc(bx + Math.cos(an) * 3.9, by2 + Math.sin(an) * 3.9, 1, 0, Math.PI * 2); c.fill(); }
-                    if (shaking && Math.floor(ms / 520) !== Math.floor((ms - 30) / 520) && !lowFx()) { playSound(2600, 0.1, 'square'); playSound(2250, 0.1, 'triangle'); }
-                }
                 for (let k = 0; k < 2; k++) {
-                    if (_introMap === 'quad') break;
                     const bx = ox + 49 + k * 15;
                     const wob = shaking ? (Math.random() - 0.5) * 2.4 : 0;
                     if (k === act && !shaking) introSkewer(c, bx, gy - Math.sin(u * Math.PI) * 8, u * Math.PI * 2, 0.24);
@@ -9968,10 +9987,6 @@
                 if (!shaking) {
                     const hx = ox + 43 + Math.sin(ft * 3) * 2.5 + _cookTalk * Math.sin(ms / 120) * 5, hy = oy + 43 - Math.sin(u * Math.PI) * 3 - _cookTalk * (6 + Math.abs(Math.sin(ms / 140)) * 7);
                     c.beginPath(); c.ellipse(hx, hy, 3.1, 3.4, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-                    if (_introMap === 'quad') {   // tapping a clipboard? no: waving a yellow card
-                        c.save(); c.translate(ox + 60, oy + 33 + Math.sin(ft * 2.4) * 1.5); c.rotate(-0.2 + Math.sin(ft * 2.4) * 0.12);
-                        c.fillStyle = '#FFD21F'; c.fillRect(-3, -4.5, 6, 9); c.strokeRect(-3, -4.5, 6, 9); c.restore();
-                    }
                 } else {
                     // both fists pound the counter again and again: that is the rumbling
                     const beat = (ms - INTRO_COOK_END) / 230;
@@ -9981,10 +9996,6 @@
                         c.beginPath(); c.arc(fx, fy, 3.6, 0, Math.PI * 2); c.fill(); c.stroke();
                         c.lineWidth = 0.9; c.beginPath(); c.moveTo(fx - 1.8, fy - 0.4); c.lineTo(fx + 1.8, fy - 0.4); c.moveTo(fx - 1.8, fy + 1.3); c.lineTo(fx + 1.8, fy + 1.3); c.stroke();
                         c.lineWidth = 1.4;
-                    }
-                    if (_introMap === 'quad') {   // the right fist holds up a RED card
-                        const fx = ox + 47, fy = oy + 26 + (1 - hit) * -9 + hit * 13;
-                        c.save(); c.translate(fx, fy - 8); c.rotate(0.15); c.fillStyle = '#E53935'; c.fillRect(-4, -6, 8, 12); c.strokeRect(-4, -6, 8, 12); c.restore();
                     }
                 }
                 c.restore();
@@ -10060,7 +10071,7 @@
                     c.fillStyle = 'rgba(0,0,0,0.65)'; c.fillRect(-60, -26, 520, 74);
                     c.fillStyle = '#FF1493'; c.fillRect(-60, -26, 12, 74);
                     c.font = 'italic 900 38px Impact, "Arial Black", sans-serif'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText(nm, -30, -2);
-                    c.font = 'bold 16px Arial'; c.fillStyle = '#FFD700'; c.fillText(game.mapId === 'quad' ? 'Soccer field · Referee on duty' : (game.teamUp ? 'Two players, one school' : 'A quiet day at school...'), -28, 28);
+                    c.font = 'bold 16px Arial'; c.fillStyle = '#FFD700'; c.fillText(game.mapId === 'quad' ? 'Soccer field' : (game.teamUp ? 'Two players, one school' : 'A quiet day at school...'), -28, 28);
                     c.restore();
                 }
             }
@@ -10278,6 +10289,45 @@
         }
         // ===== END WELCOME GUIDE =====
 
+        // ===== GAME INTRO (the title letters pop in when the game is first opened) =====
+        // Plays once per visit (per browser tab session), before the disclaimer / Welcome Guide. Click or any key skips it.
+        // The main menu waits (its slide-in animations are paused) and then slides in as the intro fades away.
+        const TITLE_INTRO_KEY = 'ugd_intro_seen';
+        var _tiTimers = [], _tiCb = null, _tiOn = false;
+        function tiLater(fn, ms) { _tiTimers.push(setTimeout(fn, ms)); }
+        function maybeShowTitleIntro(done) {
+            _tiCb = done;
+            let seen = false;
+            try { seen = sessionStorage.getItem(TITLE_INTRO_KEY) === '1'; } catch (e) {}
+            const ov = document.getElementById('titleIntro'), menu = document.getElementById('menuScreen');
+            if (!ov || seen || settings.introAnim === false || !menu || menu.classList.contains('hidden')) { _tiCb = null; if (done) done(); return; }
+            try { sessionStorage.setItem(TITLE_INTRO_KEY, '1'); } catch (e) {}
+            const box = document.getElementById('titleIntroLetters');
+            let n = 0, h = '';
+            [['UNITY', 'il-a'], ['DEFENSE', 'il-b'], ['REMASTERED', 'il-c']].forEach(r => {
+                h += '<div class="il-row ' + r[1] + '">';
+                r[0].split('').forEach(ch => { h += '<span class="il" style="--i:' + (n++) + '">' + ch + '</span>'; });
+                h += '</div>';
+            });
+            const landed = 350 + n * 75 + 500;
+            box.innerHTML = h + '<div class="il-tag" style="--d:' + landed + 'ms">SHEBABS VS KEBABS</div>';
+            document.body.classList.add('title-intro-hold');
+            ov.classList.remove('hidden', 'out'); _tiOn = true;
+            tiLater(titleIntroFinish, landed + 1300);
+        }
+        function titleIntroFinish() {
+            if (!_tiOn) return;
+            _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
+            const ov = document.getElementById('titleIntro');
+            ov.classList.add('out');
+            document.body.classList.remove('title-intro-hold');          // the menu slides in underneath the fading intro
+            setTimeout(() => { ov.classList.add('hidden'); ov.classList.remove('out'); }, 650);
+            const cb = _tiCb; _tiCb = null;
+            if (cb) setTimeout(cb, 700);
+        }
+        function titleIntroSkip() { if (_tiOn) titleIntroFinish(); }
+        document.addEventListener('keydown', () => titleIntroSkip());
+        // ===== END GAME INTRO =====
 
         // ===== LEADERBOARD (most waves survived / most Positives) =====
         // Public Firestore collection "leaderboard" (one document per Google-linked account, written by that account only).
@@ -12295,6 +12345,9 @@
         const SHEBAB_LOCKOUT_FRAMES = 60;   // Wise Sheikh cannot attack for 1 second after his ultimate
 
         class Tower {
+            // while healing is locked (after save & quit) ultimates cannot build up, from any source
+            get shebabCharge() { return this._sc; }
+            set shebabCharge(v) { if (game.healLock && this._sc !== undefined && v > this._sc) return; this._sc = v; }
             constructor(col, row, type = 'sheikh') {
                 this.col = col;
                 this.row = row;
@@ -15141,8 +15194,8 @@
                 const prevWave = game.wave;
                 game.wave += wavesCleared;
                 { const wb = WAVE_COIN_BONUS * wavesCleared; if (!game.testMode) game.sentrals += wb; game.coinsEarned += wb; setHudText('sentrals', game.testMode ? '∞' : Math.floor(game.sentrals)); showToast('🪙 Wave bonus +' + wb + ' coins', 1800); }
-                for (const tw of game.towers) if (tw.type === 'sheikh' && tw.shebabCharge < tw.shebabMax) tw.shebabCharge = Math.min(tw.shebabCharge + SHEIKH_WAVE_CHARGE * wavesCleared, tw.shebabMax);   // Wise Sheikh: +10% every wave cleared
                 if (game.healLock) { game.healLock = false; showToast('🩹 You can heal your teachers again.', 2600); }
+                for (const tw of game.towers) if (tw.type === 'sheikh' && tw.shebabCharge < tw.shebabMax) tw.shebabCharge = Math.min(tw.shebabCharge + SHEIKH_WAVE_CHARGE * wavesCleared, tw.shebabMax);   // Wise Sheikh: +10% every wave cleared
                 if (game.medicHeal > 0 && game.health < game.maxHealth) {   // Medic: heal the school each wave
                     game.health = Math.min(game.maxHealth, game.health + game.medicHeal * wavesCleared);
                     setHudText('health', game.health);
@@ -15897,6 +15950,7 @@
             setVal('set_guideTeam', settings.guideTeam);
             setVal('set_guideVs', settings.guideVs);
             setVal('set_menuAnim', settings.menuAnim);
+            setVal('set_introAnim', settings.introAnim);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
             setVal('set_bgPlay', settings.bgPlay);
@@ -16498,6 +16552,40 @@
                     }
                 }
 
+                if (kind === 'soccer') {
+                    // the last kebab meat on the stick is a soccer ball
+                    const bx = x + positions[2], by = y - 5 + 2 * 10;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath(); ctx.arc(bx, by, 10.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath();
+                    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * Math.PI * 2 / 5; ctx.lineTo(bx + Math.cos(a) * 4.3, by + Math.sin(a) * 4.3); }
+                    ctx.closePath(); ctx.fill();
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.4;
+                    for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * Math.PI * 2 / 5; ctx.beginPath(); ctx.moveTo(bx + Math.cos(a) * 4.3, by + Math.sin(a) * 4.3); ctx.lineTo(bx + Math.cos(a) * 9.6, by + Math.sin(a) * 9.6); ctx.stroke(); }
+                    if (enemy.hitFlash > 0) { ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; ctx.beginPath(); ctx.arc(bx, by, 10, 0, Math.PI * 2); ctx.fill(); }
+                } else if (kind === 'oz') {
+                    // Oz Tag: just two random-coloured ribbons on the lower body, blown
+                    // back (the opposite way to where it is running) by the wind
+                    const cols = enemy.ozColors || ['#FF3B3B', '#38D84A'];
+                    const bdx = -(enemy.mdx === undefined ? 1 : enemy.mdx), bdy = -(enemy.mdy || 0);   // blowing direction
+                    const px = -bdy, py = bdx;                                                          // sideways to it
+                    const anchors = [[x + positions[2] - 2, y - 5 + 20 - 1], [x - 5, y + 19]];
+                    ctx.lineCap = 'round';
+                    for (let r = 0; r < 2; r++) {
+                        const ax = anchors[r][0], ay = anchors[r][1];
+                        const len = 30 - r * 4, fl = lowFx() ? 0 : Math.sin(animT * 0.55 + r * 2.1);
+                        const ex = ax + bdx * len + px * fl * 2.5, ey = ay + bdy * len + py * fl * 2.5 + 3;     // droops a touch
+                        const mx = ax + bdx * len * 0.5 + px * fl * 5, my = ay + bdy * len * 0.5 + py * fl * 5 + 1;
+                        ctx.strokeStyle = '#000'; ctx.lineWidth = 7;
+                        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke();
+                        ctx.strokeStyle = cols[r]; ctx.lineWidth = 4;
+                        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke();
+                    }
+                    ctx.lineCap = 'butt';
+                }
+
                 ctx.restore();
                 if (buried) {
                     ctx.restore();
@@ -17016,7 +17104,7 @@
         requestAnimationFrame(menuBgLoop);
 
         updateLastUpdateDateDisplay();
-        maybeShowDisclaimers();
+        maybeShowTitleIntro(maybeShowDisclaimers);
         gmRefreshBtn();
 
         applySettings();

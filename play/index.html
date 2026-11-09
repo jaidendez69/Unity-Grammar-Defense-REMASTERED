@@ -2592,25 +2592,20 @@
         .susp-overlay.hidden { display: none !important; }
         .susp-box { max-width: 460px; background: #2a0d12; border: 3px solid #ff5252; border-radius: 18px; padding: 24px 28px; text-align: center; color: #fff; line-height: 1.5; }
         .susp-box h2 { margin: 0 0 10px; color: #ff8a80; }
-        /* GAME INTRO LETTERS */
-        .title-intro { position: fixed; inset: 0; z-index: 99990; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: opacity .6s ease;
-            background: radial-gradient(ellipse at 50% 45%, #17503a 0%, #0e3a28 55%, #050f09 100%); }
-        .title-intro.hidden { display: none !important; }
-        .title-intro.out { opacity: 0; pointer-events: none; }
-        .title-intro-letters { text-align: center; }
-        .il-row { display: flex; justify-content: center; line-height: .95; }
-        .il { display: inline-block; opacity: 0; font-weight: 900; animation: ilPop .55s cubic-bezier(.2,1.7,.4,1) both; animation-delay: calc(350ms + var(--i) * 75ms); }
-        .il-a .il, .il-b .il { font-size: clamp(54px, 13vw, 118px); letter-spacing: 2px; color: #FFE066;
-            text-shadow: 4px 4px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 0 6px 0 #000, 0 12px 0 #8a5a00, 0 20px 30px rgba(0,0,0,.6); }
-        .il-b .il { color: #fff; }
-        .il-c { margin-top: 16px; }
-        .il-c .il { font-size: clamp(18px, 4vw, 34px); letter-spacing: 6px; color: #FFD700; text-shadow: 0 3px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000; }
-        .il-tag { margin-top: 20px; color: #cfe8d6; font-weight: 800; letter-spacing: 4px; font-size: clamp(11px, 2.2vw, 16px); opacity: 0; animation: ilFade .8s var(--d, 2s) ease-out both; }
-        .title-intro-skip { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.45); font-size: 12px; }
-        @keyframes ilPop { 0% { opacity: 0; transform: translateY(-90px) rotate(-14deg) scale(.4); } 60% { opacity: 1; transform: translateY(8px) rotate(3deg) scale(1.15); } 100% { opacity: 1; transform: none; } }
-        @keyframes ilFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        body.title-intro-hold #menuScreen, body.title-intro-hold #menuScreen * { animation-play-state: paused !important; }
-        @media (prefers-reduced-motion: reduce) { .il, .il-tag { animation: none; opacity: 1; } }
+        /* GAME INTRO: teachers are placed one by one, the title letters fly in, then the buttons fade in */
+        body.ti-hold #menuScreen .mm-top, body.ti-hold #menuScreen .mm-kicker, body.ti-hold #menuScreen .mm-ribbon, body.ti-hold #menuScreen .mm-play,
+        body.ti-hold #menuScreen .mm-nudge, body.ti-hold #menuScreen .mm-grid, body.ti-hold #menuScreen .mm-foot, body.ti-hold #menuScreen .mm-quitrow,
+        body.ti-hold #menuScreen .guide-corner-btn { opacity: 0 !important; animation: none !important; pointer-events: none !important; }
+        body.ti-hold #menuScreen .mm-title { animation: none !important; }
+        body.ti-played #menuScreen .mm-title { animation: mmBob 5s 1s ease-in-out infinite; }
+        .tl { display: inline-block; animation: tlFly .95s cubic-bezier(.16,.85,.3,1.04) calc(var(--i) * 85ms) both, tlGlint .7s linear calc(var(--g) + var(--i) * 55ms) both; will-change: transform, filter; }
+        @keyframes tlFly {
+            0% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(5); filter: blur(14px) brightness(2.2); }
+            12% { opacity: 1; }
+            72% { transform: translate(0, 0) rotate(0deg) scale(.9); filter: blur(0) brightness(1.5); }
+            100% { opacity: 1; transform: none; filter: none; } }
+        @keyframes tlGlint { 0%, 100% { filter: none; } 45% { filter: brightness(2.4) drop-shadow(0 0 16px #fff); } }
+        @media (prefers-reduced-motion: reduce) { .tl { animation: none; } }
         /* LEADERBOARD */
         .mm-top .lb-corner-btn { color: #ffd54f; border-color: #ffd54f; }
         .mm-top .lb-corner-btn:hover { background: #ffd54f; color: #111; }
@@ -3050,12 +3045,6 @@
         <div class="susp-box"><h2>🚫 Account suspended</h2><p id="suspText"></p><button class="back-btn" onclick="suspOk()">OK</button></div>
     </div>
 
-    <!-- GAME INTRO (the title letters pop in when the game is first opened) -->
-    <div class="title-intro hidden" id="titleIntro" onclick="titleIntroSkip()">
-        <div class="title-intro-letters" id="titleIntroLetters"></div>
-        <div class="title-intro-skip">click or press any key to skip</div>
-    </div>
-
     <!-- MAIN MENU -->
     <div class="menu-screen" id="menuScreen">
         <div class="hw-deco"><span style="left:6%;top:12%">🦇</span><span style="left:84%;top:8%">🦇</span><span style="left:12%;top:72%">🎃</span><span style="left:88%;top:70%">🎃</span><span style="left:24%;top:28%">👻</span><span style="left:72%;top:34%">🕸️</span><span style="left:48%;top:90%">🪦</span></div>
@@ -3158,6 +3147,13 @@
             <h2>📜 Update Log</h2>
             <div class="update-list">
                 <div class="update-entry">
+                    <div class="update-date">November 9, 2026</div>
+                    <ul>
+                        <li><b>Game intro reworked</b>: the characters are now placed one by one on the menu field, then the title letters fly in from all around, then the buttons fade in.</li>
+                        <li><b>Suspensions</b>: pressing OK on the suspended screen now ends any running battle and reloads the game, so the wave and placed teachers can't be continued. The suspension is also remembered on the device, so a suspended player is blocked straight away after reopening the game.</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
                     <div class="update-date">November 8, 2026</div>
                     <ul>
                         <li><b>🚫 Suspensions (admin)</b>: the admin can suspend a Google-linked account for any number of days (editable) with a reason, and lift it again. A suspended player sees the reason and the end date and cannot play until it ends.</li>
@@ -3210,7 +3206,7 @@
                         <li><b>New: 🏆 Leaderboard</b>: most <b>waves survived</b> and most <b>💚 Positives</b>. Only accounts linked to <b>Google</b> are ranked, and the admin is not. Button at the top right of the main menu.</li>
                         <li><b>Shops: buy 2 upgrades at once</b>: each shop now lets you make <b>two purchases</b> before it closes. Every teacher is already for hire in the very first shop.</li>
                         <li><b>Mathematician buff</b>: <b>Algebra Swarm</b> now hits for <b>45%</b> of a kebab's health (was 35%).</li>
-                        <li><b>New: Game intro</b>: the title letters pop in when you first open the game (click to skip). Turn it off with <b>Game intro (letters)</b> in Settings.</li>
+                        <li><b>New: Game intro</b>: when you first open the game the teachers are placed one by one, the title letters fly in and the buttons fade in (click to skip). Turn it off with <b>Game intro animation</b> in Settings.</li>
                         <li><b>New: Title splash text</b>: random Minecraft-style text next to the title (click it for another). Turn it off with <b>Title splash text</b> in Settings.</li>
                         <li><b>Credits</b>: <b>Die Of Death</b> added for the shop music.</li>
                     </ul>
@@ -4017,7 +4013,7 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
-                <div class="set-row"><div class="set-label">Game intro (letters)<small>When you first open the game, the title letters pop in one by one before the menu appears. Plays once per visit.</small></div>
+                <div class="set-row"><div class="set-label">Game intro animation<small>When you first open the game, the teachers are placed one by one, the title letters fly in and the buttons fade in. Plays once per visit.</small></div>
                     <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
                     <label class="switch"><input type="checkbox" id="set_guideMode" onchange="onSettingChange('guideMode', this.checked)"><span class="slider"></span></label></div>
@@ -4427,6 +4423,7 @@
         }
 
         function restoreSavedGame(saved) {
+            if (suspGate()) return;
             MAP_BIG = !!saved.big; cameraOffset = 0;
             applyMap(saved.mapId || 'normal');
             game.freeTeacher = saved.freeTeacher || null;
@@ -4591,6 +4588,7 @@
         }
 
         function proceedToPlay(fresh = true) {
+            if (suspGate()) return;
             const menuScreen = document.getElementById('menuScreen');
             menuScreen.classList.add('fade-out');
             setTimeout(() => {
@@ -4671,7 +4669,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-08';
+        const LAST_UPDATE_DATE = '2026-11-09';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4773,7 +4771,7 @@
             try {
                 if (username) {
                     localStorage.setItem(CURRENT_USER_KEY, username);
-                    setTimeout(() => { try { suspCheck(); } catch (e) {} }, 900);
+                    setTimeout(() => { try { suspGate(); suspCheck(); } catch (e) {} }, 300);
                 } else {
                     localStorage.removeItem(CURRENT_USER_KEY);
                 }
@@ -7711,7 +7709,7 @@
                     ['Teacher animations', 'Blinking, eye movement and teachers chatting.'],
                     ['Kebab health bars', 'Show or hide the bar above each kebab.'],
                     ['Show FPS counter', 'Small FPS number in the corner. Helpful if the game lags.'],
-                    ['Game intro (letters)', 'Turns the title-letters intro at the start on or off. See the ' + gLink('intro', 'Game Intro') + ' page.'],
+                    ['Game intro animation', 'Turns the intro at the start on or off. See the ' + gLink('intro', 'Game Intro') + ' page.'],
                     ['Welcome guide (Replay button)', 'Replays the first-time slideshow about accounts, the shops, daily rewards, levels and friends. See the ' + gLink('welcome', 'Welcome Guide') + ' page.'],
                     ['Keep running in the background', 'When on, the game keeps playing if you switch tabs or minimise it.']
                 ]) +
@@ -7753,7 +7751,7 @@
             { id: 'intro', group: 'more', icon: '✨', title: 'Game Intro', html: () =>
                 '<p>A small touch when you open the game. It can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
                 gTbl(['What', 'Details'], [
-                    ['Game intro', 'The first time you open the game in a session, the title letters <b>pop in one by one</b> on a dark green screen, then the main menu slides in. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you go back to the menu.']
+                    ['Game intro', 'The first time you open the game in a session: the menu field starts empty and the <b>teachers are placed one by one</b>, then the <b>title letters fly in</b> from all around the screen, then the <b>buttons fade in</b>. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you return to the menu.']
                 ]) },
 
             { id: 'fairplay', group: 'more', icon: '🛑', title: 'Fair Play (Autoclickers)', html: () =>
@@ -8195,14 +8193,17 @@
         }
         // ----- Enforcement: a suspended Google-linked account is blocked while it is online -----
         var SUSP = { uid: '', until: 0, reason: '' };
+        const SUSP_LS = 'ugd_susp';   // remembered on this device so the block works straight away after a reload (before the cloud answers)
+        try { const _sv = JSON.parse(localStorage.getItem(SUSP_LS) || 'null'); if (_sv && _sv.until > Date.now()) SUSP = _sv; } catch (e) {}
+        function suspSave() { try { if (SUSP.uid && SUSP.until > Date.now()) localStorage.setItem(SUSP_LS, JSON.stringify(SUSP)); else localStorage.removeItem(SUSP_LS); } catch (e) {} }
         function suspCheck() {
             try {
                 const acc = getCurrentAccount();
                 if (!acc || !acc.cloudUid || isAdminAccount() || typeof firebase === 'undefined' || !cloudAuthReady || !firebase.auth().currentUser) return;
                 firebase.firestore().collection('players').doc(acc.cloudUid).get().then(d => {
                     const v = (d && d.data && d.data()) || {};
-                    if (v.suspendedUntil && v.suspendedUntil > Date.now()) { SUSP = { uid: acc.cloudUid, until: v.suspendedUntil, reason: v.suspendReason || '' }; suspShow(); }
-                    else SUSP = { uid: '', until: 0, reason: '' };
+                    if (v.suspendedUntil && v.suspendedUntil > Date.now()) { SUSP = { uid: acc.cloudUid, until: v.suspendedUntil, reason: v.suspendReason || '' }; suspSave(); suspShow(); }
+                    else { if (SUSP.uid === acc.cloudUid) { SUSP = { uid: '', until: 0, reason: '' }; suspSave(); const o = document.getElementById('suspOverlay'); if (o) o.classList.add('hidden'); } }
                 }).catch(() => {});
             } catch (e) {}
         }
@@ -8214,7 +8215,17 @@
             try { if (game.waveInProgress) game.paused = true; } catch (e) {}
             el.classList.remove('hidden');
         }
-        function suspOk() { document.getElementById('suspOverlay').classList.add('hidden'); try { logOutAccount(); } catch (e) {} }
+        // OK signs the player out and reloads the game, which throws away the battle that was running (wave, placed teachers).
+        // Their saved battle stays on the suspended account, where it cannot be loaded while the suspension lasts.
+        function suspOk() {
+            document.getElementById('suspOverlay').classList.add('hidden');
+            try { game.active = false; game.paused = true; } catch (e) {}
+            try { logOutAccount(); } catch (e) {}
+            try { localStorage.removeItem(DEV_SAVE_KEY); } catch (e) {}
+            setTimeout(() => location.reload(), 60);
+        }
+        // signing in to a suspended account shows the block straight away
+        function suspGate() { if (suspBlocked()) { suspShow(); return true; } return false; }
         setTimeout(suspCheck, 4000);
         setInterval(suspCheck, 120000);
         function adminRender() {
@@ -10346,45 +10357,6 @@
         }
         // ===== END WELCOME GUIDE =====
 
-        // ===== GAME INTRO (the title letters pop in when the game is first opened) =====
-        // Plays once per visit (per browser tab session), before the disclaimer / Welcome Guide. Click or any key skips it.
-        // The main menu waits (its slide-in animations are paused) and then slides in as the intro fades away.
-        const TITLE_INTRO_KEY = 'ugd_intro_seen';
-        var _tiTimers = [], _tiCb = null, _tiOn = false;
-        function tiLater(fn, ms) { _tiTimers.push(setTimeout(fn, ms)); }
-        function maybeShowTitleIntro(done) {
-            _tiCb = done;
-            let seen = false;
-            try { seen = sessionStorage.getItem(TITLE_INTRO_KEY) === '1'; } catch (e) {}
-            const ov = document.getElementById('titleIntro'), menu = document.getElementById('menuScreen');
-            if (!ov || seen || settings.introAnim === false || !menu || menu.classList.contains('hidden')) { _tiCb = null; if (done) done(); return; }
-            try { sessionStorage.setItem(TITLE_INTRO_KEY, '1'); } catch (e) {}
-            const box = document.getElementById('titleIntroLetters');
-            let n = 0, h = '';
-            [['UNITY', 'il-a'], ['DEFENSE', 'il-b'], ['REMASTERED', 'il-c']].forEach(r => {
-                h += '<div class="il-row ' + r[1] + '">';
-                r[0].split('').forEach(ch => { h += '<span class="il" style="--i:' + (n++) + '">' + ch + '</span>'; });
-                h += '</div>';
-            });
-            const landed = 350 + n * 75 + 500;
-            box.innerHTML = h + '<div class="il-tag" style="--d:' + landed + 'ms">SHEBABS VS KEBABS</div>';
-            document.body.classList.add('title-intro-hold');
-            ov.classList.remove('hidden', 'out'); _tiOn = true;
-            tiLater(titleIntroFinish, landed + 1300);
-        }
-        function titleIntroFinish() {
-            if (!_tiOn) return;
-            _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
-            const ov = document.getElementById('titleIntro');
-            ov.classList.add('out');
-            document.body.classList.remove('title-intro-hold');          // the menu slides in underneath the fading intro
-            setTimeout(() => { ov.classList.add('hidden'); ov.classList.remove('out'); }, 650);
-            const cb = _tiCb; _tiCb = null;
-            if (cb) setTimeout(cb, 700);
-        }
-        function titleIntroSkip() { if (_tiOn) titleIntroFinish(); }
-        document.addEventListener('keydown', () => titleIntroSkip());
-        // ===== END GAME INTRO =====
 
         // ===== LEADERBOARD (most waves survived / most Positives) =====
         // Public Firestore collection "leaderboard" (one document per Google-linked account, written by that account only).
@@ -16975,6 +16947,66 @@
         updateAccountCornerBtn();
         initCloudSync();
 
+        // ===== GAME INTRO =====
+        // Plays once per visit (per browser tab session), before the disclaimer / Welcome Guide:
+        //  1. the menu field is empty, then the teachers are placed one by one
+        //  2. the title letters fly in from all around (like a classic studio logo)
+        //  3. the buttons fade in.   Click or any key skips it.
+        const TITLE_INTRO_KEY = 'ugd_intro_seen';
+        var _tiTimers = [], _tiCb = null, _tiOn = false, _tiOrig = [];
+        function tiLater(fn, ms) { _tiTimers.push(setTimeout(fn, ms)); }
+        function maybeShowTitleIntro(done) {
+            _tiCb = done;
+            let seen = false;
+            try { seen = sessionStorage.getItem(TITLE_INTRO_KEY) === '1'; } catch (e) {}
+            const menu = document.getElementById('menuScreen'), title = document.querySelector('.mm-title');
+            if (seen || settings.introAnim === false || !menu || !title || menu.classList.contains('hidden') || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { _tiCb = null; if (done) done(); return; }
+            try { sessionStorage.setItem(TITLE_INTRO_KEY, '1'); } catch (e) {}
+            _tiOn = true;
+            document.body.classList.add('ti-hold', 'ti-played');
+            // 1. an empty field first, teachers dropped in one at a time
+            menuBattleInit(); MB.enemies.length = 0; MB.particles.length = 0; MB.spawnIn = 1e9;
+            const GAP = 520, START = 500, t0 = performance.now();
+            MB.intro = true;
+            MB.towers.forEach((t, i) => { t.introAt = t0 + START + i * GAP; tiLater(() => { try { playSound(330 + i * 70, 0.12, 'triangle'); playSound(110, 0.18, 'sine'); } catch (e) {} }, START + i * GAP + 230); });
+            const towersDone = START + MB.towers.length * GAP + 300;
+            // 2. the title letters
+            let n = 0; _tiOrig = [];
+            title.querySelectorAll('span').forEach(sp => {
+                _tiOrig.push([sp, sp.textContent]);
+                const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [1, -1], [-1, 1]];
+                sp.innerHTML = sp.textContent.split('').map(ch => {
+                    const d = dirs[(n * 3 + 1) % dirs.length], far = 70 + (n % 3) * 18;
+                    const h = '<i class="tl" style="--i:' + n + ';--dx:' + (d[0] * far) + 'vw;--dy:' + (d[1] * far) + 'vh;--dr:' + ((n % 2 ? 1 : -1) * (160 + n * 23)) + 'deg">' + ch + '</i>';
+                    n++; return h;
+                }).join('');
+            });
+            const glint = 950 + 400;
+            title.style.setProperty('--g', glint + 'ms');
+            title.querySelectorAll('.tl').forEach(l => l.style.setProperty('--g', glint + 'ms'));
+            // the letters wait (hidden) until the teachers are all placed: their animations are delayed by the same amount
+            title.querySelectorAll('.tl').forEach(l => { const i = +l.style.getPropertyValue('--i'); l.style.animationDelay = (towersDone + i * 85) + 'ms, ' + (towersDone + glint + i * 55) + 'ms'; });
+            const lettersDone = towersDone + n * 85 + 950;
+            // 3. buttons fade in
+            tiLater(titleIntroFinish, lettersDone + 900);
+            document.addEventListener('pointerdown', titleIntroSkip, { once: true, capture: true });
+        }
+        function titleIntroFinish() {
+            if (!_tiOn) return;
+            _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
+            MB.intro = false; MB.towers.forEach(t => { t.introAt = null; }); MB.spawnIn = 20;
+            document.body.classList.remove('ti-hold');                    // the buttons now run their normal fade-in
+            setTimeout(() => {                                             // put the plain title text back
+                _tiOrig.forEach(([sp, txt]) => { sp.textContent = txt; }); _tiOrig = [];
+            }, 1600);
+            if (!(settings.menuAnim && !lowFx())) { _menuBg.key = ''; menuBattleWarm(300); }
+            const cb = _tiCb; _tiCb = null;
+            if (cb) setTimeout(cb, 1300);
+        }
+        function titleIntroSkip() { if (_tiOn) { document.querySelectorAll('.tl').forEach(l => { l.style.animation = 'none'; l.style.opacity = 1; }); titleIntroFinish(); } }
+        document.addEventListener('keydown', () => titleIntroSkip());
+        // ===== END GAME INTRO =====
+
         // ===== MENU SCENE (a little live battle behind the main menu) =====
         // Uses the game's real map and the game's real drawing code for teachers,
         // kebabs, letters and marks, but runs its own tiny battle that never
@@ -17020,7 +17052,7 @@
                 }
                 if (best) { used.push(best); const t = new Tower(best.col, best.row, type); t.cd = 20 + Math.random() * 40; t.age = 99; MB.towers.push(t); }
             }
-            menuBattleWarm(900);
+            if (!MB.intro) menuBattleWarm(900);
         }
         function menuWithWorld(fn) {
             const sv = { ctx, canvas, t: game.towers, e: game.enemies, p: game.particles, w: game.waveInProgress };
@@ -17114,7 +17146,19 @@
                 ctx.fillStyle = getTheme().grass; ctx.fillRect(0, 0, 1400, 650);
                 ctx.drawImage(getBgCache(), 0, 0);
                 const alpha = advance ? MB.acc : 0, animT = MB.step + alpha;
-                drawTowersLayer(MB.towers, animT, alpha);
+                if (MB.intro) {
+                    const nowP = performance.now();
+                    for (const t of MB.towers) {
+                        if (!t.introAt || nowP < t.introAt) continue;
+                        const age = (nowP - t.introAt) / 1000, k = Math.min(1, age / 0.32), drop = (1 - k * k) * 240;
+                        if (age > 0.3 && age < 0.85) { const r = (age - 0.3) / 0.55; ctx.save(); ctx.globalAlpha = (1 - r) * 0.7; ctx.strokeStyle = '#fff'; ctx.lineWidth = 5 * (1 - r) + 1; ctx.beginPath(); ctx.ellipse(t.x, t.y + 26, 20 + r * 70, 6 + r * 20, 0, 0, 6.2832); ctx.stroke(); ctx.restore(); }
+                        ctx.save(); ctx.globalAlpha = Math.min(1, age / 0.12);
+                        const sq = age > 0.3 && age < 0.55 ? 1 + Math.sin((age - 0.3) / 0.25 * 3.14) * 0.14 : 1;
+                        ctx.translate(t.x, t.y + 30); ctx.scale(1 / sq, sq); ctx.translate(-t.x, -t.y - 30 - drop);
+                        drawTowersLayer([t], animT, alpha);
+                        ctx.restore();
+                    }
+                } else drawTowersLayer(MB.towers, animT, alpha);
                 drawEnemiesLayer(MB.enemies, alpha, animT);
                 drawParticlesLayer(MB.particles, alpha);
             });
@@ -17149,7 +17193,7 @@
             if (!visible) { MB.lastMs = 0; _menuBg.timer = setTimeout(() => requestAnimationFrame(menuBgLoop), 400); return; }
             // hold the heavy background drawing while screens are sliding, so the slide stays smooth
             if (document.querySelector('.fade-out') || performance.now() < (_menuBg.quietUntil || 0)) { MB.lastMs = 0; requestAnimationFrame(menuBgLoop); return; }
-            if (settings.menuAnim && !lowFx()) {
+            if ((settings.menuAnim && !lowFx()) || MB.intro) {
                 if (now - _menuBg.last >= 33) { if (!MB.lastMs) MB.lastMs = now; _menuBg.last = now; drawMenuBg(now, true); }
                 requestAnimationFrame(menuBgLoop);
             } else {

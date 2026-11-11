@@ -2598,7 +2598,11 @@
         body.ti-hold #menuScreen .guide-corner-btn { opacity: 0 !important; animation: none !important; pointer-events: none !important; }
         body.ti-hold #menuScreen .mm-title { animation: none !important; }
         body.ti-played #menuScreen .mm-title { animation: mmBob 5s 1s ease-in-out infinite; }
-        .tl { display: inline-block; animation: tlFly .95s cubic-bezier(.16,.85,.3,1.04) calc(var(--i) * 85ms) both, tlGlint .7s linear calc(var(--g) + var(--i) * 55ms) both; will-change: transform, filter; }
+        /* the REMASTERED ribbon slams in after the letters have shone */
+        body #menuScreen .mm-ribbon.ri-in { opacity: 1 !important; animation: ribSlam .6s cubic-bezier(.2,1.3,.4,1) both !important; }
+        body #menuScreen .mm-ribbon.ri-in.ri-done { animation: none !important; }
+        @keyframes ribSlam { 0% { opacity: 0; transform: rotate(-2deg) scale(2.6); filter: brightness(2.5) blur(6px); } 55% { opacity: 1; transform: rotate(-2deg) scale(.92); filter: brightness(1.6); } 100% { opacity: 1; transform: rotate(-2deg) scale(1); filter: none; } }
+        .tl { display: inline-block; font-style: normal; animation: tlFly .95s cubic-bezier(.16,.85,.3,1.04) calc(var(--i) * 85ms) both, tlGlint .7s linear calc(var(--g) + var(--i) * 55ms) both; will-change: transform, filter; }
         @keyframes tlFly {
             0% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(5); filter: blur(14px) brightness(2.2); }
             12% { opacity: 1; }
@@ -3012,6 +3016,31 @@
         .updates-screen, .credits-screen, .account-screen, .tutorial-modal, .confirm-modal, .pause-overlay, .game-over-screen, .susp-overlay, .map-modal { overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
         .updates-screen, .credits-screen, .account-screen, .tutorial-modal, .confirm-modal, .pause-overlay, .game-over-screen, .susp-overlay, .map-modal { justify-content: safe center; align-items: safe center; }
         .updates-screen > *, .credits-screen > *, .account-screen > * { flex-shrink: 0; }
+
+        /* DRAG-AND-DROP PLACEMENT */
+        .tower-button { touch-action: none; user-select: none; -webkit-user-select: none; text-align: center; padding: 8px 8px 8px; cursor: grab; }
+        .tower-button:active { cursor: grabbing; }
+        .tower-button .tb-name { font-size: 13px; font-weight: 900; letter-spacing: .3px; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+        .tower-button .tb-img { display: block; width: 64px; height: 64px; margin: 2px auto 0; pointer-events: none; filter: drop-shadow(0 3px 2px rgba(0,0,0,.35)); transition: transform .15s; }
+        .tower-button:hover .tb-img { transform: translateY(-3px) scale(1.06); }
+        .tower-button.dragging { opacity: .55; }
+        .tower-button.dragging .tb-img { opacity: .35; }
+        .tb-hint { font-size: 11px; color: #cfd8e6; text-align: center; line-height: 1.35; margin: -4px 0 6px; }
+        .tower-selector.drop-discard { box-shadow: 0 0 0 3px #ff5252, 0 0 24px rgba(255,82,82,.6); }
+        .drag-ghost { position: fixed; left: 0; top: 0; width: 84px; height: 84px; margin: -10px 0 0 -42px; z-index: 99999; pointer-events: none; opacity: .6; filter: drop-shadow(0 6px 4px rgba(0,0,0,.35)); }
+        .drag-ghost canvas { width: 84px; height: 84px; display: block; transform-origin: 50% 0%; transition: transform .06s linear; }
+        .drag-ghost.discard { opacity: .3; }
+        .drag-ghost.discard canvas { filter: grayscale(1); }
+        @keyframes dgWiggle { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg) translateY(1px); } }
+
+        /* CUSTOM CURSOR: a pixel-art white glove (pointing hand; a fist while you hold a teacher). Clicking makes a white ping circle. */
+        body.cur-custom, body.cur-custom * { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAuElEQVR4Xu2XwQmAMAxFVRyh2coRPLqgR0dwlnYHBSEHS+O3REnFvqNEbF5IUpum8ndaJMA5t6ViQgjw3Tt0d4LeRMyCM/feJ79PRMdzrQlzA/UA1UCvbbF4TuR2hXkJ1AbiOUFEp8mJjHzfgASbYSOSiXIMSFsPZYhAJuwNSFuPt10u0vaUsDegrbEWewPcn9yvuTVEzMt6GWJvgI/3tAmUOVOOgaeIM5/G4fL2bG4A/hdoKf4+sAMlGU0/ABfNvgAAAABJRU5ErkJggg==) 8 4, pointer !important; }
+        body.cur-custom *:active { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA00lEQVR4Xu2WUQ6DMAhAddkRyq08wj53wPnnbjDP0t5hy5bwYSMFxAgme4k/hiblFWi7Tshjer2/nzBczEUceRTaTLXxNXEMWDPZut7dQM/VVkpptfJLKexaCXENYOY559VEAOD332rC3cB/A1dJpbaou0RbE+5HYDZQdwkALOYGZ+T8BijQDBqhTMQxQM18LkMOzoS/AWrm46zXQt0dFP4GrGdsxd8A9if2q/YMOcbn3AzxN4Db29sElzkSx8Be1Jnfb0Pz7ehugHzba+8GivDvgQ+Y520X5aQBIgAAAABJRU5ErkJggg==) 8 6, pointer !important; }
+        body.cur-custom.cur-grab, body.cur-custom.cur-grab * { cursor: var(--carry) 64 18, grabbing !important; }
+        body.cur-custom.cur-grab-off, body.cur-custom.cur-grab-off * { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAqElEQVR4Xu2VUQqAIAxAKzqC3qoj9NkF++wInUXvUCAsaDaXJUxq7y8J59421jSK8ndaToAxZuP+SeG9T8bo3lxeAvJ1kLlz7hTHWhu+c88BbETcQF9CY4oLU6GnwIS4AX1A1APc3OOaAtQ5h3gJDgO5c1+KegxQPK0tZl7WyxD1G3gLlTkgbiDahtQ05IIzn8YhXPH9bXg383p7AOB2wl1wzTHiU6AoO6AEQN25cticAAAAAElFTkSuQmCC) 14 12, grabbing !important; }
+        body.cur-custom input[type=text], body.cur-custom input[type=password], body.cur-custom input[type=email], body.cur-custom input[type=number], body.cur-custom textarea { cursor: text !important; }
+        .click-ping { position: fixed; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 4px solid #fff; border-radius: 50%; pointer-events: none; z-index: 2147483647; box-shadow: 0 0 10px rgba(255,255,255,.8), inset 0 0 8px rgba(255,255,255,.6); animation: clickPing .45s ease-out forwards; }
+        @keyframes clickPing { 0% { transform: translate(var(--px), var(--py)) scale(.15); opacity: 1; } 100% { transform: translate(var(--px), var(--py)) scale(1.5); opacity: 0; } }
 </style>
     <!-- Firebase (Google/email account linking + cloud save sync) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -3021,7 +3050,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.32 Alpha</div>
+    <div id="versionTag">v1.0.32 Release</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3146,6 +3175,29 @@
         <div class="updates-content">
             <h2>📜 Update Log</h2>
             <div class="update-list">
+                <div class="update-entry">
+                    <div class="update-date">November 12, 2026</div>
+                    <ul>
+                        <li><b>The game is now a Release</b>: the version in the top left says <b>v1.0.32 Release</b> instead of Alpha.</li>
+                        <li><b>Intro sounds</b>: every title letter now makes a little <b>thunk</b> when it lands, and after the shine sweeps over the letters the <b>REMASTERED</b> logo slams in with its own sound, then the buttons fade in.</li>
+                        <li><b>Arabic Expert's shirt fixed</b>: the blue checks used to stay fixed on the screen while he moved (like a green screen). They now move with him.</li>
+                        <li><b>Angry Teacher's new look</b>: she now wears a <b>black leather coat</b> and a <b>scarf with a tie-dye texture</b> (the end of it hangs down her chest).</li>
+                        <li><b>New skin: Twin</b> for Angry Teacher (150 💚): her old look, the brown leather coat and pink scarf. Find it in the shop's Skins tab (Sporty, Modern &amp; Special board).</li>
+                    </ul>
+                </div>
+                <div class="update-entry">
+                    <div class="update-date">November 10, 2026</div>
+                    <ul>
+                        <li><b>New placing system</b>: each teacher button is now a picture of the teacher with the <b>name above</b> and the <b>cost below</b>. <b>Hold</b> a teacher and <b>drag</b> them onto the map: they follow your mouse as a faded, wriggling picture and the <b>tile under them lights up yellow</b>. <b>Let go</b> and they <b>drop onto the tile with a squishy bounce</b>. To cancel, drag them back over the teacher panel (or press Esc).</li>
+                        <li><b>Arabic Expert's Uniform Check</b> is now animated (about 3 seconds): he swooshes 5 random kebabs up to him, each one gets a quick uniform scan (there is no real uniform), then <b>one random kebab of the five is expelled</b> and launched away. The other four go to the second track.</li>
+                        <li><b>Custom cursor</b>: the mouse pointer is now a pixel-art white glove (a pointing hand, closing into a fist when you click or hold a teacher). New <b>Custom cursor</b> setting turns it off.</li>
+                        <li><b>Click animation</b>: clicking makes a <b>white ping circle</b> and the glove looks like it is clicking (the finger presses down).</li>
+                        <li><b>Wind sound</b>: the wind whoosh now only plays on big menu screens (main menu, account, updates, credits...). It no longer plays for Friends, Inbox, Settings or Admin.</li>
+                        <li><b>Placing</b>: the teacher you carry is now <b>part of the mouse pointer</b> (a fist holding them), so it can no longer lag behind, and it <b>sways with the way you move the mouse</b>.</li>
+                        <li><b>Game intro</b>: the title letters are no longer italic.</li>
+                        <li>Guide, Guide Mode, tutorial and the Controls list explain the new placing.</li>
+                    </ul>
+                </div>
                 <div class="update-entry">
                     <div class="update-date">November 9, 2026</div>
                     <ul>
@@ -4003,7 +4055,7 @@
                     <select id="set_maxSounds" onchange="onSettingChange('maxSounds', this.value)"><option value="4">4 (quietest)</option><option value="6">6</option><option value="8">8 (default)</option><option value="12">12</option><option value="16">16</option><option value="0">No limit</option></select></div>
                 <div class="set-row"><div class="set-label">Sound effects</div>
                     <label class="switch"><input type="checkbox" id="set_sfx" onchange="onSettingChange('sfx', this.checked)"><span class="slider"></span></label></div>
-                <div class="set-row"><div class="set-label">Button &amp; menu sounds<small>A click when you press buttons, and a whooshing wind when menu screens switch.</small></div>
+                <div class="set-row"><div class="set-label">Button &amp; menu sounds<small>A click when you press buttons, and a soft wind when big menu screens switch (not Friends, Inbox or Settings).</small></div>
                     <label class="switch"><input type="checkbox" id="set_uiSounds" onchange="onSettingChange('uiSounds', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Shop music<small>The shop theme song plays while a shop is open. It follows the Volume slider.</small></div>
                     <label class="switch"><input type="checkbox" id="set_music" onchange="onSettingChange('music', this.checked)"><span class="slider"></span></label></div>
@@ -4013,6 +4065,8 @@
                     <label class="switch"><input type="checkbox" id="set_shake" onchange="onSettingChange('shake', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Animated menu background<small>Teachers fight kebabs on the map behind the main menu. Off = a still picture (saves power).</small></div>
                     <label class="switch"><input type="checkbox" id="set_menuAnim" onchange="onSettingChange('menuAnim', this.checked)"><span class="slider"></span></label></div>
+                <div class="set-row"><div class="set-label">Custom cursor<small>Replaces the mouse pointer with a pixel-art white glove (the finger presses down when you click, with a white ping circle). While you carry a teacher they are part of the pointer, hanging from a fist, and sway as you move the mouse. Off = your normal pointer.</small></div>
+                    <label class="switch"><input type="checkbox" id="set_customCursor" onchange="onSettingChange('customCursor', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Game intro animation<small>When you first open the game, the teachers are placed one by one, the title letters fly in and the buttons fade in. Plays once per visit.</small></div>
                     <label class="switch"><input type="checkbox" id="set_introAnim" onchange="onSettingChange('introAnim', this.checked)"><span class="slider"></span></label></div>
                 <div class="set-row"><div class="set-label">Guide Mode<small>The game follows along and circles and points at things: the basics and controls first, then every new teacher and upgrade. Also on the ❓ How to Play button in a battle.</small></div>
@@ -4329,24 +4383,30 @@
             <div class="right-panel">
                 <div class="tower-selector">
                     <h3>Place Teachers</h3>
-                    <button class="tower-button" id="sheikhBtn" onclick="selectTower('sheikh')">
-                        🧑‍🏫 Wise Sheikh
+                    <div class="tb-hint">Hold a teacher and drag them onto the map. Drag back here to cancel.</div>
+                    <button class="tower-button" id="sheikhBtn" data-type="sheikh" onpointerdown="dragStart(event, 'sheikh')">
+                        <div class="tb-name">Wise Sheikh</div>
+                        <canvas class="tb-img" id="sheikhImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="sheikhCost">Cost: 65 🪙</div>
                     </button>
-                    <button class="tower-button" id="angryBtn" onclick="selectTower('angry')" style="display: none;">
-                        👩‍🏫 Angry Teacher
+                    <button class="tower-button" id="angryBtn" data-type="angry" onpointerdown="dragStart(event, 'angry')" style="display: none;">
+                        <div class="tb-name">Angry Teacher</div>
+                        <canvas class="tb-img" id="angryImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="angryCost">Cost: 150 🪙</div>
                     </button>
-                    <button class="tower-button" id="mathBtn" onclick="selectTower('math')" style="display: none;">
-                        📐 Mathematician
+                    <button class="tower-button" id="mathBtn" data-type="math" onpointerdown="dragStart(event, 'math')" style="display: none;">
+                        <div class="tb-name">Mathematician</div>
+                        <canvas class="tb-img" id="mathImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="mathCost">Cost: 215 🪙</div>
                     </button>
-                    <button class="tower-button" id="arabicBtn" onclick="selectTower('arabic')" style="display: none;">
-                        🪑 Arabic Expert
+                    <button class="tower-button" id="arabicBtn" data-type="arabic" onpointerdown="dragStart(event, 'arabic')" style="display: none;">
+                        <div class="tb-name">Arabic Expert</div>
+                        <canvas class="tb-img" id="arabicImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="arabicCost">Cost: 228 🪙</div>
                     </button>
-                    <button class="tower-button" id="tuffBtn" onclick="selectTower('tuff')" style="display: none; border-color: #FF1A1A;">
-                        🔴 Tuff Sheikh
+                    <button class="tower-button" id="tuffBtn" data-type="tuff" onpointerdown="dragStart(event, 'tuff')" style="display: none; border-color: #FF1A1A;">
+                        <div class="tb-name">Tuff Sheikh</div>
+                        <canvas class="tb-img" id="tuffImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="tuffCost">FREE · Admin only</div>
                     </button>
                 </div>
@@ -4357,6 +4417,7 @@
                     <div class="ctl-row"><kbd>Esc</kbd> <kbd>P</kbd><span>Pause</span></div>
                     <div class="ctl-row"><kbd>Click</kbd><span>Glowing teacher: ultimate. Hurt teacher: heal 5% (between waves)</span></div>
                     <div class="ctl-row"><kbd>Alt</kbd>+<kbd>Click</kbd><span>Heal only, never uses the ultimate</span></div>
+                    <div class="ctl-row"><kbd>Hold</kbd>+<kbd>Drag</kbd><span>Place a teacher (let go on a tile)</span></div>
                     <div class="ctl-row"><kbd>Right-click</kbd><span>Remove a teacher</span></div>
                     <div class="ctl-row"><kbd>Hover</kbd><span>Show a teacher's range</span></div>
                     <div class="ctl-row"><kbd>A</kbd> <kbd>D</kbd> <kbd>Wheel</kbd><span>Scroll the map</span></div>
@@ -4669,7 +4730,7 @@
         // Keep this in sync with the most recent changelog entry's date
         // every time the game updates - shown on the main menu, and turns
         // red for the rest of that same calendar day.
-        const LAST_UPDATE_DATE = '2026-11-09';
+        const LAST_UPDATE_DATE = '2026-11-12';
 
         function updateLastUpdateDateDisplay() {
             const el = document.getElementById('lastUpdateDate');
@@ -4820,7 +4881,8 @@
             'arabic:suit':      { type: 'arabic', name: 'Fancy Suit',  kind: 'suit',      how: 'Shop', price: SKIN_PRICE_SUIT },
             'math:modern':      { type: 'math',   name: 'Modern',      kind: 'modern',    how: 'Shop', price: SKIN_PRICE_SPORTY },
             'arabic:sporty':    { type: 'arabic', name: 'Sporty',      kind: 'sporty',    how: 'Shop', price: SKIN_PRICE_SPORTY },
-            'arabic:abudawud':  { type: 'arabic', name: 'Abu Dawud',   kind: 'abudawud',  how: 'Shop', price: SKIN_PRICE_SPORTY * 2 }
+            'arabic:abudawud':  { type: 'arabic', name: 'Abu Dawud',   kind: 'abudawud',  how: 'Shop', price: SKIN_PRICE_SPORTY * 2 },
+            'angry:twin':       { type: 'angry',  name: 'Twin',        kind: 'twin',      how: 'Shop', price: SKIN_PRICE_SPORTY }
         };
         const TEACHER_NAMES = { sheikh: 'Wise Sheikh', angry: 'Angry Teacher', math: 'Mathematician', arabic: 'Arabic Expert' };
         let EQUIPPED = {};          // { sheikh: 'sheikh:suit', ... } for the signed-in account
@@ -4844,7 +4906,7 @@
         // Painted over the teacher's body (clipped to it) right after the plain body is drawn
         function drawSkinBody(type, x, y, rx, ry) {
             const kind = skinKind(type);
-            if (!kind || kind === 'fuming' || kind === 'abudawud') return;
+            if (!kind || kind === 'fuming' || kind === 'abudawud' || kind === 'twin') return;
             ctx.save();
             ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.clip();
             if (kind === 'suit') {
@@ -5651,6 +5713,7 @@
         function openFromAccount(kind) {
             if ((kind === 'inbox' || kind === 'chat') && !getCurrentAccount()) { gateSignIn(kind === 'inbox' ? 'Inbox' : 'Friends', () => {}); return; }
             const acct = document.getElementById('accountScreen');
+            window._quietSwitch = Date.now() + 700;   // account -> Friends/Inbox/Settings/Admin is a small switch: no wind
             acct.classList.add('fade-out');
             setTimeout(() => {
                 acct.classList.add('hidden'); acct.classList.remove('fade-out');
@@ -7161,7 +7224,7 @@
 
             { id: 'controls', group: 'basics', icon: '🖱️', title: 'Controls', html: () =>
                 gTbl(['Action', 'How'], [
-                    ['Place a teacher', 'Click the teacher\'s name in the right panel, then click a tile. Click the name again to cancel.'],
+                    ['Place a teacher', '<b>Hold</b> the teacher in the right panel and <b>drag</b> them onto the map. The tile under them lights up <b>yellow</b>. <b>Let go</b> and they drop onto it. To cancel, drag them back over the teacher panel (or press Esc).'],
                     ['Use an ultimate', 'When a teacher is <b>glowing</b> with a circle around them, <b>left-click</b> them.'],
                     ['Heal a teacher', '<b>Left-click</b> a hurt teacher <b>between waves</b>: +5% of their max HP per click. If the teacher is glowing (ultimate ready), <b>hold Alt and click</b> to heal them <b>without using the ultimate</b>.'],
                     ['Scroll the map', 'Use the <b>mouse wheel</b>, the <b>A / D</b> keys (or the arrow keys), or click the arrows on the edges.'],
@@ -7196,7 +7259,7 @@
                     ['Wave', 'One batch of kebabs. Wave number = how strong they are.'],
                     ['Boss kebab', 'A giant kebab that appears every 20 waves.'],
                     ['Split / Tri-track', 'The second track (wave 10) and the third track (wave 40).'],
-                    ['Alpha', 'A draft version that is not officially published yet. Shown after the version number.']
+                    ['Release', 'The official published version of the game. Shown after the version number (a draft that is not published yet would say Alpha).']
                 ]) },
 
             // ---------------------------------------------------------- TEACHERS
@@ -7319,9 +7382,10 @@
                 gList([
                     'Bought once in the main menu ' + gLink('teacherbuffs', 'Shop → Upgrades → Teachers') + ' (level 20, signed-in players). It gives him an <b>ultimate</b>.',
                     'It <b>fills slowly</b>: about <b>75 seconds</b> by itself, plus <b>5%</b> every time he tucks kebabs in. When he glows, <b>click him</b>.',
-                    'He picks <b>5 random kebabs</b> anywhere on the map (bosses are never picked) and checks their uniform.',
-                    'Each of the 5 has a <b>25% chance to be expelled</b> (🚫 it is removed and counts as a defeat, so you still get its coins).',
-                    'The ones that pass are <b>sent to the second track</b>. The second track opens at <b>wave 10</b>, so before that nothing moves.',
+                    'He <b>pulls 5 random kebabs</b> from anywhere on the map up to him with a quick swoosh (bosses are never picked).',
+                    'Each one steps up and has its <b>uniform checked</b> (a quick red scan, there is no real uniform). The whole thing takes about <b>3 seconds</b>.',
+                    '<b>One random kebab of the 5 fails and is expelled</b>: 🚫 it is launched away and counts as a defeat, so you still get its coins.',
+                    'The other 4 go back and are <b>sent to the second track</b>. The second track opens at <b>wave 10</b>, so before that they just go back where they were.',
                     'If there are no kebabs on the map, the click does nothing and the ultimate stays ready.'
                 ]) +
                 gTip('Place him next to your Wise Sheikhs near a corner where kebabs are about to escape.') },
@@ -7341,7 +7405,7 @@
 
             { id: 'placement', group: 'teachers', icon: '📍', title: 'Placing & Teacher Limits', html: () =>
                 gList([
-                    'Pick a teacher in the right panel, then click an empty grass tile. A tile holds one teacher.',
+                    '<b>Hold</b> a teacher in the right panel (the picture with the name above and the cost below) and <b>drag</b> them onto the map. The tile under them lights up <b>yellow</b>; <b>let go</b> and they drop onto it with a bounce. Drag them back over the panel to cancel. A tile holds one teacher.',
                     'You can place teachers <b>on the track</b> but a teacher on the track gets hurt by passing kebabs (see ' + gLink('health', 'Teacher Health') + ').',
                     'The caps are <b>' + BASE_TOWER_CAP + ' Wise Sheikhs</b>, <b>5 Angry Teachers</b>, <b>7 Mathematicians</b> and <b>7 Arabic Experts</b>. The shop\'s <b>🏫 More Teachers</b> adds <b>+3 Wise Sheikhs</b> per purchase and can be bought twice, so you can have up to <b>' + (BASE_TOWER_CAP + 6) + ' Wise Sheikhs</b>.',
                     'Teacher buttons are greyed out if you cannot afford them or you are at the cap.',
@@ -7567,7 +7631,7 @@
                     'It uses <b>Positives</b> (the 💚 number at the bottom) instead of coins. Your Positives are <b>saved on your account</b> and follow you when you sign in on another device.',
                     'You can also claim free Positives every day with the <b>🎁 Daily</b> button on the main menu (see ' + gLink('daily', 'Daily Rewards') + ').',
                     'The bottom bar has three sections: <b>Upgrades</b>, <b>Skins</b> and <b>Style</b>. <b>Upgrades</b> has two boards: <b>Teachers</b> (the three ' + gLink('teacherbuffs', 'teacher buffs') + ') and a clothes rack.',
-                    '<b>Skins</b>: the <b>Fancy Suit</b> board (' + SKIN_PRICE_SUIT + ' 💚 each) and the <b>Sporty, Modern & Special</b> board (Sporty ' + SKIN_PRICE_SPORTY + ' 💚, Abu Dawud ' + (SKIN_PRICE_SPORTY * 2) + ' 💚).',
+                    '<b>Skins</b>: the <b>Fancy Suit</b> board (' + SKIN_PRICE_SUIT + ' 💚 each) and the <b>Sporty, Modern & Special</b> board (Sporty ' + SKIN_PRICE_SPORTY + ' 💚, Twin ' + SKIN_PRICE_SPORTY + ' 💚, Abu Dawud ' + (SKIN_PRICE_SPORTY * 2) + ' 💚).',
                     '<b>Style</b>: the <b>Accessories</b> board (hats, glasses, bow ties, scarves and medals) and the <b>Backgrounds</b> board for your profile. Scroll the boards to see everything. Wear what you buy from your profile under <b>🎨 Customize</b>.',
                     'If you are <b>not signed in</b> the Shop button still shows, with a 🔒. Pressing it asks you to sign in.'
                 ]) },
@@ -7699,7 +7763,7 @@
                     ['Max sounds at once', 'Caps how many sounds can play at the same moment (4, 6, 8, 12, 16 or no limit). Default is <b>8</b>. When lots of teachers attack together the extra sounds are skipped so it never turns into a wall of noise, and a built-in limiter keeps the volume from clipping.'],
                     ['Sound effects', 'Turn game sounds on or off.'],
                     ['Level-up pop-ups', 'On by default. Shows the gold LEVEL UP! banner when you gain a level. Your XP is saved either way.'],
-                    ['Button & menu sounds', 'On by default. A small click plays when you press buttons, and a whooshing wind plays when a menu screen zooms out and switches.'],
+                    ['Button & menu sounds', 'On by default. A small click plays when you press buttons, and a soft wind plays when a big menu screen (main menu, account, updates...) zooms out and switches. Small side screens like Friends, Inbox and Settings stay quiet.'],
                     ['Shop music', 'On by default. The shop theme song (Die Of Death) plays while the in-game shop or the menu Shop is open and fades out when it closes. It follows the Volume slider.'],
                     ['Screen shake', 'Boss spawns, tracks appearing, kebabs reaching the school.'],
                     ['Animated menu background', 'On by default. The main menu shows a live little battle on the map (teachers vs kebabs). Turn it off for a still picture; low-effects mode also freezes it.'],
@@ -7751,6 +7815,7 @@
             { id: 'intro', group: 'more', icon: '✨', title: 'Game Intro', html: () =>
                 '<p>A small touch when you open the game. It can be switched off in ' + gLink('settings', 'Settings') + '.</p>' +
                 gTbl(['What', 'Details'], [
+                    ['Custom cursor', 'The mouse pointer is a pixel-art <b>white glove</b>: a pointing hand normally. When you click, the finger <b>presses down</b> and a <b>white ping circle</b> appears. While you carry a teacher they are <b>part of the pointer</b> (a fist holding them) so they never lag, and they <b>sway</b> the way you move the mouse. Turn it off with <b>Custom cursor</b> in Settings to get your normal pointer back.'],
                     ['Game intro', 'The first time you open the game in a session: the menu field starts empty and the <b>teachers are placed one by one</b>, then the <b>title letters fly in</b> from all around the screen, then the <b>buttons fade in</b>. <b>Click or press any key</b> to skip it. It plays once per visit, not every time you return to the menu.']
                 ]) },
 
@@ -7904,6 +7969,7 @@
                     '<b>Fuming</b> (Angry Teacher): her head turns to fire. Earned when a kebab she marked with Negative still reaches the school.',
                     '<b>Modern</b> (Mathematician): a plain blue shirt with a folded collar and white buttons. Bought in the main menu shop for <b>' + SKIN_PRICE_SPORTY + ' 💚</b>.',
                     '<b>Sporty</b> (Wise Sheikh, Mathematician and Arabic Expert): black shirt, purple shoulders and two purple lines down the ribs. Bought in the main menu shop for <b>' + SKIN_PRICE_SPORTY + ' 💚</b> each.',
+                    '<b>Twin</b> (Angry Teacher): her old look. A brown leather coat and a pink scarf (her normal look is now a black leather coat and a tie-dye scarf). Bought in the main menu shop for <b>' + SKIN_PRICE_SPORTY + ' 💚</b>.',
                     '<b>Abu Dawud</b> (Arabic Expert): a whole new look. Light brown skin, dotted grey hair, a big chin covered in grey dots, a red shirt, and he hunches forward a little. Bought in the main menu shop for <b>' + (SKIN_PRICE_SPORTY * 2) + ' 💚</b> (double a normal skin).',
                     'Equip skins from your profile under <b>🎽 Skins</b>. Your skins and achievements are saved on your account and sync to the cloud.'
                 ]) },
@@ -7988,7 +8054,7 @@
 
             { id: 'versions', group: 'more', icon: '📜', title: 'Versions, Updates & Desktop App', html: () =>
                 gList([
-                    'The version is shown at the top left (like <b>v1.0.16 Alpha</b>). <b>Alpha</b> means a draft that is not published yet.',
+                    'The version is shown at the top left (like <b>v1.0.32 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (WIP) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
@@ -8698,6 +8764,7 @@
             };
             const screenId = screenMap[from] || 'creditsScreen';
             const screen = document.getElementById(screenId);
+            if (navReturn === 'account' && from !== 'account') window._quietSwitch = Date.now() + 700;   // back from a side screen to the account: no wind
             screen.classList.add('fade-out');
             setTimeout(() => {
                 screen.classList.add('hidden');
@@ -8759,6 +8826,7 @@
             shake: true,
             menuAnim: true,         // animated scene behind the main menu
             introAnim: true,        // the title letters pop in when the game is first opened
+            customCursor: true,     // pixel-art glove mouse pointer
             guideMode: false,       // Guide Mode: circles and points at things while you play
             guideTeam: false,       // Guide Mode inside Team Up
             guideVs: false,         // Guide Mode inside VS
@@ -8933,7 +9001,14 @@
             } catch (e) {}
         }
         // the zoom-out animation (scrOut) starts on every menu screen switch
-        document.addEventListener('animationstart', e => { if (e.animationName === 'scrOut') playWindWhoosh(); }, true);
+        // the wind is only for BIG screens (main menu, account, updates, credits...); small side screens (Friends, Inbox, Settings, Admin) and moving between them stay quiet
+        window._quietSwitch = 0;
+        const QUIET_SCREENS = ['inboxScreen', 'chatScreen', 'settingsScreen', 'adminScreen'];
+        document.addEventListener('animationstart', e => {
+            if (e.animationName !== 'scrOut') return;
+            if (QUIET_SCREENS.indexOf(e.target.id) !== -1 || Date.now() < window._quietSwitch) return;
+            playWindWhoosh();
+        }, true);
         // ===== END SHOP THEME + MENU WHOOSH =====
 
         // (let, not const: the main menu scene briefly points these at its own canvas to reuse the real drawing code)
@@ -9049,6 +9124,7 @@
 
         let _lastCostLabels = { sheikh: '', angry: '', math: '', arabic: '', tuff: '' };
         function refreshTowerCostLabels() {
+            try { refreshTowerButtonImages(); } catch (e) {}
             const cap = getTowerCap('sheikh');
             const sCount = ownTowerCount('sheikh');
             const bCount = ownTowerCount('angry');
@@ -10214,11 +10290,11 @@
             math:   { icon: '🎯', name: 'Area Strike', teacher: 'Mathematician', price: BUFF_PRICE,
                 desc: 'Replaces <b>Algebra Swarm</b>. Locks onto 3 kebabs, scans their area, then strikes for <b>30%</b> of their health.' },
             arabic: { icon: '🪪', name: 'Uniform Check', teacher: 'Arabic Expert', price: BUFF_PRICE,
-                desc: 'Gives him an <b>ultimate</b> that fills slowly (about <b>75 seconds</b>). He picks <b>5 random kebabs</b> and checks their uniform: each has a <b>25% chance to be expelled</b>. The others are sent to the <b>second track</b>.' }
+                desc: 'Gives him an <b>ultimate</b> that fills slowly (about <b>75 seconds</b>). He pulls <b>5 random kebabs</b> to him, checks their uniform, and <b>one random kebab of the five is expelled</b>. The other four are sent to the <b>second track</b>.' }
         };
         const MATH_SHUSH_CHARGE = 2, ARABIC_TUCK_CHARGE = 5, SHEIKH_WAVE_CHARGE = 10;   // % of an ultimate: per kebab Math shushes, per Arabic Expert tuck (needs his buff), per cleared wave for each Wise Sheikh
         const ARABIC_ULT_RATE = 100 / (75 * 60);   // Uniform Check charges slowly: about 75 seconds
-        const UNIFORM_PICKS = 5, UNIFORM_EXPEL_CHANCE = 0.25;
+        const UNIFORM_PICKS = 5;   // 5 random kebabs are pulled in; exactly one of them is expelled
         const SHEBAB_SENTENCES = ['يا شباب', 'السلام عليكم', 'ما شاء الله', 'بسم الله', 'الحمد لله', 'هيا بنا يا شباب', 'أحسنت يا شباب', 'العلم نور'];
         const _buffCache = { t: -9999, v: {} };
         function hasBuff(type) {
@@ -10537,10 +10613,10 @@
               text: () => "The <b>wave number</b>, and how tough and fast the kebabs are this wave. Both go up every wave, so keep building." },
             { id: 'pick', after: 'wavebar', title: 'Pick a teacher', done: () => game.towers.length > 0 || !!game.selectedTower,
               target: () => gmEl('#sheikhBtn'),
-              text: () => "Teachers fight for you. Click <b>Wise Sheikh</b> to pick him up" + (game.freeTeachersLeft > 0 ? " (your first " + game.freeTeachersLeft + " are <b>free</b>)." : ".") },
+              text: () => "Teachers fight for you. <b>Hold Wise Sheikh</b> in the right panel to pick him up" + (game.freeTeachersLeft > 0 ? " (your first " + game.freeTeachersLeft + " are <b>free</b>)." : ".") },
             { id: 'place', after: 'pick', title: 'Place him', done: () => game.towers.length > 0, valid: () => !!game.selectedTower,
               when: () => !!game.selectedTower, target: () => gmFreeTile(),
-              text: () => "Now click a <b>green tile</b> next to the track, like this one." },
+              text: () => "Now <b>drag him</b> onto a <b>green tile</b> next to the track, like this one, and let go." },
             { id: 'range', next: true, after: 'place', title: 'He fights by himself', when: () => game.towers.length > 0,
               target: () => gmTowerShape(game.towers[0], 60),
               text: () => "Teachers <b>attack automatically</b> anything that comes in range. Hover over a teacher to see their range circle. You can place up to <b>" + BASE_TOWER_CAP + " of each teacher</b>." },
@@ -10644,10 +10720,10 @@
               target: () => cameraOffset === 0 ? gmCanvasSpot(canvas.width - 25, canvas.height / 2, 32) : gmCanvasSpot(25, canvas.height / 2, 32),
               text: () => "Both maps are <b>twice as wide</b> as the screen. Click the <b>arrow</b> once (or press <b>A / D</b>) to see the other side of <b>both</b> maps." },
             { id: 'tu_pick', after: 'tu_arrow', title: 'Pick a teacher', done: () => game.towers.some(t => t.pl === myPl()) || !!game.selectedTower, target: () => gmEl('#sheikhBtn'),
-              text: () => "Click <b>Wise Sheikh</b> to pick him up. <b>You</b> get <b>2 free</b> Wise Sheikhs and " + gmWho() + " gets <b>2 free</b> too (4 in total)." },
+              text: () => "<b>Hold Wise Sheikh</b> to pick him up. <b>You</b> get <b>2 free</b> Wise Sheikhs and " + gmWho() + " gets <b>2 free</b> too (4 in total)." },
             { id: 'tu_place', after: 'tu_pick', title: 'Place him', done: () => game.towers.some(t => t.pl === myPl()), valid: () => !!game.selectedTower,
               when: () => !!game.selectedTower, target: () => gmFreeTile(),
-              text: () => "Now click a <b>green tile</b> next to the track. Your teachers get a <b>coloured ring</b> so everyone knows whose they are." },
+              text: () => "Now <b>drag him</b> onto a <b>green tile</b> next to the track and let go. Your teachers get a <b>coloured ring</b> so everyone knows whose they are." },
             { id: 'tu_chat', next: true, after: 'tu_place', get title() { return NET.bot ? 'Tell the bot what to do' : 'Chat with your friend'; }, target: () => gmEl('#netPanel', 4),
               text: () => NET.bot
                   ? "Type in the <b>chat box</b> to give the bot orders: <i>save coins</i>, <i>spend coins</i>, <i>top map</i>, <i>bottom map</i>, <i>near the school</i>, <i>sheikh</i>, <i>angry</i>, <i>math</i> or <i>use ults</i>. The quick buttons do the same."
@@ -10706,7 +10782,7 @@
               valid: () => gmMine(), target: () => gmEl('#vsSend_sheikh', 4),
               text: () => "It's <b>your turn</b>. Press <b>Scout Sheikh</b> to send one down your track." },
             { id: 'vs_pick', after: 'vs_send', title: 'Now defend', done: () => game.towers.some(t => t.pl === myPl()) || !!game.selectedTower, target: () => gmEl('#sheikhBtn'),
-              text: () => "Your own teachers <b>defend your school</b> against what they send. Click <b>Wise Sheikh</b> to pick him up (it costs coins in VS)." },
+              text: () => "Your own teachers <b>defend your school</b> against what they send. <b>Hold Wise Sheikh</b> to pick him up (it costs coins in VS), then drag him onto a tile." },
             { id: 'vs_place', after: 'vs_pick', title: 'Place him', done: () => game.towers.some(t => t.pl === myPl()), valid: () => !!game.selectedTower, when: () => !!game.selectedTower,
               target: () => gmVsTile(),
               text: () => "Place him on the <b>grass between the tracks</b>, on <b>your half</b> of the arena. Teachers only fight what your opponent sent." },
@@ -11497,12 +11573,12 @@
             } else if (pShopTabId === 'skins') {
                 const card = k => {
                     const d = SKIN_DEFS[k], own = achOwned(k);
-                    return '<div class="pskin-card"><canvas width="52" height="68" data-prev="' + d.type + '|' + k + '"></canvas><div class="pskin-info"><b>' + TEACHER_NAMES[d.type] + (d.kind === 'abudawud' ? ': ' + d.name : '') + '</b>' +
+                    return '<div class="pskin-card"><canvas width="52" height="68" data-prev="' + d.type + '|' + k + '"></canvas><div class="pskin-info"><b>' + TEACHER_NAMES[d.type] + (d.kind === 'abudawud' || d.kind === 'twin' ? ': ' + d.name : '') + '</b>' +
                         (own ? '<span class="pskin-own">✓ Owned</span>' : '<button onclick="buyShopSkin(\'' + k + '\')">' + d.price + ' 💚 Buy</button>') + '</div></div>';
                 };
                 const kindKeys = kind => Object.keys(SKIN_DEFS).filter(k => SKIN_DEFS[k].kind === kind && SKIN_DEFS[k].price);
                 s1.innerHTML = '<div class="pshop-menu-title">Fancy Suit</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('suit').map(card).join('') + '</div>';
-                s2.innerHTML = '<div class="pshop-menu-title">Sporty, Modern &amp; Special</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('sporty').concat(kindKeys('modern'), kindKeys('abudawud')).map(card).join('') + '</div>';
+                s2.innerHTML = '<div class="pshop-menu-title">Sporty, Modern &amp; Special</div><div class="pshop-menu-sub">SKINS</div><div class="pshop-scroll">' + kindKeys('sporty').concat(kindKeys('modern'), kindKeys('twin'), kindKeys('abudawud')).map(card).join('') + '</div>';
                 drawAllPreviews(s1); drawAllPreviews(s2);
             } else if (pShopTabId === 'cosmetics') {
                 const accCard = k => {
@@ -12177,6 +12253,54 @@
         // the dots drift toward whatever the teacher is looking at.
         // The Arabic Expert's blue gingham work suit (navy and white checks), made once and tiled
         let _ginghamPat = null;
+        // ===== Angry Teacher's look: black leather coat + textured scarf (Twin skin = the old brown coat and pink scarf) =====
+        let _scarfPat = null;
+        const _scarfImg = new Image();
+        _scarfImg.onload = () => { _scarfPat = null; try { for (const k in _portraits) delete _portraits[k]; _btnImgKey = ''; refreshTowerButtonImages(); } catch (e) {} };
+        _scarfImg.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCABAAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCP+xrNVaH7NAqMrDeE59/0rlBpWnNckLa3MsGSPtJX5OPQgV1/iO4jjuY4HYA3ETIvueMj8amtpbey023juJFjWONRljgfQe/tWMZySuepFux5hrDLp2ogQmOeBlB8txnAPYg9KyHSN5llt5CmCNynnAz1FaHi+fOq3EYghVQ5MbRc5Xt9a5+C4eK4R0AOOxHFdC1WopO+5qSRxFnjlPlSAkpIB8rj396qT21uxXcvlv8A3o/51ZlYyRRyNyDxtI59OM1U27J9uWAB+XPpTsTyq9gvNJeK3M4KvGBndgqcfToai8D6x/YnjzS9RZsRwzp5n+6eG/Qmtk219f2c9lYKzkIXcZ42iuPvLOa2uUaSN03kYBHf2pMyrRSdkem3c02o68dTuJVaG3dkjj9lHb69atXWsR32hxqN/mwuGwfmJ46/jzmsaNHtrVo1cM3mfKowTjGMY+ppdC3uk9qq5k3eWeep7VSgjtjGxn+Ko2uLxdRgDLazAKfQNjn9ayobd2VySFVB39fT61rXd/cwGawf/j1YkFSuA3rVWeaFrBVZStwnBYnhl9aDJrUk0u3mvI5LYl9gG4L2Dds+1SXWm3FuSZVBVRnzF5FW/D91GsLL5RVm/jWt3WtNm+wm5gnLTLF86HGDx3oeiK5Va5L4DtJYdMN6U3PcP3bGEHA/qasWugx3niH7PKo8m3PnDP8Ad6r/AJ9qdod3Pb2qWj2yosSKBIz4Vhx049+av6rq/wDZ+h3F8YGiuliMWTjqTgD6ZNcb5nqZOPVnJ3QEDGd3UEfdQDOR61iaVqD6ZqxMq77eZs7e4bsRWtqZRbyKKXJ2yGMgDnB9Kh8V6DJaRrcRg+TGByT39K6YTvHU09onH0I9QGn6hpB/fql3ESRvyD16Z7/WufQCZAjMCex9KneeP7zD744xxVaMbZcqeKtMlS5i7pTtbXJiuWbYvIANdOl7by6fORMQnAIZuAM1ycymUZyQ4GAap2lrLEzmVsW54bJ6e9KWxTnyqx61DdxDS/tXlySwncImSMtvxwT7CvLvE+uXes+ILS0jDrbCQERKcljnuPWo9K8Q6p4d1q3KTTXNigIMBfCMvtWs3iZItTfUNC0BIb2b5fPuZPNKeuxQMDPrWEYtLQ5nNz0Rs+L4/s99K3TeMg+hrTuNSOs+HbNGQNLJw4HYjg0/x5bZQyAZwazvC2o21nBsK72AZgvp61ENVqRUbTORktGFxc2smV2t8mRUEkckShip3KcN7Vs+J7pJXMlo332DMe4I/pWMbr7QplU/eHzD0YVvF6jpStKxNBKsoBXkVYkjUw4PRuorJjkRJD5ZAJ6r2NWI7lJiVbcrjjFaHQ5aWZE8EUMwdF3L3B7Vet7uGLDhlDZH4VAzrt2HGCc5FVbpYRkOcn1qVLXUyjUcHY//2Q==';
+        function scarfPattern() {
+            if (_scarfPat) return _scarfPat;
+            if (!_scarfImg.complete || !_scarfImg.naturalWidth) return null;
+            _scarfPat = ctx.createPattern(_scarfImg, 'repeat'); return _scarfPat;
+        }
+        // fills a circle with the scarf texture; the texture is anchored to HER (translate), so it moves with her
+        function fillScarfTexture(cx, cy, r) {
+            const p = scarfPattern(); if (!p) return;
+            ctx.save(); ctx.translate(cx, cy); ctx.scale(0.8, 0.8); ctx.fillStyle = p;
+            ctx.beginPath(); ctx.arc(0, 0, r / 0.8, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            ctx.fillStyle = 'rgba(0,0,0,0.10)';                                 // soft shade on the lower half so it reads as cloth wrapped round her head
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0.15 * Math.PI, 0.85 * Math.PI); ctx.arc(cx, cy - 3, r - 2, 0.85 * Math.PI, 0.15 * Math.PI, true); ctx.fill();
+        }
+        function drawAngryScarfTail(x, y) {   // the end of the scarf hangs down her chest
+            const p = scarfPattern();
+            ctx.save();
+            ctx.beginPath(); ctx.moveTo(x + 4, y - 14); ctx.lineTo(x + 15, y - 12); ctx.lineTo(x + 13, y + 14); ctx.lineTo(x + 8, y + 17); ctx.lineTo(x + 3, y + 13); ctx.closePath();
+            ctx.fillStyle = '#7B2A7E'; ctx.fill();
+            if (p) { ctx.save(); ctx.clip(); ctx.translate(x, y); ctx.scale(0.8, 0.8); ctx.fillStyle = p; ctx.fillRect(-10, -26, 40, 56); ctx.restore(); }
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+            ctx.restore();
+        }
+        function drawAngryCoat(x, y, brown) {
+            ctx.beginPath(); ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2);
+            ctx.fillStyle = brown ? '#8B4513' : '#15151A'; ctx.fill();
+            if (!brown) {   // leather shine + lapels
+                ctx.save(); ctx.clip();
+                ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.beginPath(); ctx.ellipse(x - 9, y - 4, 4, 16, 0.2, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,0.05)'; ctx.beginPath(); ctx.ellipse(x + 11, y + 6, 3, 11, -0.2, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#33333B'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(x - 13, y - 22); ctx.lineTo(x - 1.5, y - 2); ctx.lineTo(x - 5, y + 20); ctx.moveTo(x + 13, y - 22); ctx.lineTo(x + 1.5, y - 2); ctx.lineTo(x + 5, y + 20); ctx.stroke();
+                ctx.restore();
+            }
+            ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2); ctx.stroke();
+        }
+        function drawAngryCoatButtons(x, y, brown) {
+            ctx.fillStyle = brown ? '#3D2410' : '#A9AFB8';
+            ctx.beginPath();
+            ctx.arc(x, y - 8, 2.2, 0, Math.PI * 2);
+            ctx.arc(x, y + 2, 2.2, 0, Math.PI * 2);
+            ctx.arc(x, y + 12, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
         function ginghamPattern() {
             if (_ginghamPat) return _ginghamPat;
             const g = document.createElement('canvas'); g.width = g.height = 16;
@@ -12196,7 +12320,8 @@
             // gingham work-shirt body
             ctx.beginPath(); ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2);
             ctx.save(); ctx.clip();
-            ctx.fillStyle = ginghamPattern(); ctx.fillRect(x - 30, y - 34, 60, 70);
+            ctx.translate(x, y);   // the checks are drawn from HIS position, so the shirt moves with him (it used to stay fixed on the screen like a green screen)
+            ctx.fillStyle = ginghamPattern(); ctx.fillRect(-30, -34, 60, 70);
             ctx.restore();
             drawSkinBody('arabic', x, y, 20, 28);   // a bought skin (Sporty) paints over the gingham shirt
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2); ctx.stroke();
@@ -12638,6 +12763,7 @@
                     // "Tuck your chair in, sit on the floor!": every 8 seconds, 2 kebabs in range sink half into the floor for 3 seconds
                     this.lastTuck++;
                     if (this.tuckT > 0) this.tuckT--;
+                    if (this.ucSeq) this.uniformStep();
                     if (this.lastTuck >= 480 && game.waveInProgress && this.getTuckTargets().length > 0) { this.tuck(); this.lastTuck = 0; }
                     // Uniform Check buff: his ultimate fills slowly by itself
                     if (hasBuff('arabic') && this.shebabCharge < this.shebabMax) this.shebabCharge = Math.min(this.shebabCharge + ARABIC_ULT_RATE, this.shebabMax);
@@ -12927,25 +13053,83 @@
                 }
             }
 
-            // Uniform Check (Arabic Expert buff): 5 random kebabs get their uniform checked. Each has a 25% chance to be expelled
-            // (it counts as a defeat); the rest are sent to the second track. Bosses are never picked.
+            // Uniform Check (Arabic Expert buff), about 3 seconds in total:
+            //  1. 5 random kebabs (never bosses) are pulled in to him with a swift swoosh
+            //  2. each one steps up and "checks its uniform" (there is no real uniform, it is a gag)
+            //  3. one random kebab of the five fails and is expelled (launched away, it counts as a defeat)
+            //  4. the other four are put back and sent to the second track
             uniformCheck() {
-                const pool = game.enemies.filter(e => !e.isBoss && e.health > 0);
+                const pool = game.enemies.filter(e => !e.isBoss && e.health > 0 && !(e.ucT > 0));
                 for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-                const picked = pool.slice(0, UNIFORM_PICKS);
+                const picked = pool.slice(0, UNIFORM_PICKS), n = picked.length;
+                if (!n) return;
+                const items = picked.map((e, i) => {
+                    const ang = n === 1 ? -Math.PI / 2 : (-Math.PI * 0.84) + (Math.PI * 0.68) * (i / (n - 1));
+                    return { e, fx: e.x, fy: e.y, tx: this.x + Math.cos(ang) * 92, ty: this.y - 18 + Math.sin(ang) * 66, res: 0 };
+                });
+                this.ucSeq = { f: 0, items, vi: Math.floor(Math.random() * n), n };
+                this.ucFx = { type: 'ucfx', life: 1e9, tower: this }; game.particles.push(this.ucFx);
+                this.tuckT = 50; this.leanTimer = 14;
                 game.particles.push({ type: 'text', owner: 'arabic', x: this.x, y: this.y - 80, text: '🪪 UNIFORM CHECK!', life: 70, size: 24 });
-                let expelled = 0, moved = 0;
-                for (const e of picked) {
-                    game.particles.push({ type: 'explosion', owner: 'arabic', x: e.x, y: e.y, vx: 0, vy: 0, life: 24 });
-                    if (Math.random() < UNIFORM_EXPEL_CHANCE) {
-                        e.health = 0; expelled++;
-                        game.particles.push({ type: 'text', owner: 'arabic', x: e.x, y: e.y - 40, vy: -0.5, text: '🚫 EXPELLED!', life: 60, size: 16 });
-                    } else {
-                        const ok = sendToSecondTrack(e); if (ok) moved++;
-                        game.particles.push({ type: 'text', owner: 'arabic', x: e.x, y: e.y - 40, vy: -0.5, text: ok ? '✅ To track 2' : '✅ Passed', life: 60, size: 16 });
+                playSound(520, 0.12, 'sawtooth'); playSound(760, 0.14, 'sine');
+            }
+            uniformStep() {
+                const S = this.ucSeq; if (!S) return;
+                const f = ++S.f, PULL = 30, CK0 = 40, CK = 18, EXP0 = CK0 + S.n * CK + 6, EXPL = 24, BACK0 = EXP0 + 10, BACKL = 14, END = BACK0 + BACKL;
+                const ease = k => 1 - Math.pow(1 - Math.max(0, Math.min(1, k)), 3);
+                S.exp = f >= EXP0; S.phase = f < CK0 ? 'pull' : (f < EXP0 ? 'check' : 'out');
+                S.items.forEach((it, i) => {
+                    const e = it.e; if (!e || e.health <= 0 || !game.enemies.includes(e)) { it.gone = true; return; }
+                    e.ucT = 6;
+                    if (i === S.vi && f >= EXP0) {                         // the one that fails the check: launched away
+                        const k = Math.min(1, (f - EXP0) / EXPL);
+                        e.x = it.tx + (k * k) * 520; e.y = it.ty - (k * 330) + Math.sin(k * 3.14) * 40;
+                        if (f === EXP0) { playSound(180, 0.25, 'square'); game.particles.push({ type: 'explosion', owner: 'arabic', x: it.tx, y: it.ty, vx: 0, vy: 0, life: 24 }); game.particles.push({ type: 'text', owner: 'arabic', x: it.tx, y: it.ty - 46, vy: -0.5, text: '🚫 EXPELLED!', life: 60, size: 18 }); }
+                        if (f >= EXP0 + EXPL) { e.ucT = 0; e.health = 0; it.gone = true; }
+                    } else if (f >= BACK0 && i !== S.vi) {                 // the others go back where they were
+                        const k = ease((f - BACK0) / BACKL);
+                        e.x = it.tx + (it.fx - it.tx) * k; e.y = it.ty + (it.fy - it.ty) * k;
+                    } else {                                                // 1. pulled in, then held
+                        const k = ease((f - i * 3) / PULL);
+                        e.x = it.fx + (it.tx - it.fx) * k; e.y = it.fy + (it.ty - it.fy) * k - Math.sin(k * 3.14) * 34;
                     }
+                    e.prevX = e.x; e.prevY = e.y;
+                    // 2. its uniform check result shows up when its turn on the scanner is over
+                    if (!it.res && f >= CK0 + (i + 1) * CK) { it.res = (i === S.vi) ? -1 : 1; playSound(i === S.vi ? 150 : 700 + i * 60, 0.1, i === S.vi ? 'sawtooth' : 'sine'); }
+                });
+                if (f >= END) {
+                    S.items.forEach((it, i) => {
+                        const e = it.e; if (!e || it.gone || i === S.vi) return;
+                        e.ucT = 0; e.x = it.fx; e.y = it.fy; e.prevX = e.x; e.prevY = e.y;
+                        const ok = sendToSecondTrack(e);
+                        game.particles.push({ type: 'text', owner: 'arabic', x: e.x, y: e.y - 40, vy: -0.5, text: ok ? '✅ To track 2' : '✅ Passed', life: 50, size: 14 });
+                    });
+                    this.uniformLast = { picked: S.n, expelled: 1 };
+                    const pi = game.particles.indexOf(this.ucFx); if (pi >= 0) game.particles.splice(pi, 1);
+                    this.ucSeq = null; this.ucFx = null;
                 }
-                this.uniformLast = { picked: picked.length, expelled, moved };
+            }
+            // drawn on the particle layer: scan beams, uniform cards and results
+            drawUniformFx(camX) {
+                const S = this.ucSeq; if (!S) return;
+                const f = S.f, CK0 = 40, CK = 18;
+                ctx.save();
+                S.items.forEach((it, i) => {
+                    const e = it.e; if (!e || it.gone) return;
+                    const x = e.x - camX, y = e.y;
+                    if (S.phase === 'check' || S.phase === 'out') {
+                        const k = (f - (CK0 + i * CK)) / CK;
+                        if (k >= 0 && k <= 1 && !it.res) {                 // scanning this kebab
+                            ctx.strokeStyle = 'rgba(255,60,60,.85)'; ctx.lineWidth = 3;
+                            const sy = y - 30 + 60 * (k < 0.5 ? k * 2 : 2 - k * 2);
+                            ctx.beginPath(); ctx.moveTo(x - 24, sy); ctx.lineTo(x + 24, sy); ctx.stroke();
+                            ctx.fillStyle = 'rgba(255,60,60,.14)'; ctx.fillRect(x - 24, y - 32, 48, 64);
+                            ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🪪', x, y - 40 - Math.sin(k * 12) * 3);
+                        }
+                    }
+                    if (it.res) { ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(it.res > 0 ? '✅' : '❌', x, y - 42); }
+                });
+                ctx.restore();
             }
 
             ultimate() {
@@ -13374,6 +13558,7 @@
                 // pull and it would just look like it's frozen in place.
                 if (this.pulledBy) return false;
                 // Arabic Expert: stuck half in the floor, cannot move (and stops a hitter from hitting too)
+                if (this.ucT > 0) { this.ucT--; return false; }   // being checked by the Arabic Expert (Uniform Check)
                 if (this.stuckT > 0) { this.stuckT--; return false; }
 
                 // Hitter kebab: stands still while it hits a teacher, and decides at each teacher it passes
@@ -14516,28 +14701,160 @@
             try { return _tUlt.apply(this, arguments); } finally { game.enemies = all; }
         };
 
-        function selectTower(type) {
-            if (type === 'arabic' && game.mapId !== 'quad' && !game.testMode) { showToast('🪑 The Arabic Expert only works on The Quad.', 2800); return; }
+        // white ping circle where you click (part of the Custom cursor setting)
+        document.addEventListener('pointerdown', e => {
+            if (settings.customCursor === false || e.button > 0) return;
+            const p = document.createElement('div'); p.className = 'click-ping';
+            p.style.setProperty('--px', e.clientX + 'px'); p.style.setProperty('--py', e.clientY + 'px');
+            document.body.appendChild(p); setTimeout(() => p.remove(), 520);
+        }, true);
+        // ===== DRAG-AND-DROP PLACEMENT =====
+        // Hold a teacher's button, drag the teacher onto the map (the tile under them lights up yellow) and let go:
+        // the teacher drops onto the tile with a squishy bounce. Drag them back over the teacher menu (or press Esc) to cancel.
+        const DRAG = { on: false, type: null, tile: null, ghost: null, btn: null, sx: 0, sy: 0, st: 0, moved: false, overMenu: false, vx: 0, lx: 0, raf: 0, frame: -9, frames: null, carry: false };
+        // The carried teacher is part of the mouse pointer itself (a pointer picture: the fist holding the teacher), so it can never lag
+        // behind the mouse. It sways with the way you move: 7 pre-drawn tilts are swapped as you speed up, slow down or change direction.
+        const _fistImg = new Image(); _fistImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAqElEQVR4Xu2VUQqAIAxAKzqC3qoj9NkF++wInUXvUCAsaDaXJUxq7y8J59421jSK8ndaToAxZuP+SeG9T8bo3lxeAvJ1kLlz7hTHWhu+c88BbETcQF9CY4oLU6GnwIS4AX1A1APc3OOaAtQ5h3gJDgO5c1+KegxQPK0tZl7WyxD1G3gLlTkgbiDahtQ05IIzn8YhXPH9bXg383p7AOB2wl1wzTHiU6AoO6AEQN25cticAAAAAElFTkSuQmCC';
+        const SWAY_STEPS = [-18, -12, -6, 0, 6, 12, 18];
+        function carryFrames(type) {
+            const port = teacherPortrait(type);
+            return SWAY_STEPS.map(a => {
+                const c = document.createElement('canvas'); c.width = c.height = 128;
+                const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+                g.save(); g.globalAlpha = 0.72; g.translate(64, 18); g.rotate(a * Math.PI / 180); g.drawImage(port, -44, -16, 88, 88); g.restore();
+                g.drawImage(_fistImg, 48, 2, 32, 32);
+                return 'url(' + c.toDataURL('image/png') + ')';
+            });
+        }
+        function dragLoop() {
+            if (!DRAG.on) return;
+            DRAG.vx *= 0.86;                                            // the sway settles when you stop
+            const ang = Math.max(-18, Math.min(18, DRAG.vx * 1.7));    // moving right swings the teacher's feet to the left
+            if (DRAG.carry) {
+                const idx = Math.round(ang / 6) + 3;
+                if (idx !== DRAG.frame) { DRAG.frame = idx; document.body.style.setProperty('--carry', DRAG.frames[idx]); }
+            } else if (DRAG.ghost) DRAG.ghost.firstChild.style.transform = 'rotate(' + ang.toFixed(1) + 'deg)';
+            DRAG.raf = requestAnimationFrame(dragLoop);
+        }
+        function placeCheck(type) {
+            if (type === 'arabic' && game.mapId !== 'quad' && !game.testMode) { showToast('🪑 The Arabic Expert only works on The Quad.', 2800); return false; }
             const cost = getPlaceCost(type);
-            if (!game.testMode && game.sentrals < cost) {
-                showToast('⚠️ Not enough coins!');
-                return;
-            }
+            if (!game.testMode && game.sentrals < cost) { showToast('⚠️ Not enough coins!'); return false; }
             if (ownTowerCount(type) >= getTowerCap(type)) {
                 showToast('⚠️ Max ' + getTowerCap(type) + ' ' + towerName(type) + ' reached!' + (type === 'sheikh' ? ' Buy "More Teachers" in the shop for +3.' : ''), 3500);
-                return;
+                return false;
             }
-
-            if (game.selectedTower === type) {
-                game.selectedTower = null;
-                document.querySelectorAll('.tower-button').forEach(b => b.classList.remove('selected'));
-            } else {
-                game.selectedTower = type;
-                document.querySelectorAll('.tower-button').forEach(b => b.classList.remove('selected'));
-                event.target.closest('.tower-button').classList.add('selected');
+            return true;
+        }
+        function selectTower(type) { showToast('Hold the teacher and drag them onto the map.', 2400); }   // (old click-to-pick is gone)
+        function tileFromPoint(cx, cy) {
+            const r = canvas.getBoundingClientRect();
+            if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return null;
+            const pt = canvasPoint({ clientX: cx, clientY: cy }), Z = viewScale();
+            const x = pt.x / Z, y = pt.y / Z, worldX = x + cameraOffset;
+            return { col: Math.floor(worldX / GRID_SIZE), row: Math.floor(y / LANE_HEIGHT), worldX, y };
+        }
+        function tileOk(t, type) {
+            if (!t) return false;
+            if (game.towers.find(o => o.col === t.col && o.row === t.row)) return false;
+            if (game.vs) return !!vsCanPlace(myPl(), t.col, t.row);
+            if (game.mapId === 'quad' && t.row === 0) return false;
+            return t.col >= 1 && t.col < WORLD_COLS - 1 && t.row >= 0 && t.row < rowsN();
+        }
+        function dragStart(e, type) {
+            if (e.button > 0 || DRAG.on) return;
+            if (!game.active || game.gameOver || game.paused) return;
+            e.preventDefault();
+            if (!placeCheck(type)) return;
+            DRAG.on = true; DRAG.type = type; DRAG.tile = null; DRAG.moved = false; DRAG.overMenu = false;
+            DRAG.sx = e.clientX; DRAG.sy = e.clientY; DRAG.st = performance.now();
+            DRAG.btn = document.getElementById(type + 'Btn'); if (DRAG.btn) DRAG.btn.classList.add('dragging');
+            game.selectedTower = type;
+            DRAG.carry = settings.customCursor !== false; DRAG.vx = 0; DRAG.lx = e.clientX; DRAG.frame = -9;
+            if (DRAG.carry) { try { DRAG.frames = carryFrames(type); document.body.style.setProperty('--carry', DRAG.frames[3]); document.body.classList.add('cur-grab'); } catch (er) { DRAG.carry = false; } }
+            const g = document.createElement('div'); g.className = 'drag-ghost'; if (DRAG.carry) g.style.display = 'none';
+            const c = document.createElement('canvas'); c.width = c.height = 112;
+            c.getContext('2d').drawImage(teacherPortrait(type), 0, 0);
+            g.appendChild(c); document.body.appendChild(g); DRAG.ghost = g;
+            dragMove(e);
+            window.addEventListener('pointermove', dragMove);
+            window.addEventListener('pointerup', dragEnd);
+            window.addEventListener('pointercancel', dragCancel);
+            window.addEventListener('keydown', dragKey, true);
+            DRAG.raf = requestAnimationFrame(dragLoop);
+        }
+        function dragMove(e) {
+            if (!DRAG.on) return;
+            DRAG.vx = DRAG.vx * 0.55 + (e.clientX - DRAG.lx) * 0.45 * 1.6; DRAG.lx = e.clientX;
+            if (Math.hypot(e.clientX - DRAG.sx, e.clientY - DRAG.sy) > 6) DRAG.moved = true;
+            DRAG.ghost.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+            const t = tileFromPoint(e.clientX, e.clientY);
+            DRAG.tile = t ? { col: t.col, row: t.row, ok: tileOk(t, DRAG.type) } : null;
+            const sel = document.querySelector('.tower-selector'), r = sel && sel.getBoundingClientRect();
+            DRAG.overMenu = !!(r && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
+            if (sel) sel.classList.toggle('drop-discard', DRAG.overMenu && DRAG.moved);
+            DRAG.ghost.classList.toggle('discard', DRAG.overMenu && DRAG.moved);
+        }
+        function dragFinish() {
+            window.removeEventListener('pointermove', dragMove); window.removeEventListener('pointerup', dragEnd);
+            window.removeEventListener('pointercancel', dragCancel); window.removeEventListener('keydown', dragKey, true);
+            if (DRAG.ghost) DRAG.ghost.remove();
+            if (DRAG.btn) DRAG.btn.classList.remove('dragging');
+            const sel = document.querySelector('.tower-selector'); if (sel) sel.classList.remove('drop-discard');
+            DRAG.on = false; DRAG.ghost = null; DRAG.tile = null; game.selectedTower = null; document.body.classList.remove('cur-grab'); document.body.style.removeProperty('--carry'); cancelAnimationFrame(DRAG.raf); DRAG.frames = null;
+        }
+        function dragCancel() { if (!DRAG.on) return; dragFinish(); }
+        function dragKey(e) { if (e.key === 'Escape') { e.stopImmediatePropagation(); e.preventDefault(); dragFinish(); showToast('Teacher put back.', 1200); } }
+        function dragEnd(e) {
+            if (!DRAG.on) return;
+            const type = DRAG.type, t = tileFromPoint(e.clientX, e.clientY), quick = !DRAG.moved;
+            if (quick) { dragFinish(); showToast('Hold the teacher, drag them onto the map and let go.', 2800); return; }
+            if (!t || DRAG.overMenu) { dragFinish(); showToast('Teacher put back.', 1200); return; }
+            game.selectedTower = type;
+            const before = game.towers.length;
+            placeSelectedAt(t.worldX, t.y);
+            dragFinish();
+            const nt = game.towers.length > before ? game.towers.find(o => o.col === t.col && o.row === t.row) : null;
+            if (nt) {                                    // the squishy drop
+                nt.age = 99; nt.dropAt = performance.now();
+                if (!lowFx()) { setTimeout(() => { try { playSound(120, 0.2, 'sine'); } catch (er) {} }, 290); setTimeout(() => { try { playSound(330, 0.14, 'sine'); playSound(440, 0.1, 'triangle'); } catch (er) {} }, 520); }
             }
         }
-
+        // yellow tile under the dragged teacher (red if the tile cannot be used)
+        function drawPlaceHighlight() {
+            if (!DRAG.on || !DRAG.tile || !DRAG.moved) return;
+            const t = DRAG.tile, x = t.col * GRID_SIZE - cameraOffset, y = t.row * LANE_HEIGHT;
+            const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 160);
+            ctx.save();
+            ctx.fillStyle = t.ok ? 'rgba(255,221,0,' + (0.38 + 0.18 * pulse) + ')' : 'rgba(255,60,60,0.28)';
+            ctx.fillRect(x, y, GRID_SIZE, LANE_HEIGHT);
+            ctx.strokeStyle = t.ok ? '#FFE600' : '#ff5252'; ctx.lineWidth = 3; ctx.strokeRect(x + 1.5, y + 1.5, GRID_SIZE - 3, LANE_HEIGHT - 3);
+            ctx.restore();
+        }
+        // a small picture of a teacher (used for the buttons and the dragged ghost), drawn with the game's own teacher drawing
+        const _portraits = {};
+        function teacherPortrait(type) {
+            const key = type + '|' + (typeof EQUIPPED !== 'undefined' ? JSON.stringify(EQUIPPED[type] || '') : '') + '|' + settings.theme;
+            if (_portraits[key]) return _portraits[key];
+            const c = document.createElement('canvas'); c.width = c.height = 112;
+            const pc = c.getContext('2d');
+            const sv = { ctx, canvas, co: cameraOffset, t: game.towers, e: game.enemies, p: game.particles, w: game.waveInProgress };
+            try {
+                ctx = pc; canvas = c; cameraOffset = 0; game.towers = []; game.enemies = []; game.particles = []; game.waveInProgress = false;
+                const t = new Tower(1, 1, type); t.x = 56; t.y = 64; t.age = 99; t.bobOffset = 0; t.shebabCharge = 0;
+                drawTowersLayer([t], 0, 0);
+            } catch (er) {} finally { ctx = sv.ctx; canvas = sv.canvas; cameraOffset = sv.co; game.towers = sv.t; game.enemies = sv.e; game.particles = sv.p; game.waveInProgress = sv.w; }
+            _portraits[key] = c; return c;
+        }
+        let _btnImgKey = '';
+        function refreshTowerButtonImages() {
+            const key = settings.theme + '|' + (typeof EQUIPPED !== 'undefined' ? JSON.stringify(EQUIPPED) : '');
+            if (key === _btnImgKey) return; _btnImgKey = key;
+            for (const ty of ['sheikh', 'angry', 'math', 'arabic', 'tuff']) {
+                const cv = document.getElementById(ty + 'Img'); if (!cv) continue;
+                const g = cv.getContext('2d'); g.clearRect(0, 0, 112, 112); g.drawImage(teacherPortrait(ty), 0, 0);
+            }
+        }
 
         // Mouse position in canvas pixels - correct even when the view is
         // zoomed (FOV setting) or the canvas is displayed at another size
@@ -14655,8 +14972,12 @@
                 }
             }
 
-            if (!game.selectedTower || game.gameOver) return;
+            // (teachers are placed by dragging them from the right panel, see placeSelectedAt)
+            return;
+        });
 
+        function placeSelectedAt(worldX, y) {
+            if (!game.selectedTower || game.gameOver) return;
             const col = Math.floor(worldX / GRID_SIZE);
             const row = Math.floor(y / LANE_HEIGHT);
 
@@ -14695,7 +15016,7 @@
                     playSound(600, 0.15, 'sine');
                 }
             }
-        });
+        }
 
         function confirmRemoveTower(tower) {
             if (game.vs && tower.pl !== myPl()) { showToast("That teacher belongs to your opponent!", 1800); return; }
@@ -15953,6 +16274,7 @@
         setInterval(fitGame, 500);
         function applySettings() {
             applyMasterVolume();
+            document.body.classList.toggle('cur-custom', settings.customCursor !== false);
             const wrap = document.getElementById('gameWrapper');
             fitGame(true);
             document.body.classList.remove('theme-classic', 'theme-halloween', 'theme-night', 'theme-candy');
@@ -15981,6 +16303,7 @@
             setVal('set_guideVs', settings.guideVs);
             setVal('set_menuAnim', settings.menuAnim);
             setVal('set_introAnim', settings.introAnim);
+            setVal('set_customCursor', settings.customCursor);
             setVal('set_healthBars', settings.healthBars);
             setVal('set_showFps', settings.showFps);
             setVal('set_bgPlay', settings.bgPlay);
@@ -16065,7 +16388,23 @@
 
                 // Whole-teacher animation: pop-in when placed, gentle idle sway,
                 // and leaning toward a neighbour during an interaction
+                // dropped from the hand: falls, squashes flat, rises back up, hops and settles (like a ball in slow motion)
+                let dropDy = 0, dropSx = 1, dropSy = 1;
+                if (tower.dropAt) {
+                    const dt = (performance.now() - tower.dropAt) / 1000;
+                    if (dt > 1.0 || lowFx()) tower.dropAt = null;
+                    else {
+                        const sq = k => Math.sin(Math.max(0, Math.min(1, k)) * Math.PI);
+                        if (dt < 0.30) { const k = dt / 0.30; dropDy = -150 * (1 - k * k); dropSx = 0.94; dropSy = 1.1; }
+                        else if (dt < 0.52) { const s2 = sq((dt - 0.30) / 0.22); dropSy = 1 - 0.40 * s2; dropSx = 1 + 0.36 * s2; }
+                        else if (dt < 0.76) { const k = (dt - 0.52) / 0.24; dropDy = -26 * sq(k); dropSy = 1 + 0.14 * sq(k); dropSx = 1 - 0.07 * sq(k); }
+                        else { const s2 = sq((dt - 0.76) / 0.24); dropSy = 1 - 0.12 * s2; dropSx = 1 + 0.1 * s2; }
+                        ctx.save(); ctx.globalAlpha = 0.25; ctx.fillStyle = '#000'; ctx.beginPath();
+                        ctx.ellipse(x, y + 30, 20 + Math.max(0, dropDy) * -0.04 + (dropDy < 0 ? dropDy * 0.06 : 0) + 6, 6, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+                    }
+                }
                 ctx.save();
+                if (dropDy || dropSx !== 1 || dropSy !== 1) { ctx.translate(x, y + 28 + dropDy); ctx.scale(dropSx, dropSy); ctx.translate(-x, -(y + 28)); }
                 {
                     const age = tower.age || 99;
                     let sc = 1;
@@ -16115,21 +16454,12 @@
                 }
 
                 if (tower.type === 'angry') {
-                    // Brown leather coat body
-                    ctx.fillStyle = '#8B4513';
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, 20, 28, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.stroke();
+                    // Black leather coat (the Twin skin keeps her old brown coat and pink scarf)
+                    const angrySkin = skinKind('angry'), twin = angrySkin === 'twin', plainCoat = !angrySkin || angrySkin === 'fuming' || twin;
+                    drawAngryCoat(x, y, twin);
                     drawSkinBody('angry', x, y, 20, 28);
-
-                    // Coat buttons
-                    ctx.fillStyle = '#3D2410';
-                    ctx.beginPath();
-                    ctx.arc(x, y - 8, 2.2, 0, Math.PI * 2);
-                    ctx.arc(x, y + 2, 2.2, 0, Math.PI * 2);
-                    ctx.arc(x, y + 12, 2.2, 0, Math.PI * 2);
-                    ctx.fill();
+                    if (plainCoat) drawAngryCoatButtons(x, y, twin);
+                    if (!twin && !angrySkin) drawAngryScarfTail(x, y);
 
                     // During her ultimate the head swells huge and shakes
                     const bigHead = tower.shakeTimer > 0;
@@ -16146,10 +16476,11 @@
                     const fuming = skinKind('angry') === 'fuming';
                     if (fuming) drawFumingFlames(x, y, animT);
                     // Thick pink circle around head (hijab) - bigger head
-                    ctx.fillStyle = fuming ? '#E8330F' : '#FF1493';
+                    ctx.fillStyle = fuming ? '#E8330F' : (twin ? '#FF1493' : '#7B2A7E');
                     ctx.beginPath();
                     ctx.arc(x, y - 26, 19, 0, Math.PI * 2);
                     ctx.fill();
+                    if (!fuming && !twin) fillScarfTexture(x, y - 26, 19);   // the new scarf has the tie-dye texture
                     ctx.strokeStyle = '#000000'; ctx.lineWidth = 2; ctx.stroke();
 
                     // Orange-toned skin circle in middle
@@ -16673,6 +17004,7 @@
         function drawParticlesLayer(particles, alpha) {
             // Draw particles with camera offset
             for (let p of particles) {
+                if (p.type === 'ucfx') { if (p.tower && p.tower.ucSeq) p.tower.drawUniformFx(cameraOffset); continue; }
                 if (p.type === 'projectile') {
                     const pr = Math.min(1, (p.progress + alpha) / p.duration);
                     const x = (p.x - cameraOffset) + ((p.targetX - cameraOffset) - (p.x - cameraOffset)) * pr;
@@ -16775,6 +17107,7 @@
                 if (sw > 0) ctx.drawImage(bg, cameraOffset, 0, sw, bg.height, 0, 0, sw, bg.height);
             }
 
+            drawPlaceHighlight();
             drawTowersLayer(game.towers, animT, alpha);
             drawEnemiesLayer(game.enemies, alpha, animT);
             drawTuffLasers(game.towers, animT);
@@ -16986,15 +17319,23 @@
             title.querySelectorAll('.tl').forEach(l => l.style.setProperty('--g', glint + 'ms'));
             // the letters wait (hidden) until the teachers are all placed: their animations are delayed by the same amount
             title.querySelectorAll('.tl').forEach(l => { const i = +l.style.getPropertyValue('--i'); l.style.animationDelay = (towersDone + i * 85) + 'ms, ' + (towersDone + glint + i * 55) + 'ms'; });
-            const lettersDone = towersDone + n * 85 + 950;
-            // 3. buttons fade in
-            tiLater(titleIntroFinish, lettersDone + 900);
+            // every letter makes a little thunk when it lands (it lands at about 72% of its 950ms flight)
+            for (let i = 0; i < n; i++) tiLater(() => { try { playSound(150 + (i % 6) * 38, 0.09, 'square'); playSound(70 + (i % 4) * 10, 0.14, 'sine'); } catch (e) {} }, towersDone + i * 85 + 690);
+            // 3. after the shine has swept over every letter, the REMASTERED logo slams in (with a sound), then the buttons fade in
+            const shineEnd = towersDone + glint + (n - 1) * 55 + 700;
+            const ribbonAt = shineEnd + 120;
+            tiLater(() => {
+                const rb = document.querySelector('.mm-ribbon'); if (rb) rb.classList.add('ri-in');
+                try { playSound(60, 0.45, 'sine'); playSound(120, 0.3, 'sawtooth'); [523, 659, 784, 1047].forEach((f, k) => setTimeout(() => { try { playSound(f, 0.5, 'triangle'); } catch (e) {} }, 120 + k * 70)); } catch (e) {}
+            }, ribbonAt);
+            tiLater(titleIntroFinish, ribbonAt + 1250);
             document.addEventListener('pointerdown', titleIntroSkip, { once: true, capture: true });
         }
         function titleIntroFinish() {
             if (!_tiOn) return;
             _tiOn = false; _tiTimers.forEach(clearTimeout); _tiTimers = [];
             MB.intro = false; MB.towers.forEach(t => { t.introAt = null; }); MB.spawnIn = 20;
+            { const rb = document.querySelector('.mm-ribbon'); if (rb) { if (!rb.classList.contains('ri-in')) rb.classList.add('ri-in', 'ri-done'); else setTimeout(() => rb.classList.add('ri-done'), 700); } }
             document.body.classList.remove('ti-hold');                    // the buttons now run their normal fade-in
             setTimeout(() => {                                             // put the plain title text back
                 _tiOrig.forEach(([sp, txt]) => { sp.textContent = txt; }); _tiOrig = [];

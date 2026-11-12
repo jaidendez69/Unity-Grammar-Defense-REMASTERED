@@ -2842,8 +2842,8 @@
             animation: mmUp 0.7s 0.3s ease-out both, mmPulse 2.4s 1.2s ease-in-out infinite; }
         .mm-play b { font-size: 38px; letter-spacing: 4px; text-shadow: 0 3px 0 rgba(0,0,0,.45); }
         .mm-play small { font-size: 13px; opacity: .92; font-weight: 600; }
-        .mm-play::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
-            transform: skewX(-20deg); animation: mmShine 3.6s 1.5s ease-in-out infinite; }
+        .mm-play::after { content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
+            transform: translateX(-150%) skewX(-20deg); will-change: transform; animation: mmShine 3.6s 1.5s ease-in-out infinite; }
         /* hover lift like the Test Mode / Updates cards. The idle animations are left running (removing
            them made the button vanish and fade back in), so the lift uses the separate translate/scale
            properties, which stack on top of the animated transform. */
@@ -2878,7 +2878,7 @@
         @keyframes mmFade { from { opacity: 0; } to { opacity: 1; } }
         @keyframes mmBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes mmPulse { 0%, 100% { box-shadow: 0 8px 0 rgba(0,0,0,.5), 0 0 22px color-mix(in srgb, var(--m-b) 55%, transparent); } 50% { box-shadow: 0 8px 0 rgba(0,0,0,.5), 0 0 44px var(--m-b); } }
-        @keyframes mmShine { 0%, 55% { left: -60%; } 80%, 100% { left: 130%; } }
+        @keyframes mmShine { 0%, 55% { transform: translateX(-150%) skewX(-20deg); } 80%, 100% { transform: translateX(325%) skewX(-20deg); } }
         @media (max-width: 760px) {
             .mm-top { top: 28px; right: 8px; width: 140px; }
             .mm-main { padding-top: 78px; padding-bottom: 80px; }
@@ -3050,7 +3050,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.34 Release</div>
+    <div id="versionTag">v1.0.35 Release</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3178,7 +3178,9 @@
                 <div class="update-entry">
                     <div class="update-date">November 12, 2026</div>
                     <ul>
-                        <li><b>New admin character: BOYS</b> (only the admin account can place her, free, max 3, in every mode, not in the menu background): the default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura that pulses when her ultimate is ready</b>. Her attack, <b>Suspension</b>, takes <b>50% of a kebab's health</b> and sends it <b>back to the start of the track</b>. Her ultimate <b>BOYSSSSSSS</b>: the screen goes dark while she channels and breathes in, then a huge pink shockwave pulses <b>6 times over 5 seconds</b> (glowing plasma sphere with lightning, layered shockwave rings, speed lines, billowing smoke and flying rock debris), shaking the screen, each pulse doing <b>massive damage</b>. Equip / Unequip her in the Admin screen.</li>
+                        <li>Performance: the hidden battle is no longer drawn behind the menu, and the Play button shine now runs on the GPU. Nothing looks different.</li>
+<li><b>Smoother main menu</b>: the game no longer draws the hidden battle behind the main menu (the menu has its own animated scene), so the menu runs faster.</li>
+                        <li><b>New admin character: BOYS</b> (only the admin account can place her, free, max 3, in every mode, not in the menu background): the default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura that pulses when her ultimate is ready</b>. Her attack, <b>Suspension</b>, takes <b>50% of a kebab's health</b> and sends it <b>back to the start of the track</b>. Her ultimate <b>BOYSSSSSSS</b>: the screen goes dark while she channels and breathes in, then a huge pink shockwave pulses <b>6 times over 5 seconds</b> (turbulent plasma smoke, forking lightning that crawls over the rings, a white-hot starburst core, beads of light, flying rocks and debris), shaking the screen, each pulse doing <b>massive damage</b>. Equip / Unequip her in the Admin screen.</li>
                         <li><b>The game is now a Release</b>: the version in the top left says <b>v1.0.32 Release</b> instead of Alpha.</li>
                         <li><b>Intro sounds</b>: every title letter now makes a little <b>thunk</b> when it lands, and after the shine sweeps over the letters the <b>REMASTERED</b> logo slams in with its own sound, then the buttons fade in.</li>
                         <li><b>Arabic Expert's shirt fixed</b>: the blue checks used to stay fixed on the screen while he moved (like a green screen). They now move with him.</li>
@@ -8078,7 +8080,7 @@
 
             { id: 'versions', group: 'more', icon: '📜', title: 'Versions, Updates & Desktop App', html: () =>
                 gList([
-                    'The version is shown at the top left (like <b>v1.0.34 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
+                    'The version is shown at the top left (like <b>v1.0.35 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (WIP) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
@@ -12571,27 +12573,93 @@
         // The ultimate itself: the screen goes dark (you can still see everything), a pink orb swells while she breathes in,
         // then BOYSSSSSSS: a flash and six huge pink shockwaves that sweep the whole map.
         function boysR(n) { const v = Math.sin(n * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); }   // seeded random: the same debris/smoke every frame
-        // The blast itself: glowing plasma sphere with lightning, layered shockwave rings, speed lines, sparks,
-        // billowing smoke and tumbling rock debris thrown out by every pulse.
+        // ===== The blast: turbulent plasma smoke, forking lightning that crawls over the rings, white-hot starburst core, debris =====
+        let _bSmoke = null, _bBurst = null;
+        function boysSmokeTex() {   // a wispy, dark-magenta cloud sprite built from layered noise (made once)
+            if (_bSmoke) return _bSmoke;
+            const N = 192, c = document.createElement('canvas'); c.width = c.height = N;
+            const g = c.getContext('2d'), img = g.createImageData(N, N), d = img.data;
+            const vn = (x, y) => { const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+                const h = (i, j) => boysR(i * 57.3 + j * 131.7 + 9);
+                return (h(ix, iy) * (1 - u) + h(ix + 1, iy) * u) * (1 - v) + (h(ix, iy + 1) * (1 - u) + h(ix + 1, iy + 1) * u) * v; };
+            for (let py = 0; py < N; py++) for (let px = 0; px < N; px++) {
+                const dx = (px - N / 2) / (N / 2), dy = (py - N / 2) / (N / 2), dist = Math.sqrt(dx * dx + dy * dy);
+                let n = 0, amp = 0.55, f = 3.2, tot = 0;
+                for (let o = 0; o < 5; o++) { n += vn(px / N * f + o * 17, py / N * f + o * 31) * amp; tot += amp; amp *= 0.5; f *= 2.05; }
+                n /= tot;
+                const edge = Math.max(0, 1 - dist), al = Math.pow(edge, 0.8) * Math.min(1, Math.max(0, (n - 0.30) * 3.0));
+                const t = Math.min(1, Math.max(0, (n - 0.3) * 2.6)), i = (py * N + px) * 4;
+                d[i] = 60 + 195 * t; d[i + 1] = 6 + 90 * t * t; d[i + 2] = 55 + 170 * t; d[i + 3] = Math.min(255, al * 255);
+            }
+            g.putImageData(img, 0, 0); return (_bSmoke = c);
+        }
+        function boysBurstTex() {   // white-hot centre with thin streaks (made once)
+            if (_bBurst) return _bBurst;
+            const N = 256, c = document.createElement('canvas'); c.width = c.height = N;
+            const g = c.getContext('2d'); g.translate(N / 2, N / 2); g.lineCap = 'round';
+            for (let i = 0; i < 150; i++) {
+                const ang = boysR(i + 77) * Math.PI * 2, len = 30 + boysR(i + 5) * 98, w = 0.6 + boysR(i + 9) * 1.8;
+                const gr = g.createLinearGradient(0, 0, Math.cos(ang) * len, Math.sin(ang) * len);
+                gr.addColorStop(0, 'rgba(255,255,255,0.95)'); gr.addColorStop(0.5, 'rgba(255,150,225,0.55)'); gr.addColorStop(1, 'rgba(255,60,190,0)');
+                g.strokeStyle = gr; g.lineWidth = w; g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(ang) * len, Math.sin(ang) * len); g.stroke();
+            }
+            const rg = g.createRadialGradient(0, 0, 0, 0, 0, 60); rg.addColorStop(0, 'rgba(255,255,255,1)'); rg.addColorStop(0.25, 'rgba(255,190,240,0.85)'); rg.addColorStop(1, 'rgba(255,60,190,0)');
+            g.fillStyle = rg; g.beginPath(); g.arc(0, 0, 60, 0, Math.PI * 2); g.fill();
+            return (_bBurst = c);
+        }
+        // midpoint-displacement lightning between two points
+        function boltPts(x1, y1, x2, y2, seed, detail, rough) {
+            let pts = [[x1, y1], [x2, y2]], disp = Math.hypot(x2 - x1, y2 - y1) * (rough || 0.2);
+            for (let it = 0; it < detail; it++) {
+                const np = [];
+                for (let i = 0; i < pts.length - 1; i++) {
+                    const A = pts[i], B = pts[i + 1], dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, off = (boysR(seed + it * 131 + i * 7.7) - 0.5) * 2 * disp;
+                    np.push(A, [(A[0] + B[0]) / 2 - dy / L * off, (A[1] + B[1]) / 2 + dx / L * off]);
+                }
+                np.push(pts[pts.length - 1]); pts = np; disp *= 0.52;
+            }
+            return pts;
+        }
+        function strokePts(pts, w, a) {   // soft pink glow underneath, white-hot core on top
+            ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+            ctx.strokeStyle = 'rgba(255,50,185,' + (a * 0.32) + ')'; ctx.lineWidth = w * 3.6; ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,238,251,' + a + ')'; ctx.lineWidth = w; ctx.stroke();
+        }
+        function boysBoltTree(x1, y1, x2, y2, seed, w, a, branches) {   // a bolt with forks splitting off it
+            const pts = boltPts(x1, y1, x2, y2, seed, 4, 0.22);
+            strokePts(pts, w, a);
+            for (let b = 0; b < branches; b++) {
+                const idx = 3 + Math.floor(boysR(seed + b * 3.3) * (pts.length - 6)), P = pts[idx], len = Math.hypot(x2 - x1, y2 - y1) * (0.22 + boysR(seed + b) * 0.2);
+                const ang = Math.atan2(y2 - y1, x2 - x1) + (boysR(seed + b * 9) - 0.5) * 1.8;
+                strokePts(boltPts(P[0], P[1], P[0] + Math.cos(ang) * len, P[1] + Math.sin(ang) * len, seed + 50 + b, 3, 0.25), w * 0.6, a * 0.85);
+            }
+        }
         function drawBoysBlast(x, y, U, animT, low, W, H) {
-            const k = U.f - BOYS_INH;
-            // 1) smoke clouds and rocks (normal blending, so they look solid and dark against the glow)
+            const k = U.f - BOYS_INH, sf = Math.floor(animT / 2);   // lightning re-rolls every 2 frames: it flickers
+            const smoke = low ? null : boysSmokeTex();
+            // 1) smoke clouds, fine debris and rocks (normal blending, so they look dark and solid against the glow)
             ctx.globalCompositeOperation = 'source-over';
             for (let wi = 0; wi < U.waves.length; wi++) {
-                const w = U.waves[wi]; if (w.age > BOYS_PUL + 30) continue;
-                const R = boysWaveR(Math.min(w.age, BOYS_PUL)), fade = Math.max(0, 1 - w.age / (BOYS_PUL + 30));
-                const puffs = low ? 8 : 34;
+                const w = U.waves[wi]; if (w.age > BOYS_PUL + 34) continue;
+                const R = boysWaveR(Math.min(w.age, BOYS_PUL)), fade = Math.max(0, 1 - w.age / (BOYS_PUL + 34));
+                const puffs = low ? 8 : 30;
                 for (let i = 0; i < puffs; i++) {
-                    const sd = wi * 91 + i, ang = boysR(sd) * Math.PI * 2, d = R * (0.45 + boysR(sd + 5) * 0.55), sz = 34 + boysR(sd + 9) * 54 + w.age * 0.8;
+                    const sd = wi * 91 + i, ang = boysR(sd) * Math.PI * 2, d = R * (0.12 + boysR(sd + 5) * 0.9), sz = 70 + boysR(sd + 9) * 120 + w.age * 1.2;
                     const px = x + Math.cos(ang) * d, py = y + Math.sin(ang) * d;
-                    if (low) ctx.fillStyle = 'rgba(200,110,190,' + (0.12 * fade) + ')';
-                    else { const g = ctx.createRadialGradient(px, py, 0, px, py, sz); g.addColorStop(0, 'rgba(240,150,222,' + (0.55 * fade) + ')'); g.addColorStop(0.6, 'rgba(160,60,150,' + (0.32 * fade) + ')'); g.addColorStop(1, 'rgba(90,40,90,0)'); ctx.fillStyle = g; }
-                    ctx.beginPath(); ctx.arc(px, py, sz, 0, Math.PI * 2); ctx.fill();
+                    if (low) { ctx.fillStyle = 'rgba(200,110,190,' + (0.12 * fade) + ')'; ctx.beginPath(); ctx.arc(px, py, sz * 0.5, 0, Math.PI * 2); ctx.fill(); continue; }
+                    ctx.save(); ctx.translate(px, py); ctx.rotate(boysR(sd + 2) * 6.28 + w.age * (boysR(sd + 4) - 0.5) * 0.03); ctx.globalAlpha = 0.85 * fade;
+                    ctx.drawImage(smoke, -sz, -sz, sz * 2, sz * 2); ctx.restore();
                 }
                 if (low) continue;
+                ctx.globalAlpha = fade;
+                for (let i = 0; i < 70; i++) {   // fine flecks of debris
+                    const sd = wi * 71 + i + 2000, ang = boysR(sd) * Math.PI * 2, d = R * (0.4 + boysR(sd + 1) * 0.65);
+                    ctx.fillStyle = boysR(sd + 3) > 0.5 ? '#2a1020' : 'rgba(255,140,215,0.9)'; ctx.beginPath(); ctx.arc(x + Math.cos(ang) * d, y + Math.sin(ang) * d, 0.8 + boysR(sd + 2) * 2.4, 0, Math.PI * 2); ctx.fill();
+                }
+                ctx.globalAlpha = 1;
                 for (let i = 0; i < 16; i++) {   // tumbling rocks with a pink rim light
                     const sd = wi * 53 + i + 400, ang = boysR(sd) * Math.PI * 2, d = R * (0.55 + boysR(sd + 3) * 0.55) + w.age * 0.8;
-                    const px = x + Math.cos(ang) * d, py = y + Math.sin(ang) * d - Math.sin(w.age / (BOYS_PUL + 30) * Math.PI) * 26, sz = 7 + boysR(sd + 7) * 15;
+                    const px = x + Math.cos(ang) * d, py = y + Math.sin(ang) * d - Math.sin(w.age / (BOYS_PUL + 34) * Math.PI) * 26, sz = 7 + boysR(sd + 7) * 15;
                     ctx.save(); ctx.translate(px, py); ctx.rotate(boysR(sd + 11) * 6.28 + w.age * (boysR(sd + 13) - 0.5) * 0.5); ctx.globalAlpha = fade;
                     ctx.beginPath(); for (let j = 0; j < 6; j++) { const r2 = sz * (0.68 + 0.32 * boysR(sd + j * 3)), a2 = j / 6 * Math.PI * 2; j ? ctx.lineTo(Math.cos(a2) * r2, Math.sin(a2) * r2) : ctx.moveTo(Math.cos(a2) * r2, Math.sin(a2) * r2); }
                     ctx.closePath(); ctx.fillStyle = '#3b2530'; ctx.fill(); ctx.strokeStyle = 'rgba(255,125,215,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -12600,45 +12668,63 @@
             }
             ctx.globalAlpha = 1;
             ctx.globalCompositeOperation = 'lighter';
+            // 1b) the smoke also glows hot where it is thickest
+            if (!low) for (let wi = 0; wi < U.waves.length; wi++) {
+                const w = U.waves[wi]; if (w.age > BOYS_PUL) continue;
+                const R = boysWaveR(w.age), a = 1 - w.age / BOYS_PUL;
+                for (let i = 0; i < 8; i++) {
+                    const sd = wi * 91 + i * 3, ang = boysR(sd) * Math.PI * 2, d = R * (0.12 + boysR(sd + 5) * 0.9), sz = 70 + boysR(sd + 9) * 120 + w.age * 1.2;
+                    ctx.save(); ctx.translate(x + Math.cos(ang) * d, y + Math.sin(ang) * d); ctx.rotate(boysR(sd + 2) * 6.28 + w.age * (boysR(sd + 4) - 0.5) * 0.03); ctx.globalAlpha = 0.28 * a;
+                    ctx.drawImage(smoke, -sz, -sz, sz * 2, sz * 2); ctx.restore();
+                }
+            }
+            ctx.globalAlpha = 1;
             // 2) the shockwave rings
             for (let wi = 0; wi < U.waves.length; wi++) {
                 const w = U.waves[wi]; if (w.age > BOYS_PUL) continue;
                 const R = boysWaveR(w.age), a = 1 - w.age / BOYS_PUL; if (R < 4) continue;
-                if (!low) { const g = ctx.createRadialGradient(x, y, R * 0.5, x, y, R); g.addColorStop(0, 'rgba(255,60,190,0)'); g.addColorStop(0.75, 'rgba(255,60,190,' + (0.22 * a) + ')'); g.addColorStop(1, 'rgba(255,205,242,' + (0.6 * a) + ')'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); }
-                ctx.strokeStyle = 'rgba(255,238,250,' + a + ')'; ctx.lineWidth = 6 + 22 * a; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.stroke();
-                ctx.strokeStyle = 'rgba(255,70,185,' + (a * 0.9) + ')'; ctx.lineWidth = 4 + 9 * a; ctx.beginPath(); ctx.arc(x, y, R * 0.93, 0, Math.PI * 2); ctx.stroke();
+                if (!low) { const g = ctx.createRadialGradient(x, y, R * 0.5, x, y, R); g.addColorStop(0, 'rgba(255,60,190,0)'); g.addColorStop(0.75, 'rgba(255,60,190,' + (0.2 * a) + ')'); g.addColorStop(1, 'rgba(255,205,242,' + (0.55 * a) + ')'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); }
+                ctx.strokeStyle = 'rgba(255,238,250,' + a + ')'; ctx.lineWidth = 4 + 14 * a; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,70,185,' + (a * 0.9) + ')'; ctx.lineWidth = 3 + 7 * a; ctx.beginPath(); ctx.arc(x, y, R * 0.93, 0, Math.PI * 2); ctx.stroke();
                 if (low) continue;
-                [0.84, 0.72, 0.58].forEach((f, q) => { ctx.strokeStyle = 'rgba(255,170,230,' + (a * (0.7 - q * 0.15)) + ')'; ctx.lineWidth = 2.5 - q * 0.5; ctx.beginPath(); ctx.arc(x, y, R * f, 0, Math.PI * 2); ctx.stroke(); });   // thin trailing ripples
-                for (let i = 0; i < 64; i++) {   // speed lines streaking outward from the front
-                    const sd = wi * 17 + i + 900, ang = boysR(sd) * Math.PI * 2, d0 = R * (0.86 + boysR(sd + 2) * 0.14), len = 30 + boysR(sd + 4) * 130 * a;
-                    ctx.strokeStyle = 'rgba(255,200,238,' + (a * 0.65) + ')'; ctx.lineWidth = 1.2 + boysR(sd + 6) * 1.6;
+                [0.82, 0.66, 0.5].forEach((f, q) => { ctx.strokeStyle = 'rgba(255,170,230,' + (a * (0.55 - q * 0.12)) + ')'; ctx.lineWidth = 2 - q * 0.4; ctx.beginPath(); ctx.arc(x, y, R * f, 0, Math.PI * 2); ctx.stroke(); });
+                // lightning: forking bolts jumping between the rings, and arcs hugging the ring edge
+                for (let i = 0; i < 12; i++) {
+                    const sd = sf * 31 + wi * 977 + i * 5.1, ang = boysR(sd) * Math.PI * 2, a2 = ang + (boysR(sd + 1) - 0.5) * 0.3;
+                    const r1 = R * (0.5 + boysR(sd + 2) * 0.2), r2 = R * (0.93 + boysR(sd + 3) * 0.06);
+                    boysBoltTree(x + Math.cos(ang) * r1, y + Math.sin(ang) * r1, x + Math.cos(a2) * r2, y + Math.sin(a2) * r2, sd, 1.6 + a, 0.9 * a + 0.1, 2);
+                }
+                for (let i = 0; i < 10; i++) {
+                    const sd = sf * 17 + wi * 613 + i * 3.7, a0 = boysR(sd) * Math.PI * 2, span = 0.25 + boysR(sd + 1) * 0.5, pts = [];
+                    for (let j = 0; j <= 14; j++) { const aa = a0 + span * j / 14, rr = R * (0.965 + (boysR(sd + j * 1.7) - 0.5) * 0.05); pts.push([x + Math.cos(aa) * rr, y + Math.sin(aa) * rr]); }
+                    strokePts(pts, 1.6 + a, 0.85 * a + 0.1);
+                }
+                for (let i = 0; i < 26; i++) {   // bright beads of light along the ring
+                    const sd = wi * 43 + i + sf * 0.37, ang = boysR(sd) * Math.PI * 2, bx = x + Math.cos(ang) * R, by = y + Math.sin(ang) * R, rs = 2 + boysR(sd + 4) * 4;
+                    ctx.fillStyle = 'rgba(255,90,200,' + (0.35 * a) + ')'; ctx.beginPath(); ctx.arc(bx, by, rs * 3, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,' + a + ')'; ctx.beginPath(); ctx.arc(bx, by, rs, 0, Math.PI * 2); ctx.fill();
+                }
+                for (let i = 0; i < 64; i++) {   // thin streaks flying outward from the front
+                    const sd = wi * 17 + i + 900, ang = boysR(sd) * Math.PI * 2, d0 = R * (0.9 + boysR(sd + 2) * 0.12), len = 30 + boysR(sd + 4) * 150 * a;
+                    ctx.strokeStyle = 'rgba(255,200,238,' + (a * 0.65) + ')'; ctx.lineWidth = 1 + boysR(sd + 6) * 1.5;
                     ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * d0, y + Math.sin(ang) * d0); ctx.lineTo(x + Math.cos(ang) * (d0 + len), y + Math.sin(ang) * (d0 + len)); ctx.stroke();
                 }
-                for (let i = 0; i < 40; i++) {   // glowing sparks
-                    const sd = wi * 29 + i + 1500, ang = boysR(sd) * Math.PI * 2, d = R * (0.6 + boysR(sd + 1) * 0.5);
-                    ctx.fillStyle = 'rgba(255,215,245,' + (a * 0.9) + ')'; ctx.beginPath(); ctx.arc(x + Math.cos(ang) * d, y + Math.sin(ang) * d, 1 + boysR(sd + 2) * 2.2, 0, Math.PI * 2); ctx.fill();
-                }
             }
-            // 3) the glowing plasma sphere with lightning crawling off it
-            const core = 68 + 7 * Math.sin(animT * 0.6) + (k < 12 ? (12 - k) * 6 : 0);
+            // 3) the white-hot core: a starburst, a glowing sphere, and lightning crawling off it
+            const core = 60 + 6 * Math.sin(animT * 0.6) + (k < 12 ? (12 - k) * 6 : 0);
             if (low) { ctx.fillStyle = 'rgba(255,120,210,0.85)'; ctx.beginPath(); ctx.arc(x, y, core, 0, Math.PI * 2); ctx.fill(); }
             else {
-                let g = ctx.createRadialGradient(x, y, core * 0.6, x, y, core * 2.8); g.addColorStop(0, 'rgba(255,70,190,0.55)'); g.addColorStop(1, 'rgba(255,40,170,0)');
-                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, core * 2.8, 0, Math.PI * 2); ctx.fill();
-                g = ctx.createRadialGradient(x - core * 0.25, y - core * 0.25, core * 0.1, x, y, core);
-                g.addColorStop(0, 'rgba(255,250,254,1)'); g.addColorStop(0.65, 'rgba(255,150,220,0.95)'); g.addColorStop(0.93, 'rgba(255,70,195,0.95)'); g.addColorStop(1, 'rgba(255,60,190,0)');
+                let g = ctx.createRadialGradient(x, y, core * 0.5, x, y, core * 3); g.addColorStop(0, 'rgba(255,70,190,0.5)'); g.addColorStop(1, 'rgba(255,40,170,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, core * 3, 0, Math.PI * 2); ctx.fill();
+                const bt = boysBurstTex(), bs = core * 3.4;
+                ctx.save(); ctx.translate(x, y); ctx.rotate(animT * 0.01); ctx.drawImage(bt, -bs / 2, -bs / 2, bs, bs); ctx.restore();
+                g = ctx.createRadialGradient(x - core * 0.2, y - core * 0.2, core * 0.1, x, y, core);
+                g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.6, 'rgba(255,160,225,0.85)'); g.addColorStop(0.93, 'rgba(255,70,195,0.7)'); g.addColorStop(1, 'rgba(255,60,190,0)');
                 ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, core, 0, Math.PI * 2); ctx.fill();
-                const sf = Math.floor(animT / 3);   // new lightning every few frames
-                ctx.shadowColor = '#FF3DB8'; ctx.shadowBlur = 14; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-                for (let i = 0; i < 14; i++) {
-                    const sd = sf * 13 + i, ang = boysR(sd) * Math.PI * 2, tot = core * 1.1 + 90 + boysR(sd + 3) * 260;
-                    let px = x + Math.cos(ang) * core * 0.9, py = y + Math.sin(ang) * core * 0.9;
-                    ctx.strokeStyle = 'rgba(255,225,247,0.95)'; ctx.lineWidth = 1.5 + boysR(sd + 5) * 1.8;
-                    ctx.beginPath(); ctx.moveTo(px, py);
-                    for (let j = 1; j <= 7; j++) { const f = j / 7, jit = (boysR(sd * 7 + j) - 0.5) * 46; px = x + Math.cos(ang) * (core * 0.9 + tot * f) - Math.sin(ang) * jit; py = y + Math.sin(ang) * (core * 0.9 + tot * f) + Math.cos(ang) * jit; ctx.lineTo(px, py); }
-                    ctx.stroke();
+                for (let i = 0; i < 9; i++) {
+                    const sd = sf * 13 + i * 2.9, ang = boysR(sd) * Math.PI * 2, tot = core + 120 + boysR(sd + 3) * 240;
+                    boysBoltTree(x + Math.cos(ang) * core * 0.8, y + Math.sin(ang) * core * 0.8, x + Math.cos(ang + (boysR(sd + 6) - 0.5) * 0.4) * tot, y + Math.sin(ang + (boysR(sd + 6) - 0.5) * 0.4) * tot, sd, 2.2, 0.95, 3);
                 }
-                ctx.shadowBlur = 0;
             }
             // 4) the white-pink flash when she lets go
             if (k < 12) { ctx.fillStyle = 'rgba(255,225,248,' + (0.85 * (1 - k / 12)) + ')'; ctx.fillRect(0, 0, W, H); }
@@ -13430,6 +13516,7 @@
                     if (this.boysU) return false;
                     this.shebabCharge = 0;
                     this.boysU = { f: 0, waves: [] };
+                    if (!lowFx()) { try { boysSmokeTex(); boysBurstTex(); } catch (e) {} }
                     this.shakeTimer = BOYS_INH;   // her head swells while she breathes in
                     return true;
                 }
@@ -17523,7 +17610,10 @@
             const interval = settings.maxFps > 0 ? 1000 / settings.maxFps : 0;
             if (!interval || now - lastDrawTime >= interval - 1.5) {
                 lastDrawTime = now;
-                draw();
+                // while the main menu covers the screen (no battle running) the hidden battle behind it does not need drawing:
+                // the menu has its own animated scene. This roughly halves the work the menu does.
+                const _mu = document.getElementById('menuScreen');
+                if (game.active || game.introActive || !_mu || _mu.classList.contains('hidden')) draw();
                 perfTick(now);
             }
         }

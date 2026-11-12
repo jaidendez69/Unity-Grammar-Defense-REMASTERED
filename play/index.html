@@ -3050,7 +3050,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.33 Release</div>
+    <div id="versionTag">v1.0.34 Release</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3178,7 +3178,7 @@
                 <div class="update-entry">
                     <div class="update-date">November 12, 2026</div>
                     <ul>
-                        <li><b>New admin character: BOYS</b> (only the admin account can place her, free, max 3, in every mode, not in the menu background): the default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura that pulses when her ultimate is ready</b>. Her attack, <b>Suspension</b>, takes <b>50% of a kebab's health</b> and sends it <b>back to the start of the track</b>. Her ultimate <b>BOYSSSSSSS</b>: the screen goes dark while she channels and breathes in, then a huge pink shockwave pulses <b>6 times over 5 seconds</b>, shaking the screen, each pulse doing <b>massive damage</b>. Equip / Unequip her in the Admin screen.</li>
+                        <li><b>New admin character: BOYS</b> (only the admin account can place her, free, max 3, in every mode, not in the menu background): the default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura that pulses when her ultimate is ready</b>. Her attack, <b>Suspension</b>, takes <b>50% of a kebab's health</b> and sends it <b>back to the start of the track</b>. Her ultimate <b>BOYSSSSSSS</b>: the screen goes dark while she channels and breathes in, then a huge pink shockwave pulses <b>6 times over 5 seconds</b> (glowing plasma sphere with lightning, layered shockwave rings, speed lines, billowing smoke and flying rock debris), shaking the screen, each pulse doing <b>massive damage</b>. Equip / Unequip her in the Admin screen.</li>
                         <li><b>The game is now a Release</b>: the version in the top left says <b>v1.0.32 Release</b> instead of Alpha.</li>
                         <li><b>Intro sounds</b>: every title letter now makes a little <b>thunk</b> when it lands, and after the shine sweeps over the letters the <b>REMASTERED</b> logo slams in with its own sound, then the buttons fade in.</li>
                         <li><b>Arabic Expert's shirt fixed</b>: the blue checks used to stay fixed on the screen while he moved (like a green screen). They now move with him.</li>
@@ -8078,7 +8078,7 @@
 
             { id: 'versions', group: 'more', icon: '📜', title: 'Versions, Updates & Desktop App', html: () =>
                 gList([
-                    'The version is shown at the top left (like <b>v1.0.33 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
+                    'The version is shown at the top left (like <b>v1.0.34 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (WIP) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
@@ -12499,7 +12499,7 @@
         }
         // ===== BOYS (admin): pink flame eyes, pulsing aura, Suspension and the BOYSSSSSSS shockwave ultimate =====
         const BOYS_INH = 120, BOYS_PUL = 50, BOYS_N = 6, BOYS_END = BOYS_INH + BOYS_PUL * BOYS_N + 30;
-        function boysWaveR(age) { return 1700 * Math.pow(Math.min(1, age / BOYS_PUL), 0.75); }
+        function boysWaveR(age) { return 1500 * Math.pow(Math.min(1, age / BOYS_PUL), 0.9); }
         let _boysNoise = null;
         function boysNoiseBuf() {
             if (_boysNoise) return _boysNoise;
@@ -12570,6 +12570,79 @@
         }
         // The ultimate itself: the screen goes dark (you can still see everything), a pink orb swells while she breathes in,
         // then BOYSSSSSSS: a flash and six huge pink shockwaves that sweep the whole map.
+        function boysR(n) { const v = Math.sin(n * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); }   // seeded random: the same debris/smoke every frame
+        // The blast itself: glowing plasma sphere with lightning, layered shockwave rings, speed lines, sparks,
+        // billowing smoke and tumbling rock debris thrown out by every pulse.
+        function drawBoysBlast(x, y, U, animT, low, W, H) {
+            const k = U.f - BOYS_INH;
+            // 1) smoke clouds and rocks (normal blending, so they look solid and dark against the glow)
+            ctx.globalCompositeOperation = 'source-over';
+            for (let wi = 0; wi < U.waves.length; wi++) {
+                const w = U.waves[wi]; if (w.age > BOYS_PUL + 30) continue;
+                const R = boysWaveR(Math.min(w.age, BOYS_PUL)), fade = Math.max(0, 1 - w.age / (BOYS_PUL + 30));
+                const puffs = low ? 8 : 34;
+                for (let i = 0; i < puffs; i++) {
+                    const sd = wi * 91 + i, ang = boysR(sd) * Math.PI * 2, d = R * (0.45 + boysR(sd + 5) * 0.55), sz = 34 + boysR(sd + 9) * 54 + w.age * 0.8;
+                    const px = x + Math.cos(ang) * d, py = y + Math.sin(ang) * d;
+                    if (low) ctx.fillStyle = 'rgba(200,110,190,' + (0.12 * fade) + ')';
+                    else { const g = ctx.createRadialGradient(px, py, 0, px, py, sz); g.addColorStop(0, 'rgba(240,150,222,' + (0.55 * fade) + ')'); g.addColorStop(0.6, 'rgba(160,60,150,' + (0.32 * fade) + ')'); g.addColorStop(1, 'rgba(90,40,90,0)'); ctx.fillStyle = g; }
+                    ctx.beginPath(); ctx.arc(px, py, sz, 0, Math.PI * 2); ctx.fill();
+                }
+                if (low) continue;
+                for (let i = 0; i < 16; i++) {   // tumbling rocks with a pink rim light
+                    const sd = wi * 53 + i + 400, ang = boysR(sd) * Math.PI * 2, d = R * (0.55 + boysR(sd + 3) * 0.55) + w.age * 0.8;
+                    const px = x + Math.cos(ang) * d, py = y + Math.sin(ang) * d - Math.sin(w.age / (BOYS_PUL + 30) * Math.PI) * 26, sz = 7 + boysR(sd + 7) * 15;
+                    ctx.save(); ctx.translate(px, py); ctx.rotate(boysR(sd + 11) * 6.28 + w.age * (boysR(sd + 13) - 0.5) * 0.5); ctx.globalAlpha = fade;
+                    ctx.beginPath(); for (let j = 0; j < 6; j++) { const r2 = sz * (0.68 + 0.32 * boysR(sd + j * 3)), a2 = j / 6 * Math.PI * 2; j ? ctx.lineTo(Math.cos(a2) * r2, Math.sin(a2) * r2) : ctx.moveTo(Math.cos(a2) * r2, Math.sin(a2) * r2); }
+                    ctx.closePath(); ctx.fillStyle = '#3b2530'; ctx.fill(); ctx.strokeStyle = 'rgba(255,125,215,0.9)'; ctx.lineWidth = 1.5; ctx.stroke();
+                    ctx.restore();
+                }
+            }
+            ctx.globalAlpha = 1;
+            ctx.globalCompositeOperation = 'lighter';
+            // 2) the shockwave rings
+            for (let wi = 0; wi < U.waves.length; wi++) {
+                const w = U.waves[wi]; if (w.age > BOYS_PUL) continue;
+                const R = boysWaveR(w.age), a = 1 - w.age / BOYS_PUL; if (R < 4) continue;
+                if (!low) { const g = ctx.createRadialGradient(x, y, R * 0.5, x, y, R); g.addColorStop(0, 'rgba(255,60,190,0)'); g.addColorStop(0.75, 'rgba(255,60,190,' + (0.22 * a) + ')'); g.addColorStop(1, 'rgba(255,205,242,' + (0.6 * a) + ')'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); }
+                ctx.strokeStyle = 'rgba(255,238,250,' + a + ')'; ctx.lineWidth = 6 + 22 * a; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,70,185,' + (a * 0.9) + ')'; ctx.lineWidth = 4 + 9 * a; ctx.beginPath(); ctx.arc(x, y, R * 0.93, 0, Math.PI * 2); ctx.stroke();
+                if (low) continue;
+                [0.84, 0.72, 0.58].forEach((f, q) => { ctx.strokeStyle = 'rgba(255,170,230,' + (a * (0.7 - q * 0.15)) + ')'; ctx.lineWidth = 2.5 - q * 0.5; ctx.beginPath(); ctx.arc(x, y, R * f, 0, Math.PI * 2); ctx.stroke(); });   // thin trailing ripples
+                for (let i = 0; i < 64; i++) {   // speed lines streaking outward from the front
+                    const sd = wi * 17 + i + 900, ang = boysR(sd) * Math.PI * 2, d0 = R * (0.86 + boysR(sd + 2) * 0.14), len = 30 + boysR(sd + 4) * 130 * a;
+                    ctx.strokeStyle = 'rgba(255,200,238,' + (a * 0.65) + ')'; ctx.lineWidth = 1.2 + boysR(sd + 6) * 1.6;
+                    ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * d0, y + Math.sin(ang) * d0); ctx.lineTo(x + Math.cos(ang) * (d0 + len), y + Math.sin(ang) * (d0 + len)); ctx.stroke();
+                }
+                for (let i = 0; i < 40; i++) {   // glowing sparks
+                    const sd = wi * 29 + i + 1500, ang = boysR(sd) * Math.PI * 2, d = R * (0.6 + boysR(sd + 1) * 0.5);
+                    ctx.fillStyle = 'rgba(255,215,245,' + (a * 0.9) + ')'; ctx.beginPath(); ctx.arc(x + Math.cos(ang) * d, y + Math.sin(ang) * d, 1 + boysR(sd + 2) * 2.2, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            // 3) the glowing plasma sphere with lightning crawling off it
+            const core = 68 + 7 * Math.sin(animT * 0.6) + (k < 12 ? (12 - k) * 6 : 0);
+            if (low) { ctx.fillStyle = 'rgba(255,120,210,0.85)'; ctx.beginPath(); ctx.arc(x, y, core, 0, Math.PI * 2); ctx.fill(); }
+            else {
+                let g = ctx.createRadialGradient(x, y, core * 0.6, x, y, core * 2.8); g.addColorStop(0, 'rgba(255,70,190,0.55)'); g.addColorStop(1, 'rgba(255,40,170,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, core * 2.8, 0, Math.PI * 2); ctx.fill();
+                g = ctx.createRadialGradient(x - core * 0.25, y - core * 0.25, core * 0.1, x, y, core);
+                g.addColorStop(0, 'rgba(255,250,254,1)'); g.addColorStop(0.65, 'rgba(255,150,220,0.95)'); g.addColorStop(0.93, 'rgba(255,70,195,0.95)'); g.addColorStop(1, 'rgba(255,60,190,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, core, 0, Math.PI * 2); ctx.fill();
+                const sf = Math.floor(animT / 3);   // new lightning every few frames
+                ctx.shadowColor = '#FF3DB8'; ctx.shadowBlur = 14; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                for (let i = 0; i < 14; i++) {
+                    const sd = sf * 13 + i, ang = boysR(sd) * Math.PI * 2, tot = core * 1.1 + 90 + boysR(sd + 3) * 260;
+                    let px = x + Math.cos(ang) * core * 0.9, py = y + Math.sin(ang) * core * 0.9;
+                    ctx.strokeStyle = 'rgba(255,225,247,0.95)'; ctx.lineWidth = 1.5 + boysR(sd + 5) * 1.8;
+                    ctx.beginPath(); ctx.moveTo(px, py);
+                    for (let j = 1; j <= 7; j++) { const f = j / 7, jit = (boysR(sd * 7 + j) - 0.5) * 46; px = x + Math.cos(ang) * (core * 0.9 + tot * f) - Math.sin(ang) * jit; py = y + Math.sin(ang) * (core * 0.9 + tot * f) + Math.cos(ang) * jit; ctx.lineTo(px, py); }
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
+            }
+            // 4) the white-pink flash when she lets go
+            if (k < 12) { ctx.fillStyle = 'rgba(255,225,248,' + (0.85 * (1 - k / 12)) + ')'; ctx.fillRect(0, 0, W, H); }
+        }
         function drawBoysFx(towers, animT) {
             let dark = 0, lead = null;
             for (const t of towers) {
@@ -12613,26 +12686,7 @@
                         ctx.stroke();
                     }
                 } else {
-                    const k = U.f - BOYS_INH, core = 46 + 8 * Math.sin(animT * 0.6) + (k < 12 ? (12 - k) * 6 : 0);
-                    if (!low) { const g = ctx.createRadialGradient(x, y, 0, x, y, core * 2.6); g.addColorStop(0, 'rgba(255,240,252,0.95)'); g.addColorStop(0.3, 'rgba(255,80,195,0.65)'); g.addColorStop(1, 'rgba(255,40,170,0)'); ctx.fillStyle = g; }
-                    else ctx.fillStyle = 'rgba(255,90,200,0.7)';
-                    ctx.beginPath(); ctx.arc(x, y, core * 2.6, 0, Math.PI * 2); ctx.fill();
-                    for (const w of U.waves) {
-                        if (w.age > BOYS_PUL) continue;
-                        const R = boysWaveR(w.age), a = 1 - w.age / BOYS_PUL;
-                        if (R < 4) continue;
-                        if (!low) { const g = ctx.createRadialGradient(x, y, R * 0.55, x, y, R); g.addColorStop(0, 'rgba(255,60,190,0)'); g.addColorStop(0.7, 'rgba(255,60,190,' + (0.2 * a) + ')'); g.addColorStop(1, 'rgba(255,200,240,' + (0.55 * a) + ')'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); }
-                        ctx.strokeStyle = 'rgba(255,235,250,' + a + ')'; ctx.lineWidth = 8 + 26 * a;
-                        ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.stroke();
-                        ctx.strokeStyle = 'rgba(255,50,180,' + (a * 0.85) + ')'; ctx.lineWidth = 5 + 8 * a;
-                        ctx.beginPath(); ctx.arc(x, y, R * 0.9, 0, Math.PI * 2); ctx.stroke();
-                        if (!low) for (let i = 0; i < 26; i++) {   // sparks and debris thrown out by the blast
-                            const ang = i * 0.2417 + w.age * 0.01, d = R * (0.72 + ((i * 37) % 10) / 36);
-                            ctx.strokeStyle = 'rgba(255,190,235,' + (a * 0.9) + ')'; ctx.lineWidth = 2.4;
-                            ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * d, y + Math.sin(ang) * d); ctx.lineTo(x + Math.cos(ang) * (d + 22 + 20 * a), y + Math.sin(ang) * (d + 22 + 20 * a)); ctx.stroke();
-                        }
-                    }
-                    if (k < 12) { ctx.fillStyle = 'rgba(255,225,248,' + (0.85 * (1 - k / 12)) + ')'; ctx.fillRect(0, 0, W, H); }   // the white-pink flash when she lets go
+                    drawBoysBlast(x, y, U, animT, low, W, H);
                 }
             }
             ctx.restore();

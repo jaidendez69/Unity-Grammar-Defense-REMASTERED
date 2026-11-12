@@ -1,8 +1,8 @@
-version: 1.0.35
+version: 1.0.36
 files:
-  - url: UnityDefense-Setup-1.0.35.exe
-    sha512: J/wYPjsFh3M7gmmRB9CrH1gnhWZTWnHLBvRFH5VXkCtXreSMplbFnwhSTIL1vnZ24PaFtMvIkLKKSDk8XvmXvg==
-    size: 79108679
-path: UnityDefense-Setup-1.0.35.exe
-sha512: J/wYPjsFh3M7gmmRB9CrH1gnhWZTWnHLBvRFH5VXkCtXreSMplbFnwhSTIL1vnZ24PaFtMvIkLKKSDk8XvmXvg==
-releaseDate: '2026-11-12T09:09:51.034Z'
+  - url: UnityDefense-Setup-1.0.36.exe
+    sha512: KPDGJhrYdyCTyOMqmMnUHTsvSCSvBqpuoEHVYn2S0ALv+1N+Gm4pUsWlH7qEEgNYF/WjeZ++POGUu7AbgCljBg==
+    size: 79326830
+path: UnityDefense-Setup-1.0.36.exe
+sha512: KPDGJhrYdyCTyOMqmMnUHTsvSCSvBqpuoEHVYn2S0ALv+1N+Gm4pUsWlH7qEEgNYF/WjeZ++POGUu7AbgCljBg==
+releaseDate: '2026-11-12T20:38:17.382Z'

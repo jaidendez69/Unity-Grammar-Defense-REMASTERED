@@ -3050,7 +3050,7 @@
 <body>
     <!-- VERSION TAG - keep in sync with the desktop app's package.json
          "version" field every time the game is updated -->
-    <div id="versionTag">v1.0.32 Release</div>
+    <div id="versionTag">v1.0.33 Release</div>
 
     <!-- PWA UPDATE BANNER -->
     <div id="updatingOverlay"><div class="up-title">UPDATING</div><div class="up-spin"></div>
@@ -3178,6 +3178,7 @@
                 <div class="update-entry">
                     <div class="update-date">November 12, 2026</div>
                     <ul>
+                        <li><b>New admin character: BOYS</b> (only the admin account can place her, free, max 3, in every mode, not in the menu background): the default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura that pulses when her ultimate is ready</b>. Her attack, <b>Suspension</b>, takes <b>50% of a kebab's health</b> and sends it <b>back to the start of the track</b>. Her ultimate <b>BOYSSSSSSS</b>: the screen goes dark while she channels and breathes in, then a huge pink shockwave pulses <b>6 times over 5 seconds</b>, shaking the screen, each pulse doing <b>massive damage</b>. Equip / Unequip her in the Admin screen.</li>
                         <li><b>The game is now a Release</b>: the version in the top left says <b>v1.0.32 Release</b> instead of Alpha.</li>
                         <li><b>Intro sounds</b>: every title letter now makes a little <b>thunk</b> when it lands, and after the shine sweeps over the letters the <b>REMASTERED</b> logo slams in with its own sound, then the buttons fade in.</li>
                         <li><b>Arabic Expert's shirt fixed</b>: the blue checks used to stay fixed on the screen while he moved (like a green screen). They now move with him.</li>
@@ -4403,6 +4404,11 @@
                         <div class="tb-name">Arabic Expert</div>
                         <canvas class="tb-img" id="arabicImg" width="112" height="112"></canvas>
                         <div class="tower-cost" id="arabicCost">Cost: 228 🪙</div>
+                    </button>
+                    <button class="tower-button" id="boysBtn" data-type="boys" onpointerdown="dragStart(event, 'boys')" style="display: none; border-color: #FF3DB8;">
+                        <div class="tb-name">BOYS</div>
+                        <canvas class="tb-img" id="boysImg" width="112" height="112"></canvas>
+                        <div class="tower-cost" id="boysCost">FREE · Admin only</div>
                     </button>
                     <button class="tower-button" id="tuffBtn" data-type="tuff" onpointerdown="dragStart(event, 'tuff')" style="display: none; border-color: #FF1A1A;">
                         <div class="tb-name">Tuff Sheikh</div>
@@ -7403,6 +7409,24 @@
                 ]) +
                 gTip('Move your mouse slowly across the track to sweep kebabs off the map.') },
 
+            { id: 'boys', group: 'teachers', icon: '🌸', title: 'BOYS (Admin)', html: () =>
+                gStats([['Who can use her', 'The admin account only'], ['Health', '20'], ['Attack', 'Suspension'], ['Cost', 'FREE'], ['Limit', '3'], ['Ultimate', 'Fills by itself']]) +
+                '<p>The default Angry Teacher with <b>pink flame eyes</b> and a <b>pink aura</b>. Only the <b>admin account</b> can place her (a pink 🌸 button shows in the teacher panel in <b>every mode</b>). She is free to place and is not in the main menu background.</p>' +
+                '<h4>Suspension</h4>' +
+                gList([
+                    'About every 2.5 seconds the kebab furthest along the track in her range <b>loses 50% of its health</b> and is <b>sent back to the start of the track</b>.',
+                    'Every Suspension fills a little of her ultimate.'
+                ]) +
+                '<h4>BOYSSSSSSS (ultimate)</h4>' +
+                gList([
+                    'Her <b>pink aura starts pulsing when the ultimate is ready</b> (it also fills by itself, about 17 seconds). <b>Click her</b> to use it.',
+                    'She <b>channels</b>: the screen goes <b>dark</b> (you can still see everything), pink energy is sucked into her and a pink orb swells while she <b>breathes in</b> (2 seconds).',
+                    'Then she shouts <b>BOYSSSSSSS</b>: a flash, and for <b>5 seconds</b> a huge <b>pink shockwave pulses out 6 times</b> across the whole map and <b>shakes the screen</b>.',
+                    'Every time a pulse sweeps over a kebab it does <b>MASSIVE damage</b>: <b>50% of its full health</b> (<b>20%</b> for boss kebabs).',
+                    'Equip / Unequip her in the <b>🛡️ Admin</b> screen like Tuff Sheikh.'
+                ]) +
+                gTip('Save her ultimate for a big wave: two pulses kill almost any normal kebab.') },
+
             { id: 'placement', group: 'teachers', icon: '📍', title: 'Placing & Teacher Limits', html: () =>
                 gList([
                     '<b>Hold</b> a teacher in the right panel (the picture with the name above and the cost below) and <b>drag</b> them onto the map. The tile under them lights up <b>yellow</b>; <b>let go</b> and they drop onto it with a bounce. Drag them back over the panel to cancel. A tile holds one teacher.',
@@ -8054,7 +8078,7 @@
 
             { id: 'versions', group: 'more', icon: '📜', title: 'Versions, Updates & Desktop App', html: () =>
                 gList([
-                    'The version is shown at the top left (like <b>v1.0.32 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
+                    'The version is shown at the top left (like <b>v1.0.33 Release</b>). <b>Release</b> means the official published version; <b>Alpha</b> would mean a draft that is not published yet.',
                     '<b>📜 Updates</b> in the main menu is the full update log. The date under it shows when the game was last updated (highlighted red if it was today).',
                     '<b>The main menu</b>: a big <b>▶ PLAY</b> button, then cards for <b>Test Mode</b> (with the Developer Mode switch inside), <b>Online Mode</b> (WIP) and <b>Updates</b>, with <b>Credits</b> underneath. <b>Sign Up / Log In</b>, <b>🎁 Daily</b> and <b>Shop</b> sit along the top right (Settings, Inbox and Chat are inside the account menu) and <b>All You Need to Know</b> is bottom right. Behind it, teachers fight kebabs on the green field map with hills (turn the movement off with <b>Animated menu background</b> in Settings). The colours follow your theme.',
                     'Inside a battle, the <b>❓ How to Play</b> button (bottom right) offers <b>Guide Mode</b>. See the ' + gLink('guidemode', 'Guide Mode') + ' page. There is no pop-up in the menu any more.',
@@ -8214,7 +8238,8 @@
             showToast('💚 +' + n + ' Positives added to you', 1800);
             adminRender();
         }
-        const ADMIN_CHARS = [{ id: 'tuff', name: 'Tuff Sheikh', icon: '🔴', desc: 'Free, max 3. Passive ultimate: SHEBABBBB eye lasers.' }];
+        const ADMIN_CHARS = [{ id: 'tuff', name: 'Tuff Sheikh', icon: '🔴', desc: 'Free, max 3. Passive ultimate: SHEBABBBB eye lasers.' },
+            { id: 'boys', name: 'BOYS', icon: '🌸', desc: 'Free, max 3. Suspension attack and the BOYSSSSSSS pink shockwave ultimate.' }];
         function adminEquipped(id) { const a = getCurrentAccount(); return !(a && a.adminEquip && a.adminEquip[id] === false); }
         function adminToggleChar(id) {
             if (!isAdminAccount()) return;
@@ -9098,7 +9123,7 @@
             if (type === 'angry') return getAngryCost();
             if (type === 'math') return getMathCost();
             if (type === 'arabic') return getArabicCost();
-            if (type === 'tuff') return 0;   // admin character: free
+            if (type === 'tuff' || type === 'boys') return 0;   // admin characters: free
             return getSheikhPlaceCost();
         }
 
@@ -9106,9 +9131,9 @@
         // the shop's "More Teachers" upgrade adds +3 per purchase.
         // Solo battles: at most 5 Angry Teachers, 7 Mathematicians and 7 Arabic Experts. The Wise Sheikh keeps the
         // normal cap (More Teachers adds +3 to it). Team Up and VS keep the old cap for everyone.
-        const SOLO_CAPS = { angry: 5, math: 7, arabic: 7, tuff: 3 };
+        const SOLO_CAPS = { angry: 5, math: 7, arabic: 7, tuff: 3, boys: 3 };
         function getTowerCap(type) {
-            if (type === 'tuff') return 3;   // admin character: 3 in every mode
+            if (type === 'tuff' || type === 'boys') return 3;   // admin characters: 3 in every mode
             if (type && SOLO_CAPS[type] && !game.teamUp && !game.vs) return SOLO_CAPS[type];
             return Math.round((BASE_TOWER_CAP + game.towerCapBonus) * (game.teamUp ? TEAM_MULT : 1));
         }
@@ -9119,10 +9144,11 @@
             if (type === 'math') return 'Mathematician';
             if (type === 'arabic') return 'Arabic Expert';
             if (type === 'tuff') return 'Tuff Sheikh';
+            if (type === 'boys') return 'BOYS';
             return 'Wise Sheikh';
         }
 
-        let _lastCostLabels = { sheikh: '', angry: '', math: '', arabic: '', tuff: '' };
+        let _lastCostLabels = { sheikh: '', angry: '', math: '', arabic: '', tuff: '', boys: '' };
         function refreshTowerCostLabels() {
             try { refreshTowerButtonImages(); } catch (e) {}
             const cap = getTowerCap('sheikh');
@@ -9137,6 +9163,8 @@
             const mText = (getPlaceCost('math') === 0 ? 'Cost: FREE' : 'Cost: ' + getMathCost() + ' 🪙') + ' (' + mCount + '/' + getTowerCap('math') + ')';
             const aText = 'Cost: ' + getArabicCost() + ' 🪙 (' + aCount + '/' + getTowerCap('arabic') + ')';
             const tText = 'FREE · Admin only (' + ownTowerCount('tuff') + '/' + getTowerCap('tuff') + ')';
+            const boText = 'FREE · Admin only (' + ownTowerCount('boys') + '/' + getTowerCap('boys') + ')';
+            if (boText !== _lastCostLabels.boys) { document.getElementById('boysCost').textContent = boText; _lastCostLabels.boys = boText; }
             if (tText !== _lastCostLabels.tuff) { document.getElementById('tuffCost').textContent = tText; _lastCostLabels.tuff = tText; }
             if (aText !== _lastCostLabels.arabic) { document.getElementById('arabicCost').textContent = aText; _lastCostLabels.arabic = aText; }
             if (sText !== _lastCostLabels.sheikh) {
@@ -12159,6 +12187,7 @@
             if (owner === 'math') return '#FF8C00';
             if (owner === 'arabic') return '#E53935';
             if (owner === 'tuff') return '#FF1A1A';
+            if (owner === 'boys') return '#FF3DB8';
             return '#FF1493';
         }
         function attackColorRGB(owner) {
@@ -12166,6 +12195,7 @@
             if (owner === 'math') return '255, 140, 0';
             if (owner === 'arabic') return '229, 57, 53';
             if (owner === 'tuff') return '255, 26, 26';
+            if (owner === 'boys') return '255, 61, 184';
             return '255, 20, 147';
         }
 
@@ -12467,6 +12497,155 @@
                 }
             }
         }
+        // ===== BOYS (admin): pink flame eyes, pulsing aura, Suspension and the BOYSSSSSSS shockwave ultimate =====
+        const BOYS_INH = 120, BOYS_PUL = 50, BOYS_N = 6, BOYS_END = BOYS_INH + BOYS_PUL * BOYS_N + 30;
+        function boysWaveR(age) { return 1700 * Math.pow(Math.min(1, age / BOYS_PUL), 0.75); }
+        let _boysNoise = null;
+        function boysNoiseBuf() {
+            if (_boysNoise) return _boysNoise;
+            const len = Math.floor(audioContext.sampleRate * 2.2), b = audioContext.createBuffer(1, len, audioContext.sampleRate), d = b.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+            return (_boysNoise = b);
+        }
+        function boysBoomSound(vol) {   // deep boom: filtered noise burst + a falling sub tone
+            if (!settings.sfx || !voiceSlot(1)) return;
+            try {
+                if (audioContext.state === 'suspended') audioContext.resume();
+                const t = audioContext.currentTime;
+                const src = audioContext.createBufferSource(); src.buffer = boysNoiseBuf();
+                const lp = audioContext.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(1400, t); lp.frequency.exponentialRampToValueAtTime(60, t + 0.9);
+                const g = audioContext.createGain(); g.gain.setValueAtTime(0.5 * vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + 1);
+                src.connect(lp); lp.connect(g); g.connect(masterGain); src.start(t); src.stop(t + 1.05);
+                const o = audioContext.createOscillator(), og = audioContext.createGain();
+                o.type = 'sine'; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(28, t + 0.8);
+                og.gain.setValueAtTime(0.55 * vol, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.9);
+                o.connect(og); og.connect(masterGain); o.start(t); o.stop(t + 0.95);
+            } catch (e) {}
+        }
+        function boysInhaleSound() {   // a long rising breath in: noise sweeping up + a climbing tone
+            if (!settings.sfx || !voiceSlot(2)) return;
+            try {
+                if (audioContext.state === 'suspended') audioContext.resume();
+                const t = audioContext.currentTime, D = BOYS_INH / 60;
+                const src = audioContext.createBufferSource(); src.buffer = boysNoiseBuf();
+                const bp = audioContext.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 2.5; bp.frequency.setValueAtTime(180, t); bp.frequency.exponentialRampToValueAtTime(2600, t + D);
+                const g = audioContext.createGain(); g.gain.setValueAtTime(0.02, t); g.gain.linearRampToValueAtTime(0.4, t + D - 0.05); g.gain.linearRampToValueAtTime(0.0001, t + D);
+                src.connect(bp); bp.connect(g); g.connect(masterGain); src.start(t); src.stop(t + D + 0.05);
+                const o = audioContext.createOscillator(), og = audioContext.createGain();
+                o.type = 'sawtooth'; o.frequency.setValueAtTime(55, t); o.frequency.exponentialRampToValueAtTime(480, t + D);
+                og.gain.setValueAtTime(0.01, t); og.gain.linearRampToValueAtTime(0.09, t + D - 0.05); og.gain.linearRampToValueAtTime(0.0001, t + D);
+                o.connect(og); og.connect(masterGain); o.start(t); o.stop(t + D + 0.05);
+            } catch (e) {}
+        }
+        function drawBoysAura(tower, x, y, animT) {   // pink aura: faint all the time, big and pulsing once her ultimate is ready
+            const ready = tower.shebabCharge >= tower.shebabMax;
+            const ph = Math.sin(animT * 0.22);
+            const a = ready ? 0.42 + 0.24 * ph : 0.16, r = ready ? 66 + 10 * ph : 54;
+            if (lowFx()) { ctx.fillStyle = 'rgba(255,61,184,' + (a * 0.55) + ')'; ctx.beginPath(); ctx.arc(x, y - 6, r * 0.8, 0, Math.PI * 2); ctx.fill(); return; }
+            const g = ctx.createRadialGradient(x, y - 6, 8, x, y - 6, r);
+            g.addColorStop(0, 'rgba(255,110,210,' + a + ')'); g.addColorStop(0.55, 'rgba(255,45,175,' + (a * 0.55) + ')'); g.addColorStop(1, 'rgba(255,45,175,0)');
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y - 6, r, 0, Math.PI * 2); ctx.fill();
+        }
+        function drawBoysEyes(tower, x, y, animT) {   // glowing pink eyes with little flames licking up from them
+            const ey = y - 27;
+            [x - 4.5, x + 4.5].forEach((ex, side) => {
+                if (!lowFx()) {
+                    const g = ctx.createRadialGradient(ex, ey, 1, ex, ey, 10);
+                    g.addColorStop(0, 'rgba(255,90,200,0.85)'); g.addColorStop(1, 'rgba(255,60,190,0)');
+                    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ex, ey, 10, 0, Math.PI * 2); ctx.fill();
+                }
+                for (let i = 0; i < 3; i++) {
+                    const ph = animT * 0.38 + i * 2.1 + side * 1.3, h = 7 + 3 * Math.sin(ph), ox = (i - 1) * 2;
+                    ctx.fillStyle = i === 1 ? '#FFD3EE' : '#FF3DB8';
+                    ctx.beginPath();
+                    ctx.moveTo(ex + ox - 1.7, ey - 1);
+                    ctx.quadraticCurveTo(ex + ox - 1 + Math.sin(ph) * 1.6, ey - h * 0.6, ex + ox + Math.sin(ph * 1.3) * 1.3, ey - h - 2);
+                    ctx.quadraticCurveTo(ex + ox + 1.6, ey - h * 0.4, ex + ox + 1.7, ey - 1);
+                    ctx.fill();
+                }
+                ctx.fillStyle = '#FF2FA8'; ctx.strokeStyle = '#000'; ctx.lineWidth = 1.2;
+                ctx.beginPath(); ctx.arc(ex, ey, 2.9, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(ex, ey, 1.2, 0, Math.PI * 2); ctx.fill();
+            });
+        }
+        // The ultimate itself: the screen goes dark (you can still see everything), a pink orb swells while she breathes in,
+        // then BOYSSSSSSS: a flash and six huge pink shockwaves that sweep the whole map.
+        function drawBoysFx(towers, animT) {
+            let dark = 0, lead = null;
+            for (const t of towers) {
+                if (t.type !== 'boys' || !t.boysU) continue;
+                const U = t.boysU, a = U.f < 40 ? U.f / 40 : (U.f > BOYS_END - 30 ? Math.max(0, (BOYS_END - U.f) / 30) : 1);
+                if (a > dark) { dark = a; lead = t; }
+            }
+            if (!lead) return;
+            const Z = viewScale(), W = canvas.width / Z, H = canvas.height / Z, low = lowFx();
+            const lx = lead.x - cameraOffset, ly = lead.y - 12;
+            if (low) { ctx.fillStyle = 'rgba(8,0,18,' + (0.7 * dark) + ')'; ctx.fillRect(0, 0, W, H); }
+            else {
+                const g = ctx.createRadialGradient(lx, ly, 30, lx, ly, Math.max(W, H) * 0.6);
+                g.addColorStop(0, 'rgba(20,0,30,' + (0.4 * dark) + ')'); g.addColorStop(1, 'rgba(6,0,16,' + (0.84 * dark) + ')');
+                ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+            }
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (const t of towers) {
+                if (t.type !== 'boys' || !t.boysU) continue;
+                const U = t.boysU, x = t.x - cameraOffset, y = t.y - 12;
+                if (U.f < BOYS_INH) {
+                    const p = U.f / BOYS_INH;
+                    const n = low ? 10 : 36;
+                    for (let i = 0; i < n; i++) {   // pink motes get sucked in toward her
+                        const seed = (i * 0.618034) % 1, ang = i * 2.399, prog = (p * 1.7 + seed) % 1, dist = 30 + (1 - prog) * 280 * (1 - p * 0.3);
+                        const px = x + Math.cos(ang) * dist, py = y + Math.sin(ang) * dist * 0.8;
+                        ctx.strokeStyle = 'rgba(255,120,210,' + (0.15 + 0.6 * prog) + ')'; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x + Math.cos(ang) * (dist + 16), y + Math.sin(ang) * (dist + 16) * 0.8); ctx.stroke();
+                    }
+                    const r0 = 6 + 36 * p * p;
+                    if (!low) { const g = ctx.createRadialGradient(x, y, 0, x, y, r0 * 2.4); g.addColorStop(0, 'rgba(255,230,250,0.95)'); g.addColorStop(0.35, 'rgba(255,70,190,0.6)'); g.addColorStop(1, 'rgba(255,40,170,0)'); ctx.fillStyle = g; }
+                    else ctx.fillStyle = 'rgba(255,90,200,0.7)';
+                    ctx.beginPath(); ctx.arc(x, y, r0 * 2.4, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = 'rgba(255,160,225,' + (0.2 + 0.6 * p) + ')'; ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.arc(x, y, 30 + (1 - p) * 170, 0, Math.PI * 2); ctx.stroke();
+                    if (!low) for (let i = 0; i < 4; i++) {   // crackling energy
+                        let ax = x + Math.cos(i * 1.7 + animT * 0.2) * r0, ay = y + Math.sin(i * 1.7 + animT * 0.2) * r0;
+                        ctx.strokeStyle = 'rgba(255,200,240,0.8)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(ax, ay);
+                        for (let j = 0; j < 5; j++) { ax += Math.cos(i * 1.7 + animT * 0.2) * (10 + 14 * p) + (Math.random() - 0.5) * 12; ay += Math.sin(i * 1.7 + animT * 0.2) * (10 + 14 * p) + (Math.random() - 0.5) * 12; ctx.lineTo(ax, ay); }
+                        ctx.stroke();
+                    }
+                } else {
+                    const k = U.f - BOYS_INH, core = 46 + 8 * Math.sin(animT * 0.6) + (k < 12 ? (12 - k) * 6 : 0);
+                    if (!low) { const g = ctx.createRadialGradient(x, y, 0, x, y, core * 2.6); g.addColorStop(0, 'rgba(255,240,252,0.95)'); g.addColorStop(0.3, 'rgba(255,80,195,0.65)'); g.addColorStop(1, 'rgba(255,40,170,0)'); ctx.fillStyle = g; }
+                    else ctx.fillStyle = 'rgba(255,90,200,0.7)';
+                    ctx.beginPath(); ctx.arc(x, y, core * 2.6, 0, Math.PI * 2); ctx.fill();
+                    for (const w of U.waves) {
+                        if (w.age > BOYS_PUL) continue;
+                        const R = boysWaveR(w.age), a = 1 - w.age / BOYS_PUL;
+                        if (R < 4) continue;
+                        if (!low) { const g = ctx.createRadialGradient(x, y, R * 0.55, x, y, R); g.addColorStop(0, 'rgba(255,60,190,0)'); g.addColorStop(0.7, 'rgba(255,60,190,' + (0.2 * a) + ')'); g.addColorStop(1, 'rgba(255,200,240,' + (0.55 * a) + ')'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill(); }
+                        ctx.strokeStyle = 'rgba(255,235,250,' + a + ')'; ctx.lineWidth = 8 + 26 * a;
+                        ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.stroke();
+                        ctx.strokeStyle = 'rgba(255,50,180,' + (a * 0.85) + ')'; ctx.lineWidth = 5 + 8 * a;
+                        ctx.beginPath(); ctx.arc(x, y, R * 0.9, 0, Math.PI * 2); ctx.stroke();
+                        if (!low) for (let i = 0; i < 26; i++) {   // sparks and debris thrown out by the blast
+                            const ang = i * 0.2417 + w.age * 0.01, d = R * (0.72 + ((i * 37) % 10) / 36);
+                            ctx.strokeStyle = 'rgba(255,190,235,' + (a * 0.9) + ')'; ctx.lineWidth = 2.4;
+                            ctx.beginPath(); ctx.moveTo(x + Math.cos(ang) * d, y + Math.sin(ang) * d); ctx.lineTo(x + Math.cos(ang) * (d + 22 + 20 * a), y + Math.sin(ang) * (d + 22 + 20 * a)); ctx.stroke();
+                        }
+                    }
+                    if (k < 12) { ctx.fillStyle = 'rgba(255,225,248,' + (0.85 * (1 - k / 12)) + ')'; ctx.fillRect(0, 0, W, H); }   // the white-pink flash when she lets go
+                }
+            }
+            ctx.restore();
+            const U0 = lead.boysU, k0 = U0.f - BOYS_INH;
+            if (k0 >= 0 && k0 < 90) {   // BOYSSSSSSS across the screen
+                const a = Math.min(1, (90 - k0) / 25), sc = 1 + 0.12 * Math.sin(animT * 0.8) + (k0 < 8 ? (8 - k0) * 0.06 : 0);
+                ctx.save(); ctx.globalAlpha = a; ctx.translate(W / 2, H * 0.3); ctx.scale(sc, sc);
+                ctx.font = '900 110px Impact, "Arial Black", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.lineJoin = 'round'; ctx.lineWidth = 14; ctx.strokeStyle = '#1a0015'; ctx.strokeText('BOYSSSSSSS', 0, 0);
+                ctx.shadowColor = '#FF3DB8'; ctx.shadowBlur = low ? 0 : 36; ctx.fillStyle = '#FFD3EE'; ctx.fillText('BOYSSSSSSS', 0, 0);
+                ctx.restore();
+            }
+        }
         function drawTuffLasers(towers, animT) {
             for (const t of towers) {
                 if (t.type !== 'tuff' || !(t.laserT > 0)) continue;
@@ -12516,7 +12695,7 @@
                 this.shebabCharge = 0;
                 this.shebabMax = 100;
                 this.bobOffset = Math.random() * Math.PI * 2;
-                this.hp = (type === 'sheikh' ? 10 : (type === 'tuff' ? 20 : (type === 'math' ? 125 : (type === 'arabic' ? 12 : 8)))) * (game.teamUp ? TEAM_MULT : (game.vs ? 2 : 1));
+                this.hp = (type === 'sheikh' ? 10 : ((type === 'tuff' || type === 'boys') ? 20 : (type === 'math' ? 125 : (type === 'arabic' ? 12 : 8)))) * (game.teamUp ? TEAM_MULT : (game.vs ? 2 : 1));
                 this.maxHp = this.hp;
                 this.pl = 'p1';   // which player placed this teacher (online modes)
                 this.onTrack = false;
@@ -12530,6 +12709,8 @@
                     this.enterTimer = 0;
                     this.ultimateCircles = [];
                     this.whistle = null;
+                } else if (type === 'boys') {
+                    this.range = 4; this.lastSusp = 60; this.boysU = null;   // Suspension reach, and the state of her BOYSSSSSSS ultimate
                 } else if (type === 'tuff') {
                     this.laserT = 0;        // frames of eye-lasers left
                 } else if (type === 'arabic') {
@@ -12746,6 +12927,15 @@
                     }
 
                     // (Angry Teacher no longer charges over time: her ultimate only fills when she marks a kebab with Negative)
+                }
+                if (this.type === 'boys') {
+                    // BOYS (admin): her ultimate fills by itself (about 17 s) and every Suspension adds a little
+                    if (this.boysU) this.boysStep();
+                    else {
+                        if (this.shebabCharge < this.shebabMax) this.shebabCharge = Math.min(this.shebabCharge + 0.1, this.shebabMax);
+                        this.lastSusp++;
+                        if (this.lastSusp >= 150 && game.waveInProgress) this.suspend();
+                    }
                 }
                 if (this.type === 'tuff') {
                     // Tuff Sheikh does not attack: his ultimate fills up by itself. SHEBABBBB = 5 seconds of eye-lasers
@@ -12984,7 +13174,7 @@
             tryShoot() {
                 // Angry Teacher and Mathematician don't throw anything - they
                 // only use their periodic ability and their ultimate.
-                if (this.type === 'angry' || this.type === 'math' || this.type === 'arabic' || this.type === 'tuff') return;
+                if (this.type === 'angry' || this.type === 'math' || this.type === 'arabic' || this.type === 'tuff' || this.type === 'boys') return;
                 if (this.ultLockout > 0) return;    // out of breath after his ultimate
                 if (!game.waveInProgress || this.lastShot < this.fireRate || game.enemies.length === 0) return;
 
@@ -13132,8 +13322,63 @@
                 ctx.restore();
             }
 
+            // Suspension: the kebab furthest along in range loses 50% of its health and is sent back to the START of its track
+            suspend() {
+                const r = this.range * GRID_SIZE;
+                const e = game.enemies.filter(k => k.health > 0 && Math.hypot(k.x - this.x, k.y - this.y) < r)
+                    .sort((a, b) => (b.pathIndex - a.pathIndex) || (b.progress - a.progress))[0];
+                if (!e) return false;
+                this.lastSusp = 0;
+                this.shebabCharge = Math.min(this.shebabCharge + 8, this.shebabMax);
+                this.leanTimer = 14; this.leanDir = e.x >= this.x ? 1 : -1;
+                const fx0 = e.x, fy0 = e.y;
+                e.health -= e.health * 0.5;
+                pushEnemyBack(e, 1e7);
+                e.prevX = e.x; e.prevY = e.y; e.stuckT = 0;
+                game.particles.push({ type: 'explosion', owner: 'boys', x: fx0, y: fy0, vx: 0, vy: 0, life: 22 });
+                game.particles.push({ type: 'explosion', owner: 'boys', x: e.x, y: e.y, vx: 0, vy: 0, life: 22 });
+                game.particles.push({ type: 'text', owner: 'boys', x: fx0, y: fy0 - 40, vy: -0.6, text: 'SUSPENDED!', life: 50, size: 16 });
+                playSound(820, 0.12, 'square'); playSound(240, 0.2, 'sawtooth');
+                return true;
+            }
+            // One frame of the BOYSSSSSSS ultimate: 2 seconds of breathing in (screen goes dark), then 6 shockwave pulses over 5 seconds
+            boysStep() {
+                const U = this.boysU; U.f++;
+                if (U.f === 1) boysInhaleSound();
+                if (U.f < BOYS_INH) { if (U.f > BOYS_INH - 40) startShake(3, 1.5 + (U.f - (BOYS_INH - 40)) * 0.08); }
+                else {
+                    const k = U.f - BOYS_INH;
+                    if (k < BOYS_PUL * BOYS_N && k % BOYS_PUL === 0) {   // a new pulse
+                        U.waves.push({ age: 0, hit: {} });
+                        boysBoomSound(k === 0 ? 1 : 0.75); startShake(30, 12);
+                    }
+                }
+                for (const w of U.waves) {
+                    const R0 = boysWaveR(w.age); w.age++; const R1 = boysWaveR(w.age);
+                    if (w.age > BOYS_PUL) continue;
+                    for (const e of game.enemies) {   // the ring hits every kebab it sweeps over, once per pulse: MASSIVE damage
+                        if (e.health <= 0 || w.hit[e.id]) continue;
+                        const d = Math.hypot(e.x - this.x, e.y - this.y);
+                        if (d > R0 - 6 && d <= R1 + 6) {
+                            w.hit[e.id] = 1;
+                            e.health -= e.maxHealth * (e.isBoss ? 0.2 : 0.5);
+                            e.hitFlash = 8;
+                            if (!lowFx()) game.particles.push({ type: 'explosion', owner: 'boys', x: e.x, y: e.y, vx: 0, vy: 0, life: 18 });
+                        }
+                    }
+                }
+                if (U.f >= BOYS_END) this.boysU = null;
+            }
+
             ultimate() {
                 if (this.shebabCharge < this.shebabMax) return false;
+                if (this.type === 'boys') {
+                    if (this.boysU) return false;
+                    this.shebabCharge = 0;
+                    this.boysU = { f: 0, waves: [] };
+                    this.shakeTimer = BOYS_INH;   // her head swells while she breathes in
+                    return true;
+                }
                 if (this.type === 'arabic' && !game.enemies.some(e => !e.isBoss && e.health > 0)) {
                     game.particles.push({ type: 'text', owner: 'arabic', x: this.x, y: this.y - 80, text: 'No kebabs to check!', life: 50, size: 18 });
                     return false;
@@ -14181,7 +14426,7 @@
             if (game.towers.filter(t => t.type === type).length >= getTowerCap(type)) return false;
             if (type === 'angry' && document.getElementById('angryBtn').style.display !== 'block') return false;
             if (type === 'math' && !game.mathUnlocked) return false;
-            let cost = type === 'tuff' ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
+            let cost = (type === 'tuff' || type === 'boys') ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             const mine = pl === 'p2' ? 'freeGuest' : 'freeTeachersLeft';
             let usedFree = false;
             if (type === 'sheikh' && game[mine] > 0) { cost = 0; usedFree = true; }
@@ -14245,7 +14490,7 @@
             if (!vsCanPlace(pl, col, row)) return false;
             if (game.towers.find(t => t.col === col && t.row === row)) return false;
             if (game.towers.filter(t => t.type === type && t.pl === pl).length >= getTowerCap(type)) return false;
-            const cost = type === 'tuff' ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
+            const cost = (type === 'tuff' || type === 'boys') ? 0 : (type === 'angry' ? getAngryCost() : (type === 'math' ? getMathCost() : getSheikhCost()));
             if (vsCoins(pl) < cost) return false;
             vsAddCoins(pl, -cost);
             const tw = new Tower(col, row, type); tw.pl = pl; game.towers.push(tw);
@@ -14850,7 +15095,7 @@
         function refreshTowerButtonImages() {
             const key = settings.theme + '|' + (typeof EQUIPPED !== 'undefined' ? JSON.stringify(EQUIPPED) : '');
             if (key === _btnImgKey) return; _btnImgKey = key;
-            for (const ty of ['sheikh', 'angry', 'math', 'arabic', 'tuff']) {
+            for (const ty of ['sheikh', 'angry', 'math', 'arabic', 'tuff', 'boys']) {
                 const cv = document.getElementById(ty + 'Img'); if (!cv) continue;
                 const g = cv.getContext('2d'); g.clearRect(0, 0, 112, 112); g.drawImage(teacherPortrait(ty), 0, 0);
             }
@@ -15651,6 +15896,11 @@
             const tuffShow = !!game._adm && tuffEq;   // admin only, in every mode (normal, Quad, Test, Team Up, VS)
             tuffBtnElem.style.display = tuffShow ? 'block' : 'none';
             if (tuffShow) tuffBtnElem.disabled = ownTowerCount('tuff') >= getTowerCap('tuff');
+            const boysBtnElem = document.getElementById('boysBtn');
+            let boysEq = true; try { const ac2 = getCurrentAccount(); boysEq = !(ac2 && ac2.adminEquip && ac2.adminEquip.boys === false); } catch (e) {}
+            const boysShow = !!game._adm && boysEq;
+            boysBtnElem.style.display = boysShow ? 'block' : 'none';
+            if (boysShow) boysBtnElem.disabled = ownTowerCount('boys') >= getTowerCap('boys');
             const arabicBtnElem = document.getElementById('arabicBtn');
             if (arabicBtnElem.style.display !== 'none') {
                 arabicBtnElem.disabled = !((game.testMode || game.sentrals >= getPlaceCost('arabic')) && ownTowerCount('arabic') < getTowerCap('arabic'));
@@ -16453,9 +16703,11 @@
                     ctx.translate(-x, -(y + 28));
                 }
 
-                if (tower.type === 'angry') {
+                if (tower.type === 'angry' || tower.type === 'boys') {
+                    const isBoys = tower.type === 'boys';
+                    if (isBoys) drawBoysAura(tower, x, y, animT);
                     // Black leather coat (the Twin skin keeps her old brown coat and pink scarf)
-                    const angrySkin = skinKind('angry'), twin = angrySkin === 'twin', plainCoat = !angrySkin || angrySkin === 'fuming' || twin;
+                    const angrySkin = isBoys ? null : skinKind('angry'), twin = angrySkin === 'twin', plainCoat = !angrySkin || angrySkin === 'fuming' || twin;
                     drawAngryCoat(x, y, twin);
                     drawSkinBody('angry', x, y, 20, 28);
                     if (plainCoat) drawAngryCoatButtons(x, y, twin);
@@ -16473,7 +16725,7 @@
                         ctx.scale(sc, sc);
                         ctx.translate(-x, -(y - 14));
                     }
-                    const fuming = skinKind('angry') === 'fuming';
+                    const fuming = !isBoys && skinKind('angry') === 'fuming';
                     if (fuming) drawFumingFlames(x, y, animT);
                     // Thick pink circle around head (hijab) - bigger head
                     ctx.fillStyle = fuming ? '#E8330F' : (twin ? '#FF1493' : '#7B2A7E');
@@ -16492,10 +16744,11 @@
 
                     // Black eyes
                     drawTeacherEyes(tower, x - 4.5, y - 27, x + 4.5, y - 27, 2.2, '#000000');
+                    if (isBoys) drawBoysEyes(tower, x, y, animT);
                     if (fuming) drawFumingFace(x, y);
                     if (bigHead) ctx.restore();
 
-                    for (let circle of tower.ultimateCircles) {
+                    for (let circle of (tower.ultimateCircles || [])) {
                         const shake = Math.sin(animT * 0.3) * 3;
                         const cx = x + Math.cos(circle.angle + animT * 0.05) * (circle.radius + shake);
                         const cy = y + Math.sin(circle.angle + animT * 0.05) * (circle.radius + shake);
@@ -17111,6 +17364,7 @@
             drawTowersLayer(game.towers, animT, alpha);
             drawEnemiesLayer(game.enemies, alpha, animT);
             drawTuffLasers(game.towers, animT);
+            drawBoysFx(game.towers, animT);
             ctx.restore();
             drawThemeOverlay();
             ctx.save(); if (_Z !== 1) ctx.scale(_Z, _Z);
